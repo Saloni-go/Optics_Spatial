@@ -2,17 +2,18 @@
 #
 #   .\scripts\serve_demo.ps1                 # 2000 x 2000 map, port 8988
 #   .\scripts\serve_demo.ps1 -Size 4000      # full 16 M-cell map
+#   .\scripts\serve_demo.ps1 -Dpi 50         # smaller picture for small screens / phones
 #
 # 1. starts the viewer as a web server (corridor.interactive --web): the PC does all the computing;
 # 2. if cloudflared is installed (winget install Cloudflare.cloudflared), opens a free Cloudflare quick
 #    tunnel and prints a public https://....trycloudflare.com link that works on any network and device.
 # Anyone with the link can use the viewer while this window is open. Ctrl+C stops everything.
-param([int]$Size = 2000, [int]$Port = 8988)
+param([int]$Size = 4000, [int]$Port = 8988, [int]$Dpi = 66)
 
 $root = Split-Path $PSScriptRoot -Parent
 Write-Host "Starting the viewer (map $Size x $Size) on port $Port ..."
 $viewer = Start-Process -FilePath "$root\run.bat" -WorkingDirectory $root -PassThru -WindowStyle Minimized `
-          -ArgumentList "-m corridor.interactive --web --size $Size --port $Port"
+          -ArgumentList "-m corridor.interactive --web --size $Size --port $Port --dpi $Dpi"
 
 # wait until the server answers (precompute takes a few seconds)
 $ok = $false

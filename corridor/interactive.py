@@ -308,6 +308,8 @@ def main():
     ap.add_argument("--demo", default=None, help="write a scripted demo GIF instead of opening a window")
     ap.add_argument("--web", action="store_true", help="serve the viewer to browsers (any device on the same network)")
     ap.add_argument("--port", type=int, default=8988)
+    ap.add_argument("--dpi", type=float, default=None,
+                    help="figure resolution: smaller = smaller picture (default 100 window, 66 browser)")
     a = ap.parse_args()
     if a.demo:
         return demo(a.demo, a.size, a.mode)
@@ -318,6 +320,7 @@ def main():
                                     "webagg.port_retries": 10, "webagg.open_in_browser": True})
     else:
         matplotlib.use("QtAgg")
+    matplotlib.rcParams["figure.dpi"] = a.dpi or (66 if a.web else 100)
     import matplotlib.pyplot as plt
     P = Planner(a.size, a.mode)
     P.precompute(landmarks=False, bank=(2.5, 5, 10, 20, 40, 80))
