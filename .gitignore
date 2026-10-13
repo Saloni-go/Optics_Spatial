@@ -20,3 +20,7 @@ report/figs/
 results/*_log.txt
 results/*_steps.txt
 results/*/benchmark_log.txt
+
+# Node build dependencies for the PowerPoint deck
+presentation/node_modules/
+presentation/render/
