@@ -1,0 +1,70 @@
+{
+ "range_km": 40.0,
+ "radar_h_m": 30.0,
+ "aircraft_agl_m": 150.0,
+ "radars": [
+  {
+   "id": "R1",
+   "x": 346605.0,
+   "y": 3358695.0,
+   "ground_m": 3182.86669921875,
+   "area_in_range_km2": 3980.7414,
+   "ground_visible_km2": 572.8419,
+   "ground_visible_frac": 0.14390331911537885,
+   "air150_visible_frac": 0.32236472331510907
+  },
+  {
+   "id": "R2",
+   "x": 309105.0,
+   "y": 3379485.0,
+   "ground_m": 3181.8095703125,
+   "area_in_range_km2": 4793.0886,
+   "ground_visible_km2": 587.9159999999999,
+   "ground_visible_frac": 0.1226591137914705,
+   "air150_visible_frac": 0.27415543705993667
+  },
+  {
+   "id": "R3",
+   "x": 267015.0,
+   "y": 3400245.0,
+   "ground_m": 3113.453369140625,
+   "area_in_range_km2": 2785.6584,
+   "ground_visible_km2": 198.25289999999998,
+   "ground_visible_frac": 0.07116913545465589,
+   "air150_visible_frac": 0.17681579335068506
+  },
+  {
+   "id": "R4",
+   "x": 325815.0,
+   "y": 3329535.0,
+   "ground_m": 3105.705322265625,
+   "area_in_range_km2": 4978.1916,
+   "ground_visible_km2": 495.25559999999996,
+   "ground_visible_frac": 0.0994850419176313,
+   "air150_visible_frac": 0.2767727943617116
+  },
+  {
+   "id": "R5",
+   "x": 311175.0,
+   "y": 3347595.0,
+   "ground_m": 2856.3486328125,
+   "area_in_range_km2": 5026.6269,
+   "ground_visible_km2": 661.4271,
+   "ground_visible_frac": 0.13158468156846892,
+   "air150_visible_frac": 0.34480866284306877
+  },
+  {
+   "id": "R6",
+   "x": 286905.0,
+   "y": 3382965.0,
+   "ground_m": 2803.29736328125,
+   "area_in_range_km2": 4616.2602,
+   "ground_visible_km2": 173.826,
+   "ground_visible_frac": 0.03765515644027172,
+   "air150_visible_frac": 0.09555332257917351
+  }
+ ],
+ "union_ground_frac_of_dem": 0.1673438125,
+ "union_air150_frac_of_dem": 0.35557375,
+ "multi_covered_ground_frac": 0.0179755625
+}

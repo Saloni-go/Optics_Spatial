@@ -1,0 +1,33 @@
+{
+ "route_km": 165.82553342137194,
+ "waypoints": 167,
+ "spacing_m": 1000.0,
+ "radius_m": 20000.0,
+ "corridor_km2": 6023.7045,
+ "cases": {
+  "agl300": {
+   "label": "Terrain following, 300 m AGL",
+   "compute_s": 4.553497300000345,
+   "seen_km2": 1536.5871,
+   "seen_in_corridor_frac": 0.2550900529732161,
+   "blind_km2": 4487.1174,
+   "mean_visible_km2_per_wp": 51.284360479041915,
+   "max_count": 41,
+   "alt_min": 703.2225738775038,
+   "alt_max": 2231.5479962352397,
+   "clearance_min": 300.0
+  },
+  "msl5500": {
+   "label": "Cruise, 5500 m MSL",
+   "compute_s": 4.418564499999775,
+   "seen_km2": 4731.9147,
+   "seen_in_corridor_frac": 0.7855489425153575,
+   "blind_km2": 1291.7898,
+   "mean_visible_km2_per_wp": 697.7648101796406,
+   "max_count": 63,
+   "alt_min": 5500.0,
+   "alt_max": 5500.0,
+   "clearance_min": 3568.4520037647603
+  }
+ }
+}
