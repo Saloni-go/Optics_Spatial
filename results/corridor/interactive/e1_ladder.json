@@ -1,0 +1,85 @@
+{
+ "size": 4000,
+ "nodes": 16000000,
+ "n_queries": 20,
+ "rows": [
+  {
+   "strategy": "Dijkstra (C)",
+   "level": 0,
+   "pre_s": 0.0,
+   "mem_mb": 0.0,
+   "query_fixed_goal_ms": 1487.7651700011484,
+   "query_any_pair_ms": 1811.6696900000534,
+   "expanded_fixed_goal": 7563250.25,
+   "expanded_any_pair": 8998195.75,
+   "max_gap_pct": 0.0
+  },
+  {
+   "strategy": "A* geo heuristic (C)",
+   "level": 0,
+   "pre_s": 0.0,
+   "mem_mb": 0.0,
+   "query_fixed_goal_ms": 772.1108599991567,
+   "query_any_pair_ms": 992.8585150009894,
+   "expanded_fixed_goal": 3216632.15,
+   "expanded_any_pair": 4200341.55,
+   "max_gap_pct": 0.0
+  },
+  {
+   "strategy": "ALT, 1 landmark (C)",
+   "level": 1,
+   "pre_s": 3.5456143999981578,
+   "mem_mb": 122.0703125,
+   "query_fixed_goal_ms": 508.8596200013853,
+   "query_any_pair_ms": 803.1521400007477,
+   "expanded_fixed_goal": 2083173.05,
+   "expanded_any_pair": 3187984.4,
+   "max_gap_pct": 4.155541910577654e-06
+  },
+  {
+   "strategy": "ALT, 2 landmarks (C)",
+   "level": 1,
+   "pre_s": 3.4761876999982633,
+   "mem_mb": 244.140625,
+   "query_fixed_goal_ms": 460.43934499866737,
+   "query_any_pair_ms": 648.1709400002728,
+   "expanded_fixed_goal": 1837297.15,
+   "expanded_any_pair": 2370416.45,
+   "max_gap_pct": 1.3713635182988071e-05
+  },
+  {
+   "strategy": "ALT, 4 landmarks (C)",
+   "level": 1,
+   "pre_s": 3.724342899993644,
+   "mem_mb": 488.28125,
+   "query_fixed_goal_ms": 211.9248899995,
+   "query_any_pair_ms": 273.6098800014588,
+   "expanded_fixed_goal": 667673.85,
+   "expanded_any_pair": 943188.05,
+   "max_gap_pct": 2.220446049250313e-14
+  },
+  {
+   "strategy": "ALT, 8 landmarks (C)",
+   "level": 1,
+   "pre_s": 7.595085700006166,
+   "mem_mb": 976.5625,
+   "query_fixed_goal_ms": 211.52476000024762,
+   "query_any_pair_ms": 243.11389500035148,
+   "expanded_fixed_goal": 551420.9,
+   "expanded_any_pair": 652416.8,
+   "max_gap_pct": 2.220446049250313e-14
+  },
+  {
+   "strategy": "Level 2 cost-to-go field (C)",
+   "level": 2,
+   "pre_s": 3.004514400003245,
+   "mem_mb": 183.10546875,
+   "query_fixed_goal_ms": 0.059210000836174004,
+   "query_any_pair_ms": null,
+   "expanded_fixed_goal": 0.0,
+   "expanded_any_pair": null,
+   "max_gap_pct": 2.4646951146678475e-12,
+   "note": "query = lookup; a new goal costs one field (pre_s)"
+  }
+ ]
+}

@@ -37,6 +37,9 @@ run.bat -m flight.analysis
 run.bat -m corridor.run_corridor         # Track 3 scenario: least-exposure routes
 run.bat -m corridor.benchmark            # Track 3 benchmarks C1-C5
 run.bat -m corridor.analysis
+run.bat -m corridor.interactive_bench all  # Track 3 interactive framework: experiments E1-E6 -> results/corridor/interactive/
+run.bat -m corridor.interactive         # Track 3 interactive viewer (click start, right-click goal, drag radars, +/- alpha)
+run.bat -m corridor.interactive --demo results\corridor\interactive\demo.gif   # scripted demo, no window
 run_qgis.bat qgis\build_project.py       # styled QGIS project + QGIS map renders
 run_qgis.bat qgis\render_bench.py        # visualization performance benchmark
 python report\build_report.py            # report/mid_submission_report.pdf (system Python + PyMuPDF)
@@ -58,6 +61,9 @@ common/    config, raster I/O, benchmark harness, plotting, shared radar sites
 radar/     viewshed.py (naive LOS, R2, GDAL), validate, run_radar, jobs, benchmark, analysis
 flight/    route.py, visibility.py (baseline/cached/window/parallel/adaptive), run_flight, ...
 corridor/  exposure.py, optimizer.py (Dijkstra, A*, SciPy, multi-resolution), run_corridor, ...
+           c/gridsearch.c + dstar.inc (compiled searches, cost-to-go field, repair, D* Lite), cgrid.py,
+           radarfield.py (per-radar threat updates, detection model), interactive_core.py (Planner),
+           interactive.py (viewer), interactive_bench.py
 qgis/      build_project.py, render_bench.py, terrain_visibility.qgz
 data/      DEMs, hillshades, synthetic terrains
 results/   radar/, flight/, corridor/, shared/

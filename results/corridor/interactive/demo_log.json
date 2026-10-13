@@ -1,0 +1,119 @@
+{
+ "size": 4000,
+ "mode": "detection",
+ "events": [
+  {
+   "action": "load",
+   "ms": 2294.398000000001,
+   "how": "DEM + radar threat surface"
+  },
+  {
+   "action": "precompute",
+   "ms": 3179.952100000037,
+   "how": "Level 2 cost-to-go field (one backward C Dijkstra)",
+   "mem_mb": 183.10546875
+  },
+  {
+   "action": "precompute",
+   "ms": 503.12320000011823,
+   "how": "Level 3 pyramid (coarse grids x2..x32)",
+   "mem_mb": 102.59449481964111
+  },
+  {
+   "action": "set start",
+   "ms": 0.16559999994569807,
+   "how": "Level 2 lookup (no search)",
+   "cost": 220633.54775589853
+  },
+  {
+   "action": "set start",
+   "ms": 0.20040000003973546,
+   "how": "Level 2 lookup (no search)",
+   "cost": 100545.73254265648
+  },
+  {
+   "action": "set start",
+   "ms": 0.14409999994313694,
+   "how": "Level 2 lookup (no search)",
+   "cost": 123599.77592676162
+  },
+  {
+   "action": "set start",
+   "ms": 0.11309999990771757,
+   "how": "Level 2 lookup (no search)",
+   "cost": 137904.30715301927
+  },
+  {
+   "action": "set start",
+   "ms": 0.15389999998660642,
+   "how": "Level 2 lookup (no search)",
+   "cost": 137904.30715301927
+  },
+  {
+   "action": "move radar",
+   "ms": 988.1540999999743,
+   "how": "threat window + Level 2 field repair (exact)",
+   "cost": 138378.53887514712,
+   "field_ms": 251.25349999984792,
+   "changed_cells": 608268,
+   "pyramid_ms": 53.538500000058775,
+   "repair_ms": 661.2755000001016,
+   "affected": 2774165
+  },
+  {
+   "action": "set alpha (first route)",
+   "ms": 8.950500000082684,
+   "how": "coarse-to-fine: coarse x16",
+   "cost": 239206.63073498147
+  },
+  {
+   "action": "set alpha (improved)",
+   "ms": 121.36780000014369,
+   "how": "coarse-to-fine: coarse x4",
+   "cost": 193298.96738637815
+  },
+  {
+   "action": "set alpha (improved)",
+   "ms": 466.448000000355,
+   "how": "coarse-to-fine: full-res corridor (+/-0.5 km of 2 x4 routes)",
+   "cost": 179905.53710696596
+  },
+  {
+   "action": "field ready",
+   "ms": 3444.2761999998766,
+   "how": "Level 2 field rebuilt"
+  },
+  {
+   "action": "set alpha (exact)",
+   "ms": 3911.140600000408,
+   "how": "Level 2 field rebuilt: exact, lookups valid again",
+   "cost": 179905.537106964
+  },
+  {
+   "action": "pan/zoom",
+   "ms": 1.4189000000897067,
+   "how": "draw exact route (field), every 2 point(s); no search"
+  },
+  {
+   "action": "pan/zoom",
+   "ms": 1.0772000000542903,
+   "how": "draw exact route (field), every 1 point(s); no search"
+  },
+  {
+   "action": "add radar",
+   "ms": 1357.8666000000794,
+   "how": "threat window + Level 2 field repair (exact)",
+   "cost": 198984.99301161256,
+   "field_ms": 282.60150000005524,
+   "changed_cells": 39632,
+   "pyramid_ms": 17.094799999995303,
+   "repair_ms": 1037.8946000000724,
+   "affected": 4560861
+  },
+  {
+   "action": "risk budget 50%",
+   "ms": 23645.03089999994,
+   "how": "Lagrangian bisection, 10 exact searches, 238 km, P(detect) 35%"
+  }
+ ]
+}

@@ -25,3 +25,4 @@ results/*/benchmark_log.txt
 presentation/node_modules/
 presentation/render/
 results/*/*_log.txt
+results/corridor/interactive/*_log.txt

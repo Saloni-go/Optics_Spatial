@@ -150,6 +150,157 @@ done:;
     return len;
 }
 
+/* ------------------------------------------------------------------ edge cost helpers */
+static inline double edge_cost(const double *z, const double *E, double cell, double alpha, double beta,
+                               int32_t from, int32_t to, double lf) {
+    double dz = z[to] - z[from];
+    return lf * cell * (1.0 + alpha * 0.5 * (E[from] + E[to])) + (dz > 0 ? beta * dz : 0.0);
+}
+
+/* ------------------------------------------------------------------ cost-to-go field (Level 2)
+ * Backward Dijkstra from `goal`: dist_out[v] = cost of the best route v -> goal, next_out[v] = the
+ * neighbour to step to (-1 at the goal or if unreachable).  Afterwards a route from ANY start is
+ * found by following next_out, with no search at all.  Returns nodes settled, -1 on failure. */
+EXPORT int64_t grid_costtogo(int32_t Hh, int32_t W, const double *z, const double *E, const uint8_t *blocked,
+                             double cell, double alpha, double beta, int32_t goal, double *dist_out, int32_t *next_out) {
+    int64_t N = (int64_t)Hh * W;
+    uint8_t *closed = (uint8_t *)calloc((size_t)N, 1);
+    heap hp = {0};
+    if (!closed) return -1;
+    for (int64_t i = 0; i < N; i++) { dist_out[i] = INFINITY; next_out[i] = -1; }
+    const double sq2 = 1.4142135623730951;
+    int64_t settled = 0;
+    dist_out[goal] = 0.0;
+    hpush(&hp, 0.0, 0.0, goal);
+    while (hp.n > 0) {
+        item it = hpop(&hp);
+        int32_t u = it.v;
+        if (closed[u]) continue;
+        closed[u] = 1; settled++;
+        int32_t ur = u / W, uc = u % W;
+        for (int k = 0; k < 8; k++) {
+            int32_t vr = ur + DR[k], vc = uc + DC[k];
+            if (vr < 0 || vr >= Hh || vc < 0 || vc >= W) continue;
+            int32_t v = vr * W + vc;
+            if (blocked[v] || closed[v]) continue;
+            /* the route runs v -> u, so the edge cost is c(v, u) */
+            double nd = dist_out[u] + edge_cost(z, E, cell, alpha, beta, v, u, (DR[k] && DC[k]) ? sq2 : 1.0);
+            if (nd < dist_out[v]) {
+                dist_out[v] = nd; next_out[v] = u;
+                if (hpush(&hp, nd, nd, v)) { settled = -1; goto done; }
+            }
+        }
+    }
+done:
+    free(closed); free(hp.a);
+    return settled;
+}
+
+/* ------------------------------------------------------------------ incremental repair of a cost-to-go field
+ * After the exposure E changed (e.g. a radar moved), repair dist/next in place instead of recomputing.
+ * changed[v] = 0 unchanged, 1 cost went up (or mixed), 2 cost went down only.
+ *   1. affected = cells whose cost went UP + every cell whose route (next chain) passes through one;
+ *      only these can have become worse, so only these are reset;
+ *   2. seed each affected cell from its best unaffected neighbour;
+ *   3. cells whose cost went DOWN keep their value (still a valid upper bound) but are re-evaluated
+ *      and queued, so the improvement can spread;
+ *   4. run Dijkstra from the seeds; improvements also propagate into unaffected cells
+ *      (Ramalingam-Reps style dynamic shortest paths).
+ * Work is proportional to the affected region, not to the whole grid.
+ * Returns the number of affected cells, -1 on failure; *settled_out = nodes settled by step 3. */
+EXPORT int64_t grid_repair(int32_t Hh, int32_t W, const double *z, const double *E, const uint8_t *blocked,
+                           double cell, double alpha, double beta, int32_t goal, const uint8_t *changed,
+                           double *dist, int32_t *next, int64_t *settled_out) {
+    int64_t N = (int64_t)Hh * W;
+    /* state: 0 unknown, 1 affected, 2 unaffected */
+    uint8_t *st = (uint8_t *)calloc((size_t)N, 1);
+    int32_t *stack = (int32_t *)malloc((size_t)N * sizeof(int32_t));
+    heap hp = {0};
+    if (!st || !stack) { free(st); free(stack); return -1; }
+    const double sq2 = 1.4142135623730951;
+    int64_t naff = 0;
+    st[goal] = 2;
+    for (int64_t s0 = 0; s0 < N; s0++) {
+        if (st[s0] || blocked[s0] || !isfinite(dist[s0])) { if (!st[s0]) st[s0] = 2; continue; }
+        /* walk the next chain until a cell with a known state, then label the whole walk */
+        int64_t top = 0; int32_t v = (int32_t)s0; uint8_t res = 2;
+        while (v >= 0 && st[v] == 0) {
+            if (changed[v] == 1) { res = 1; break; }
+            stack[top++] = v; v = next[v];
+        }
+        if (v >= 0 && st[v]) res = (res == 1) ? 1 : st[v];
+        if (v >= 0 && changed[v] == 1 && st[v] == 0) { st[v] = 1; naff++; res = 1; }
+        while (top > 0) { int32_t u = stack[--top]; st[u] = res; if (res == 1) naff++; }
+    }
+    for (int64_t i = 0; i < N; i++) if (changed[i] == 1 && st[i] != 1 && i != goal && !blocked[i]) { st[i] = 1; naff++; }
+    for (int64_t i = 0; i < N; i++) if (st[i] == 1) { dist[i] = INFINITY; next[i] = -1; }
+    /* seed each affected cell from its unaffected neighbours */
+    for (int64_t i = 0; i < N; i++) {
+        if (st[i] != 1) continue;
+        int32_t u = (int32_t)i, ur = u / W, uc = u % W;
+        double best = INFINITY; int32_t bn = -1;
+        for (int k = 0; k < 8; k++) {
+            int32_t vr = ur + DR[k], vc = uc + DC[k];
+            if (vr < 0 || vr >= Hh || vc < 0 || vc >= W) continue;
+            int32_t v = vr * W + vc;
+            if (blocked[v] || st[v] == 1 || !isfinite(dist[v])) continue;
+            double c = dist[v] + edge_cost(z, E, cell, alpha, beta, u, v, (DR[k] && DC[k]) ? sq2 : 1.0);
+            if (c < best) { best = c; bn = v; }
+        }
+        if (bn >= 0) { dist[u] = best; next[u] = bn; if (hpush(&hp, best, best, u)) { naff = -1; goto done; } }
+    }
+    /* cells that only got cheaper: re-evaluate from all neighbours and queue them so the gain spreads */
+    for (int64_t i = 0; i < N; i++) {
+        if (changed[i] != 2 || st[i] == 1 || blocked[i] || i == goal) continue;
+        int32_t u = (int32_t)i, ur = u / W, uc = u % W;
+        for (int k = 0; k < 8; k++) {
+            int32_t vr = ur + DR[k], vc = uc + DC[k];
+            if (vr < 0 || vr >= Hh || vc < 0 || vc >= W) continue;
+            int32_t v = vr * W + vc;
+            if (blocked[v] || !isfinite(dist[v])) continue;
+            double c = dist[v] + edge_cost(z, E, cell, alpha, beta, u, v, (DR[k] && DC[k]) ? sq2 : 1.0);
+            if (c < dist[u] - 1e-9) { dist[u] = c; next[u] = v; }
+        }
+        if (isfinite(dist[u]) && hpush(&hp, dist[u], dist[u], u)) { naff = -1; goto done; }
+    }
+    /* Dijkstra from the seeds (lazy deletion: skip stale heap entries) */
+    int64_t settled = 0;
+    while (hp.n > 0) {
+        item it = hpop(&hp);
+        int32_t u = it.v;
+        if (it.f > dist[u]) continue;
+        settled++;
+        int32_t ur = u / W, uc = u % W;
+        for (int k = 0; k < 8; k++) {
+            int32_t vr = ur + DR[k], vc = uc + DC[k];
+            if (vr < 0 || vr >= Hh || vc < 0 || vc >= W) continue;
+            int32_t v = vr * W + vc;
+            if (blocked[v] || v == goal) continue;
+            double nd = dist[u] + edge_cost(z, E, cell, alpha, beta, v, u, (DR[k] && DC[k]) ? sq2 : 1.0);
+            if (nd < dist[v] - 1e-9) {
+                dist[v] = nd; next[v] = u;
+                if (hpush(&hp, nd, nd, v)) { naff = -1; goto done; }
+            }
+        }
+    }
+    *settled_out = settled;
+done:
+    free(st); free(stack); free(hp.a);
+    return naff;
+}
+
+/* ------------------------------------------------------------------ follow a cost-to-go field from any start
+ * Writes the route start..goal into path_out; returns its length, 0 if unreachable, -(len) if too long. */
+EXPORT int64_t grid_follow(const int32_t *next, int32_t start, int32_t goal, int32_t *path_out, int64_t path_cap) {
+    int64_t len = 0;
+    int32_t v = start;
+    while (v >= 0 && v != goal) { if (len < path_cap) path_out[len] = v; len++; v = next[v]; if (len > 100000000) return 0; }
+    if (v != goal) return 0;
+    if (len < path_cap) path_out[len] = goal;
+    len++;
+    return len <= path_cap ? len : -len;
+}
+
 /* ------------------------------------------------------------------ one-to-all (landmark preprocessing)
  * reverse = 0: dist_out[v] = d(source, v);  reverse = 1: dist_out[v] = d(v, source).
  * Returns the number of nodes settled, or -1 on allocation failure. */
@@ -192,3 +343,5 @@ done:
     free(dist); free(closed); free(hp.a);
     return settled;
 }
+
+#include "dstar.inc"
