@@ -1,7 +1,7 @@
 # Host the Track 3 interactive viewer on this PC and reach it from any device, anywhere.
 #
-#   .\scripts\serve_demo.ps1                 # 2000 x 2000 map, port 8988
-#   .\scripts\serve_demo.ps1 -Size 4000      # full 16 M-cell map
+#   .\scripts\serve_demo.ps1                 # full 4000 x 4000 map (16 M cells), port 8988
+#   .\scripts\serve_demo.ps1 -Size 2000      # smaller map, faster start
 #   .\scripts\serve_demo.ps1 -Dpi 50         # smaller picture for small screens / phones
 #
 # 1. starts the viewer as a web server (corridor.interactive --web): the PC does all the computing;
