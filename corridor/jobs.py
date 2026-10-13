@@ -18,6 +18,13 @@ def job_solve(j):
     alg = j.get("impl", j["algorithm"])
     if alg == "multires":
         r = multires(p, s, g, k=int(j.get("k", 4)), buffer_cells=int(j.get("buffer", 3)))
+    elif alg in ("dijkstra_c", "astar_c", "alt_c"):
+        from corridor import cgrid
+        if alg == "alt_c":
+            lm = cgrid.CLandmarks(p, k=int(j.get("landmarks", 4)), threads=int(j.get("threads", 8)))
+            r = cgrid.alt_c(p, s, g, lm)
+        else:
+            r = getattr(cgrid, alg)(p, s, g)
     elif alg == "astar_alt":
         from corridor.optimizer import Landmarks, astar_alt
         lm = Landmarks(p, k=int(j.get("landmarks", 4)))
@@ -56,6 +63,15 @@ def job_multi_query(j):
         lm = Landmarks(p, k=int(j.get("landmarks", 4))); pre_s = time.perf_counter() - t0
         for s, g in pairs:
             r = astar_alt(p, s, g, lm); costs.append(r["cost"]); expanded.append(r["expanded"])
+    elif alg == "alt_c":
+        from corridor import cgrid
+        lm = cgrid.CLandmarks(p, k=int(j.get("landmarks", 4)), threads=int(j.get("threads", 8))); pre_s = time.perf_counter() - t0
+        for s, g in pairs:
+            r = cgrid.alt_c(p, s, g, lm); costs.append(r["cost"]); expanded.append(r["expanded"])
+    elif alg == "dijkstra_c":
+        from corridor import cgrid
+        for s, g in pairs:
+            r = cgrid.dijkstra_c(p, s, g); costs.append(r["cost"]); expanded.append(r["expanded"])
     else:
         for s, g in pairs:
             r = astar_py(p, s, g); costs.append(r["cost"]); expanded.append(r["expanded"])

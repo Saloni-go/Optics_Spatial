@@ -6,6 +6,9 @@
   C3 multires  DEM 4000, k = 2, 4, 8 (buffer 3 coarse cells): time vs cost gap
   C4 distance  DEM 2000, endpoints 25..100% of the diagonal: astar_py vs dijkstra_py
   C5 exposure  DEM 4000, 1..16 radars: exposure preprocessing cost
+  C6 multi     8 routes on one map: landmark A* (Python) vs SciPy C Dijkstra vs plain A*
+  C7 compiled  DEM 500..4000: our C Dijkstra / A* / landmark A* (corridor/c/gridsearch.c) vs Python landmark A*
+  C8 multi_c   8 routes on one map with the C solvers (compare with C6)
 Exposure surfaces are cached first (results/corridor/cache) so solve timings exclude them.
 Run:  run.bat -m corridor.benchmark [C1 ...] [--repeats 5]
 """
@@ -74,7 +77,26 @@ def c6(r):
     return jobs
 
 
-EXPS = {"C1": c1, "C2": c2, "C3": c3, "C4": c4, "C5": c5, "C6": c6}
+def c7(r):
+    """Compiled solvers (corridor/c/gridsearch.c) against the Python and SciPy ones, all sizes, alpha 10.
+    Query time is compute_s; landmark preprocessing is reported separately (pre_s)."""
+    jobs = []
+    for s in (500, 1000, 2000, 4000):
+        for alg in ("dijkstra_c", "astar_c", "alt_c", "astar_alt"):
+            reps = r if s <= 1000 else (3 if s == 2000 else (1 if alg == "astar_alt" else 3))
+            jobs.append(base(s, experiment="C7_compiled", algorithm=alg, param_name="nodes", param_value=s * s,
+                             landmarks=4, threads=8, _repeats=reps))
+    return jobs
+
+
+def c8(r):
+    """Eight routes on one map with the compiled solvers (compare with C6)."""
+    return [base(s, job="multi_query", experiment="C8_multi_query_c", algorithm=alg, param_name="nodes", param_value=s * s,
+                 queries=8, landmarks=4, threads=8, _repeats=1 if s == 4000 else 3)
+            for s in (1000, 2000, 4000) for alg in ("dijkstra_c", "alt_c")]
+
+
+EXPS = {"C1": c1, "C2": c2, "C3": c3, "C4": c4, "C5": c5, "C6": c6, "C7": c7, "C8": c8}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

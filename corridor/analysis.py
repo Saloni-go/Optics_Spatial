@@ -102,6 +102,60 @@ def main():
                           (axs[1], "nodes expanded per route", "Search effort"), (axs[2], "peak memory (MB)", "Memory")):
             ax.set_xlabel("graph nodes"); ax.set_ylabel(yl); ax.set_title(t, fontsize=9); ax.legend(fontsize=8, frameon=False)
         save(fig, OUT / "fig_bench_multiquery.png")
+    # C7 compiled solvers (with C1 references) and C8 many routes in C
+    m7 = medians(rows, "C7_compiled")
+    if m7:
+        S["C7"] = {alg: [{"nodes": p["param"], "query_s": p["compute"], "pre_s": p.get("pre_s", 0.0), "peak_mb": p["peak_mb"],
+                          "expanded": p.get("expanded"), "cost": p.get("route_cost")} for p in pts] for alg, pts in m7.items()}
+        for alg, pts in S["C7"].items():
+            for d in pts:
+                o = opt.get(d["nodes"])
+                d["cost_gap_pct"] = 100 * (d["cost"] / o - 1) if o and d["cost"] else None
+        sty = {"dijkstra_py": ("o-", "#e63946", "Dijkstra (Python)"), "dijkstra_csgraph": ("o-", "#2a9d8f", "Dijkstra (SciPy C, explicit graph)"),
+               "multires": ("o--", "#457b9d", "multi-resolution (approx.)"), "astar_alt": ("s-", "#f4a261", "landmark A* (Python)"),
+               "dijkstra_c": ("^-", "#6d597a", "Dijkstra (our C)"), "astar_c": ("^-", "#b56576", "A* (our C)"),
+               "alt_c": ("D-", "#14213d", "landmark A* (our C)")}
+        fig, axs = plt.subplots(1, 3, figsize=(15, 4.2)); fig.subplots_adjust(wspace=0.32)
+        for alg in ("dijkstra_py", "dijkstra_csgraph", "multires"):
+            d = S["C1"].get(alg)
+            if d:
+                mk, c, lab = sty[alg]
+                axs[0].loglog(d["nodes"], d["compute_s"], mk, c=c, label=lab, ms=5)
+                if alg == "dijkstra_csgraph":
+                    axs[2].loglog(d["nodes"], d["peak_mb"], mk, c=c, label=lab, ms=5)
+        for alg in ("astar_alt", "dijkstra_c", "astar_c", "alt_c"):
+            pts = S["C7"].get(alg)
+            if not pts:
+                continue
+            mk, c, lab = sty[alg]
+            x = [d["nodes"] for d in pts]
+            axs[0].loglog(x, [d["query_s"] for d in pts], mk, c=c, label=lab, ms=5)
+            axs[2].loglog(x, [d["peak_mb"] for d in pts], mk, c=c, label=lab, ms=5)
+            if alg in ("astar_alt", "alt_c"):
+                axs[1].loglog(x, [d["pre_s"] for d in pts], mk, c=c,
+                              label="SciPy, explicit graph" if alg == "astar_alt" else "our C, implicit grid, 8 threads", ms=5)
+        axs[0].set_ylabel("time per route (s)"); axs[0].set_title("Route query time (landmark preprocessing excluded)", fontsize=9)
+        axs[1].set_ylabel("preprocessing time (s)"); axs[1].set_title("Landmark preprocessing (4 landmarks, 8 searches)", fontsize=9)
+        axs[2].set_ylabel("peak memory (MB)"); axs[2].set_title("Peak process memory", fontsize=9)
+        for ax in axs:
+            ax.set_xlabel("graph nodes (DEM cells)"); ax.legend(fontsize=7, frameon=False)
+        save(fig, OUT / "fig_bench_compiled.png")
+    m8 = medians(rows, "C8_multi_query_c")
+    if m8:
+        S["C8"] = {alg: [{"nodes": p["param"], "total_s": p["compute"], "pre_s": p.get("pre_s"), "per_query_s": p.get("per_query_s"),
+                          "mean_expanded": p.get("mean_expanded"), "peak_mb": p["peak_mb"], "cost_sum": p.get("cost_sum")} for p in pts]
+                   for alg, pts in m8.items()}
+        fig, ax = plt.subplots(figsize=(6.4, 4))
+        lab = {"csgraph": "Dijkstra (SciPy C)", "alt": "landmark A* (Python)", "astar": "A* (Python)",
+               "dijkstra_c": "Dijkstra (our C)", "alt_c": "landmark A* (our C)"}
+        col = {"csgraph": "#2a9d8f", "alt": "#f4a261", "astar": "#e9c46a", "dijkstra_c": "#6d597a", "alt_c": "#14213d"}
+        for src in (S.get("C6", {}), S["C8"]):
+            for alg, pts in src.items():
+                ax.loglog([d["nodes"] for d in pts], [d["total_s"] for d in pts], "o-", c=col.get(alg), label=lab.get(alg, alg), ms=5)
+        ax.set_xlabel("graph nodes"); ax.set_ylabel("total time for 8 routes, incl. preprocessing (s)")
+        ax.set_title("Planning eight routes on one map", fontsize=9); ax.legend(fontsize=8, frameon=False)
+        save(fig, OUT / "fig_bench_multiquery_c.png")
+
     json.dump(S, open(OUT / "benchmark_summary.json", "w"), indent=1, default=float)
     print(json.dumps(S, indent=1, default=float)[:3000])
 
