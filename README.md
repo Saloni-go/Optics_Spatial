@@ -40,6 +40,7 @@ run.bat -m corridor.analysis
 run_qgis.bat qgis\build_project.py       # styled QGIS project + QGIS map renders
 run_qgis.bat qgis\render_bench.py        # visualization performance benchmark
 python report\build_report.py            # report/mid_submission_report.pdf (system Python + PyMuPDF)
+node presentation\build_pptx.js          # presentation/Terrain_Visibility_Mid_Evaluation.pptx (`npm install` in presentation/ once)
 ```
 
 `scripts\pipeline.ps1` runs the scenario, benchmark, analysis and QGIS steps one after another
@@ -61,4 +62,5 @@ qgis/      build_project.py, render_bench.py, terrain_visibility.qgz
 data/      DEMs, hillshades, synthetic terrains
 results/   radar/, flight/, corridor/, shared/
 report/    mid-submission report
+presentation/  PowerPoint deck (15 mid-evaluation slides + backup section) and its generator
 ```
