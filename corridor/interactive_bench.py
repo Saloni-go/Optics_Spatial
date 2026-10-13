@@ -369,9 +369,14 @@ def figs():
             rr = sorted([r for r in e5["routes"] if r["model"] == model], key=lambda r: r["length_km"])
             ax.plot([r["length_km"] for r in rr], [100 * r["p_detect"] for r in rr], "o-", c=c, label=f"optimised for {model}")
         try:
-            rb = [r for r in L("e5b_risk_budget")["runs"] if r["found"]]
+            try:                                          # certified risk budget (extensions E9), else bisection (E5b)
+                rb = [r for r in json.load(open(OUT.parent / "extensions" / "e9_csp.json"))["scenario"] if r.get("p_detect")]
+                lab = "risk budget query, LARAC + exact (<= 90/75/50/35/25%)"
+            except FileNotFoundError:
+                rb = [r for r in L("e5b_risk_budget")["runs"] if r["found"]]
+                lab = "risk budget query, bisection (<= 90/75/50/35/25%)"
             ax.scatter([r["length_km"] for r in rb], [100 * r["p_detect"] for r in rb], marker="*", s=140, c="#ffb703",
-                       edgecolors="k", zorder=5, label="risk budget query (<= 90/75/50/35/25%)")
+                       edgecolors="k", zorder=5, label=lab)
             for r in rb:
                 ax.axhline(100 * r["p_max"], c="#ffb703", lw=0.6, ls=":")
         except FileNotFoundError:

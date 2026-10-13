@@ -9,7 +9,8 @@ Mouse / keys (window mode):
     right click           new goal       -> coarse-to-fine answer at once, field rebuilt in the background
     drag a radar          move it        -> one viewshed + field repair (exact)
     r / x                 add a radar at the mouse / remove the nearest radar
-    + / -                 exposure weight alpha x2 / /2  -> coarse-to-fine stages drawn as they arrive
+    + / -                 exposure weight alpha x2 / /2  -> alpha bank: exact route at once (precomputed ladder);
+                                                        off-ladder values: nearest banked route, then exact
     toolbar zoom / pan    Level 3: the visible window is re-solved at screen resolution
 The panel at the bottom says, for every action, which level answered it and how long it took.
 """
@@ -202,7 +203,8 @@ class Viewer:
             self.act_alpha(max(self.P.p.alpha / 2, 0.25))
         elif ev.key == "b" and self.P.mode == "detection":
             rb = self.P.risk_budget(0.5)
-            how = (f"{rb['solves']} exact searches, {rb['length_km']:.0f} km, P(detect) {100 * rb['p_detect']:.0f}%"
+            how = (f"LARAC, {rb['solves']} fields, {rb['length_km']:.0f} km, P(detect) {100 * rb['p_detect']:.0f}%, "
+                   f"within {rb['gap_pct']:.1f}% of optimal"
                    if rb["found"] else f"no route under 50% exists ({rb['solves']} searches); route unchanged")
             self.note(self.P.log("risk budget 50%", rb["seconds"], how))
             self.show_route(); self.refresh()
@@ -240,7 +242,7 @@ def demo(out, size=4000, mode="detection"):
     import matplotlib.pyplot as plt
     from PIL import Image
     P = Planner(size, mode)
-    P.precompute(landmarks=False)
+    P.precompute(landmarks=False, bank=(2.5, 5, 10, 20, 40, 80))
     P.set_start(P.start)
     V = Viewer(P, interactive=False)
     for e in P.events:
@@ -257,7 +259,7 @@ def demo(out, size=4000, mode="detection"):
         print(caption, "|", P.events[-1]["how"], f"{P.events[-1]['ms']:.1f} ms")
 
     H, W = P.p.H, P.p.W
-    frame("Precomputed: cost-to-go field to the goal (Level 2) + pyramid (Level 3)", 3)
+    frame("Precomputed: cost-to-go field (Level 2), pyramid (Level 3), alpha bank of 6 fields", 3)
     free = np.argwhere(~P.p.blocked)
     rng = np.random.default_rng(3)
     for k in range(3):
@@ -269,9 +271,10 @@ def demo(out, size=4000, mode="detection"):
     x, y = P.field.sites[i]
     cpx, rpx = P.dem.to_pixel(x, y)
     V.act_move_radar(i, int(rpx + 0.04 * H), int(cpx + 0.06 * W), background=False)
-    frame("Radar dragged: threat updated for that radar only, field repaired (exact)", 3)
+    frame("Radar dragged: threat updated for that radar only, field rebuilt on 12 cores (exact)", 3)
     V.act_alpha(P.p.alpha * 4, background=False, frame=lambda: frame(f"alpha x4 -> {P.events[-1]['how']}", 2))
-    frame("alpha x4: exact route, field rebuilt", 2)
+    frame("alpha x4: exact route, field rebuilt (parallel, 12 cores)", 2)
+    V.act_alpha(30.0, background=False, frame=lambda: frame(f"alpha 30 (off the ladder) -> {P.events[-1]['how']}", 2))
     rc = np.array([divmod(j, W) for j in P.path])
     cr, cc = rc[len(rc) // 2]
     for view in (W // 2, W // 6):
@@ -281,11 +284,12 @@ def demo(out, size=4000, mode="detection"):
         frame(f"Zoom to {view} cells: exact route already known from the field - nothing to search", 2)
     V.ax.set_xlim(0, W); V.ax.set_ylim(H, 0); V.lod_ln.set_data([], [])
     V.act_add_radar(int(rc[len(rc) // 3][0]), int(rc[len(rc) // 3][1]), background=False)
-    frame("Radar added on the route: field repaired, route bends away", 3)
+    frame("Radar added on the route: field rebuilt, route bends away", 3)
     if P.mode == "detection":
         rb = P.risk_budget(0.5)
-        V.note(P.log("risk budget 50%", rb["seconds"], f"Lagrangian bisection, {rb['solves']} exact searches, "
-                     f"{rb['length_km']:.0f} km, P(detect) {100 * rb['p_detect']:.0f}%"))
+        V.note(P.log("risk budget 50%", rb["seconds"], f"LARAC + exact search, {rb['solves']} fields, "
+                     f"{rb['length_km']:.0f} km, P(detect) {100 * rb['p_detect']:.0f}%, "
+                     f"within {rb['gap_pct']:.1f}% of optimal"))
         V.show_route(); V.refresh()
         frame("Shortest route with P(detect) <= 50% (risk budget)", 3)
     out = str(out)
@@ -308,7 +312,7 @@ def main():
     matplotlib.use("QtAgg")
     import matplotlib.pyplot as plt
     P = Planner(a.size, a.mode)
-    P.precompute(landmarks=False)
+    P.precompute(landmarks=False, bank=(2.5, 5, 10, 20, 40, 80))
     P.set_start(P.start)
     V = Viewer(P)
     for e in P.events:

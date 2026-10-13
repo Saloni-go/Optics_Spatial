@@ -178,7 +178,9 @@ P(box("Scope of this mid-submission",
       "<p>Sections 1-6 cover the agreed first half of the project for every track: shared data and protocol, design, implementation, "
       "validation, maps and the first scaling benchmark. Section 7 sets out the work planned for the final submission. "
       "Appendix A reports experiments for the second half that have already been run (parameter studies, optimisations, "
-      "rendering performance); they are included for completeness and will be extended for the final.</p>", "scope"))
+      "rendering performance); they are included for completeness and will be extended for the final. "
+      "Appendix B reports the Track 3 work done since: interactive planning (what to precompute and what to compute on the fly) "
+      "and extensions of the corridor model.</p>", "scope"))
 
 # ---------------------------------------------------------------- 1 introduction
 P(f"""<h1 id="s1" style="page-break-before: always">1. Introduction</h1>
@@ -379,7 +381,8 @@ P(ul(["<b>Bounded-memory parallel runs.</b> Threads already give an 8x speed-up 
       "<b>Viewpoint selection.</b> Find the smallest set of positions that reproduces the dense coverage (greedy set cover), and turn the altitude-dependent spacing result into an automatic spacing rule.",
       "<b>More routes and aircraft.</b> Ridge-line and straight routes, several aircraft at once, and time-to-first-sighting maps for surveillance planning."]))
 P("<h2>7.3 Track 3: optimal visibility corridor</h2>")
-P(ul(["<b>Compiled landmark A*.</b> The landmark heuristic (A.3) cuts the search to 4-15% of the nodes but runs in Python; a compiled version (Cython, Numba or C++) is expected to beat the C Dijkstra several-fold.",
+P(ul(["<b>Done since the mid-submission (Appendix B):</b> compiled searches and landmark A*, an interactive planner (precomputed fields, alpha bank, parallel rebuilds, anytime search), detection-probability routing with a certified risk budget, a tile overlay, altitude choice, a radar-placement game, alternative corridors and robustness checks.",
+      "<b>Remaining:</b> combine the risk budget with uncertain radar positions (a chance constraint over scenarios), and run the exact constrained search on 16 M cells with a stronger bound.",
       "<b>Aircraft constraints.</b> Add turn radius, climb-rate and minimum-clearance limits through a state-expanded graph, so the result is a flyable corridor rather than a grid path.",
       "<b>Multi-objective routes.</b> Compute the full trade-off front between distance, exposure and climb, and k alternative routes rather than a single optimum.",
       "<b>Corridor width.</b> Score a corridor of given width around the route, not only the centre line."]))
@@ -410,6 +413,13 @@ for ref in ["European Space Agency (2021). Copernicus DEM: Global and European D
             "Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. <i>Numerische Mathematik</i> 1, 269-271.",
             "Hart, P. E., Nilsson, N. J. and Raphael, B. (1968). A formal basis for the heuristic determination of minimum cost paths. <i>IEEE Transactions on Systems Science and Cybernetics</i> 4(2), 100-107.",
             "Goldberg, A. V. and Harrelson, C. (2005). Computing the shortest path: A* search meets graph theory. <i>Proc. ACM-SIAM SODA</i>, 156-165.",
+            "Meyer, U. and Sanders, P. (2003). Delta-stepping: a parallelizable shortest path algorithm. <i>Journal of Algorithms</i> 49(1), 114-152.",
+            "Koenig, S. and Likhachev, M. (2002). D* Lite. <i>Proc. AAAI</i>, 476-483.",
+            "Ramalingam, G. and Reps, T. (1996). An incremental algorithm for a generalization of the shortest-path problem. <i>Journal of Algorithms</i> 21(2), 267-305.",
+            "Juttner, A., Szviatovszki, B., Mecs, I. and Rajko, Z. (2001). Lagrange relaxation based method for the QoS routing problem. <i>Proc. IEEE INFOCOM</i>, 859-868.",
+            "Carlyle, W. M., Royset, J. O. and Wood, R. K. (2008). Lagrangian relaxation and enumeration for solving constrained shortest-path problems. <i>Networks</i> 52(4), 256-270.",
+            "Delling, D., Goldberg, A. V., Pajor, T. and Werneck, R. F. (2011). Customizable route planning. <i>Proc. SEA</i>, LNCS 6630, 376-387.",
+            "Richter, S., Thayer, J. T. and Ruml, W. (2010). The joy of forgetting: faster anytime search via restarting. <i>Proc. ICAPS</i>, 137-144.",
             "GDAL/OGR contributors (2025). GDAL Geospatial Data Abstraction Library, version 3.13. Open Source Geospatial Foundation.",
             "QGIS Development Team (2025). QGIS Geographic Information System, version 3.44. Open Source Geospatial Foundation."]:
     P(f'<p class="ref">{ref}</p>')
@@ -494,14 +504,224 @@ P(box("Limitations", ul(["Larger DEMs are also more rugged, which mixes size and
                           "The Copernicus model is a surface model, so trees and buildings block sight lines.",
                           "Exposure (1 - d/range) is a simple stand-in for the radar equation, and the aircraft is a point at a fixed height above ground."]), "note"))
 
-# ---------------------------------------------------------------- appendix B
-P(f"""<h1 id="appB" style="page-break-before: always">Appendix B. Reproducibility</h1>
+# ---------------------------------------------------------------- appendix B: Track 3 interactive planning and extensions
+IX, XT = R / "corridor" / "interactive", R / "corridor" / "extensions"
+JX = lambda n: json.load(open(IX / f"{n}.json"))
+JT = lambda n: json.load(open(XT / f"{n}.json"))
+for k, p in {"b_e1": IX / "fig_e1_ladder.png", "b_e2": IX / "fig_e2_anytime.png", "b_e3": IX / "fig_e3_incremental.png",
+             "b_e4": IX / "fig_e4_lod.png", "b_e5": IX / "fig_e5_detection.png", "b_demo": IX / "demo_last.png",
+             "b_e7": XT / "fig_e7_bank.png", "b_e8": XT / "fig_e8_parallel.png", "b_e9": XT / "fig_e9_csp.png",
+             "b_e10": XT / "fig_e10_tiles.png", "b_e11": XT / "fig_e11_altitude.png", "b_e12": XT / "fig_e12_placement.png",
+             "b_e13": XT / "fig_e13_uncertain.png", "b_e14": XT / "fig_e14_alternatives.png", "b_e15": XT / "fig_e15_montecarlo.png"}.items():
+    shutil.copy(p, FIG / f"{k}.png")
+C7, C8 = c_b["C7"], c_b["C8"]
+x1, x2, x3, x4, x5, x5b = (JX(n) for n in ("e1_ladder", "e2_anytime", "e3_incremental", "e4_lod", "e5_detection", "e5b_risk_budget"))
+x7, x8, x9, x10, x11, x12 = (JT(n) for n in ("e7_bank", "e8_parallel", "e9_csp", "e10_tiles", "e11_altitude", "e12_placement"))
+x13, x14, x15 = (JT(n) for n in ("e13_uncertain", "e14_alternatives", "e15_montecarlo"))
+med = lambda v: sorted(v)[len(v) // 2]
+row16 = lambda key: [d for d in C7[key] if d["nodes"] == 16e6][0]
+lad = {r["strategy"]: r for r in x1["rows"]}
+sc4 = [s_ for s_ in x8["scaling"] if s_["size"] == 4000][0]
+th = {int(k): v for k, v in sc4["threads"].items()}
+best_th = min(th, key=lambda k: th[k]["s"])
+e3b = [r for r in x3["runs"] if r["size"] == 4000 and r["event"] == "start moved"]
+e3r = [r for r in x3["runs"] if r["size"] == 4000 and "move radar" in r["event"]]
+rvb = x8["repair_vs_rebuild"]
+prog = [r["progressive"] for r in x2["runs"]]
+
+P(f"""<h1 id="appB" style="page-break-before: always">Appendix B. Track 3: Interactive Planning</h1>
+<p class="eyebrow" style="color:{BLUE}">PERSON 3 &middot; WORK AFTER THE MID-SUBMISSION</p>
+<p>A route planner is only useful if it answers while the user is still looking at the map. This appendix answers the question raised in
+our project meeting: <i>what should be precomputed, what should be computed on the fly, which algorithms keep panning, zooming and editing
+smooth, and what to do when the precomputed data no longer applies?</i> It then reports further extensions of the corridor model. Every
+number comes from the 120 x 120 km, 16 M-cell DEM unless stated otherwise, and every route is checked against an exact search.</p>
+<h2>B.1 Compiled search</h2>
+<p>The Python searches of Section 5 were rewritten in C on the implicit grid (no stored graph): Dijkstra, A* and landmark A* (ALT)
+(corridor/c/gridsearch.c, called through ctypes). On 16 M nodes one exact route takes {f2(row16('dijkstra_c')['query_s'])} s with
+{f0(row16('dijkstra_c')['peak_mb'])} MB (SciPy: {f2(C1['dijkstra_csgraph']['compute_s'][-1])} s, {f0(C1['dijkstra_csgraph']['peak_mb'][-1])} MB) and
+landmark A* {f2(row16('alt_c')['query_s'])} s after {f2(row16('alt_c')['pre_s'])} s of landmark preprocessing on 8 threads. All costs are identical
+to the optimum.</p>
+<h2>B.2 What to precompute: a ladder of levels</h2>""")
+P(table(["Level", "Precompute", "Memory", "Route for a new start", "Route for a new goal"],
+        [["0. Nothing (C Dijkstra)", "-", "-", f"{f0(lad['Dijkstra (C)']['query_fixed_goal_ms'])} ms", f"{f0(lad['Dijkstra (C)']['query_any_pair_ms'])} ms"],
+         ["0. A* (straight line + climb)", "-", "-", f"{f0(lad['A* geo heuristic (C)']['query_fixed_goal_ms'])} ms", f"{f0(lad['A* geo heuristic (C)']['query_any_pair_ms'])} ms"],
+         ["1. Landmarks (4), ALT", f"{f1(lad['ALT, 4 landmarks (C)']['pre_s'])} s", f"{f0(lad['ALT, 4 landmarks (C)']['mem_mb'])} MB",
+          f"{f0(lad['ALT, 4 landmarks (C)']['query_fixed_goal_ms'])} ms", f"{f0(lad['ALT, 4 landmarks (C)']['query_any_pair_ms'])} ms"],
+         ["1. Landmarks (8), ALT", f"{f1(lad['ALT, 8 landmarks (C)']['pre_s'])} s", f"{f0(lad['ALT, 8 landmarks (C)']['mem_mb'])} MB",
+          f"{f0(lad['ALT, 8 landmarks (C)']['query_fixed_goal_ms'])} ms", f"{f0(lad['ALT, 8 landmarks (C)']['query_any_pair_ms'])} ms"],
+         ["2. Cost-to-go field to the goal", f"{f1(lad['Level 2 cost-to-go field (C)']['pre_s'])} s ({f2(th[best_th]['s'])} s parallel)",
+          f"{f0(lad['Level 2 cost-to-go field (C)']['mem_mb'])} MB", f"{f2(lad['Level 2 cost-to-go field (C)']['query_fixed_goal_ms'])} ms (lookup)", "one new field"]],
+        "Precompute against query time (E1, mean of 20 routes, 16 M cells; every route exact).", hl=[4], widths=[28, 18, 12, 21, 21]))
+P(fig("b_e1", 470, "Left: precompute against time per route. Right: total time after n clicks with the same goal."))
+P(box("Finding: precompute the field for the current goal",
+      f"<p>A <b>cost-to-go field</b> stores, for every cell, the cost of the best route to the goal and the next step. One backward search "
+      f"builds it; afterwards a route from <i>any</i> start is read off in {f2(lad['Level 2 cost-to-go field (C)']['query_fixed_goal_ms'])} ms with no search, "
+      "exact. It pays off from the second click. Landmarks are the right precompute when the goal changes often; four are the sweet spot "
+      f"(eight double memory for {f0(100 * (1 - lad['ALT, 8 landmarks (C)']['query_any_pair_ms'] / lad['ALT, 4 landmarks (C)']['query_any_pair_ms']))}% "
+      "faster queries).</p>"))
+
+P("<h2>B.3 Building the field on 12 cores</h2>")
+P(f"<p>Dijkstra settles one node at a time and cannot use more cores. <b>Delta-stepping</b> (Meyer and Sanders 2003) relaxes a whole "
+  f"bucket of nodes with similar cost at once; lock-free atomic updates keep it exact (corridor/c/parallel.inc). The OpenMP barrier of the "
+  f"MinGW runtime sleeps between phases and made the parallel version slower than one core; replacing it with a spinning barrier fixed this. "
+  f"On 16 M cells the field takes {f2(sc4['dijkstra_s'])} s with Dijkstra, {f2(th[1]['s'])} s with delta-stepping on one core and "
+  f"<b>{f2(th[best_th]['s'])} s on {best_th} threads ({f1(sc4['dijkstra_s'] / th[best_th]['s'])}x)</b>, identical to the last bit. The alpha bank of "
+  f"five fields (B.5) now builds in {f1(x8['bank']['build_s'])} s.</p>")
+P(fig("b_e8", 480, "Speed-up against threads (12 physical cores), bucket width, and repair against a parallel rebuild after radar edits."))
+
+P("<h2>B.4 Edits: moving the start, a radar, the goal</h2>")
+P(table(["Event (16 M cells)", "Incremental method", "Time", "From scratch", "Time"],
+        [["start moved (click)", "field lookup", f"{f2(med([r['lookup_ms'] for r in e3b]))} ms", "C Dijkstra", f"{f0(med([r['dijkstra_ms'] for r in e3b]))} ms"],
+         ["start moved (click)", "D* Lite replan", f"{f0(med([r['dstar_ms'] for r in e3b]))} ms", "", ""],
+         ["radar moved", "threat surface of that radar only", f"{f0(med([r['field_update_ms'] for r in e3r]))} ms", "all six viewsheds", "~1,000 ms"],
+         ["radar moved", "field repair (dynamic SSSP)", f"{f0(med([r['repair_s'] * 1000 for r in rvb]))} ms", "parallel field rebuild",
+          f"{f0(med([r['parallel_rebuild_s'] * 1000 for r in rvb]))} ms"],
+         ["radar moved", "D* Lite update", f"{f0(med([r['dstar_ms'] for r in e3r]))} ms", "", ""]],
+        "Medians over the edits of E3 and E8. Every repaired field equals a fresh one (max difference below 1e-9).", widths=[22, 30, 12, 24, 12]))
+P(fig("b_e3", 470, "Left: incremental time / from-scratch time against the share of cells whose threat changed. Right: moving the start."))
+P(box("Finding: repair locally, but rebuild in parallel", "<p>Only the radar that moved is recomputed (one viewshed window), never the whole "
+      "threat surface. For the route, the incremental field repair and D* Lite are exact but their cost depends on how far the change "
+      "propagates: a radar has a 40 km reach, so its edit touches a large share of the routes. With 12 cores a full parallel rebuild "
+      f"({f0(med([r['parallel_rebuild_s'] * 1000 for r in rvb]))} ms) beat the repair in every edit measured. D* Lite shines only when the start moves "
+      "along its route (often no work at all), which the field lookup already does in microseconds.</p>", "note"))
+
+P("<h2>B.5 When the precompute stops being valid: changing alpha</h2>")
+P(f"<p>The exposure weight alpha changes every edge cost, so fields and landmarks are invalid. Two remedies. <b>Anytime coarse-to-fine:</b> "
+  f"exact routes on a 16x and 4x coarser copy of the grid, then a full-resolution search inside a corridor around them, then the exact field; "
+  f"each stage is drawn as it arrives: first route after {f0(1000 * med([p_[0]['t_s'] for p_ in prog]))} ms "
+  f"({f1(med([p_[0]['gap_pct'] for p_ in prog]))}% above the optimum), within {f2(max(p_[-2]['gap_pct'] for p_ in prog))}% after "
+  f"{f2(med([p_[-2]['t_s'] for p_ in prog]))} s. Restarting weighted A*, the textbook anytime method, was slower at every quality level (Figure). "
+  f"<b>Alpha bank:</b> precompute the next-step fields for a ladder of alpha values (64 MB each); the slider then shows the exact route for a "
+  f"banked alpha at once and the nearest banked route in between.</p>")
+P(table(["alpha requested", "5 banked (2-50): used", "cost above exact", "11 banked (1-100): used", "cost above exact"],
+        [[f"{t['alpha']:g}", f"{t['5 alphas']['used']:g}", f"{max(t['5 alphas']['gap_mean'], 0):.2f}% (max {max(t['5 alphas']['gap_max'], 0):.2f}%)",
+          f"{t['11 alphas']['used']:g}", f"{max(t['11 alphas']['gap_mean'], 0):.2f}%"] for t in x7["tests"]],
+        f"Alpha bank (E7), 10 starts per alpha; a lookup takes about 1 ms. Bank of 5: {f0(x7['ladders']['5 alphas']['mem_mb'])} MB; of 11: "
+        f"{f0(x7['ladders']['11 alphas']['mem_mb'])} MB.", small=True))
+P(fig("b_e2", 360, "Cost above the optimum against time after alpha changes: coarse-to-fine (circles) and weighted A* (crosses)."))
+
+P("<h2>B.6 Panning and zooming</h2>")
+P(f"<p>A route is one global object, so it should not be re-solved per view. Re-solving the visible window on a coarse-to-fine pyramid "
+  f"took {f0(med([r['preview_ms'] for r in x4['rows']]))} ms per view and often drew a route in a different valley (up to hundreds of pixels "
+  f"off). Drawing the route already known, decimated to about one point per screen pixel, takes {f2(med([r['exact_draw_ms'] for r in x4['rows']]))} ms "
+  f"at any zoom: pan and zoom never search. The pyramid's job is the anytime preview of B.5.</p>")
+P(fig("b_e4", 420, "Pan and zoom: latency and on-screen error of re-solving each view (rejected) against drawing the known route (adopted)."))
+
+P("<h2>B.7 Latency budget</h2>")
+P(table(["Interaction", "Strategy", "Latency", "Class"],
+        [["click a new start", "field lookup", f"{f2(med([r['lookup_ms'] for r in e3b]))} ms", "within a frame (16 ms)"],
+         ["move the alpha slider (banked value)", "alpha bank lookup", "~1 ms", "within a frame"],
+         ["move the alpha slider (other value)", "nearest bank route, then coarse-to-fine, then exact field",
+          f"1 ms / {f0(1000 * med([p_[-2]['t_s'] for p_ in prog]))} ms / {f0(1000 * th[best_th]['s'])} ms", "frame, then responsive"],
+         ["drag a radar", "one viewshed + parallel field rebuild", f"{f0(med([r['field_update_ms'] for r in e3r]) + 1000 * med([r['parallel_rebuild_s'] for r in rvb]))} ms", "responsive (< 1 s)"],
+         ["new goal", "landmark A* now, field in the background", f"{f0(lad['ALT, 4 landmarks (C)']['query_any_pair_ms'])} ms", "responsive"],
+         ["pan / zoom", "draw the known route", f"{f2(med([r['exact_draw_ms'] for r in x4['rows']]))} ms", "within a frame"]],
+        "What the interactive viewer (corridor/interactive.py) does for each action, 16 M cells.", widths=[28, 40, 16, 16], num_from=-1))
+P(fig("b_demo", 330, "The interactive viewer after a scripted session (clicks, radar drag, alpha change, zoom, risk budget); the panel logs what answered each action."))
+
+P("<h2>B.8 From exposure to detection probability</h2>")
+P("<p>Exposure is a unitless score. The detection model gives each radar that sees the aircraft a probability of detecting it per "
+  "kilometre flown, p(d) = 0.5 / (1 + (d / 20 km)<sup>4</sup>), so P(detected) = 1 - exp(-&Sigma; length &middot; hazard) with hazard "
+  "H = &Sigma; -ln(1 - p). The sum is additive along the route, so every solver above applies unchanged.</p>")
+P(fig("b_e5", 330, "Detection probability against route length for routes optimised for exposure and for detection, and risk-budget answers."))
+v9 = x9["validation"]; s9 = x9["scenario"]
+P(f"<p><b>Risk budget: the shortest route with P(detected) &le; p.</b> This is a resource-constrained shortest path (NP-hard). "
+  f"LARAC (Lagrangian relaxation) moves the price of risk to its best value in a few exact searches (one parallel field each) and certifies a "
+  f"lower bound on the best possible length; an exact label-setting search in a corridor around its routes, pruned with exact bounds and the "
+  f"Lagrangian bound (Carlyle et al. 2008), then closes the gap. On 1 M cells the corridor answer equals the whole-map optimum in all "
+  f"{len(v9)} budgets and the remaining gap is the looseness of the bound itself. On 16 M cells LARAC answers in "
+  f"{f1(min(r['larac_s'] for r in s9))}-{f1(max(r['larac_s'] for r in s9))} s instead of {f0(min(r['bisection_s'] for r in s9 if r.get('bisection_s')))}-"
+  f"{f0(max(r['bisection_s'] for r in s9 if r.get('bisection_s')))} s for bisection.</p>")
+P(table(["Budget P(detect) &le;", "Exact step", "Found", "Length", "Certified gap", "Time"],
+        [[f"{100 * r['p_max']:.0f}%", r.get("exact_status", "-"), f"{100 * r['p_detect']:.1f}%", f"{f0(r['length_km'])}&nbsp;km",
+          f"{r['gap_pct']:.1f}%", f"{f1(r['larac_s'] + (r.get('exact_s') or 0))}&nbsp;s"] for r in s9 if r.get("p_detect") is not None],
+        "Risk-budget queries on 16 M cells (E9). Certified gap = how far the length can at most be from the best possible; "
+        "splice = exact search on the union of the LARAC routes when the corridor search hits its label cap.", small=True, num_from=2))
+P(fig("b_e9", 470, "Left: LARAC alone and with the exact corridor search, 1 M cells. Right: time and certified gap on 16 M cells."))
+
+P("<h2>B.9 A precompute that survives edits: tile overlay</h2>")
+v10 = {(r["spacing"], r["valleys"]): r for r in x10["variants"]}
+best10 = v10.get((25, 10), x10["variants"][0])
+P(f"<p>The field serves one goal; landmarks serve any goal but must be rebuilt after every radar edit ({f1(x10['updates'][0]['landmarks_rebuild_s'])} s). "
+  f"A tile overlay (the idea of customizable route planning) cuts the map into 250 x 250 tiles and precomputes the cost between "
+  f"<i>portal</i> cells on each tile's border. Any route is then a search on {f0(best10['portals'])} portals instead of 16 M cells, and a radar "
+  f"edit recomputes only the tiles it touches. Portals at regular spacing force detours; adding a portal at every valley floor along a border, "
+  f"where hidden routes actually cross, cut the error several-fold for the same number of portals.</p>")
+P(table(["Portals", "Overlay nodes", "Precompute", "Query + unpack", "Cost above exact (mean / max)"],
+        [[f"every {r['spacing']} cells" + (" + valleys" if r["valleys"] else ""), f0(r["portals"]), f"{f1(r['pre_s'])} s",
+          f"{f0(r['query_ms'])} + {f0(r['unpack_ms'])} ms", f"{r['gap_mean']:.2f}% / {r['gap_max']:.2f}%"] for r in x10["variants"]],
+        f"Tile overlay, 20 random start-goal pairs (E10). Exact landmark A*: {f0(1000 * x10['alt_query_s'])} ms per pair.", small=True))
+P(fig("b_e10", 470, "Left: accuracy against overlay size. Right: time to make the precompute valid again after a radar edit."))
+
+P("<h2>B.10 Altitude as a decision</h2>")
+fx = {int(r["agl"]): r for r in x11["fixed"]}
+fr = {r["gamma_scale"]: r for r in x11["runs"]}
+t4 = x11["timing"][-1]
+P(f"<p>The aircraft may fly at 75, 150, 300 or 600 m above ground and change height; each height has its own threat surface (viewsheds "
+  f"depend on the target height) and ceiling mask, flying low costs extra per metre (gamma: terrain-following risk) and every climb costs. "
+  f"The search runs on height levels x cells (corridor/c/layers.inc): 64 M nodes for the 16 M-cell map in {f0(t4['s'])} s and {f0(t4['mem_mb'])} MB. "
+  f"On the 60 km map a fixed 150 m flight is detected with probability {pct(fx[150]['p_detect'])}; choosing the height freely gives "
+  f"{pct(fr[0.0]['p_detect'])} without a low-flying penalty (the whole route at 75 m) and {pct(fr[1.0]['p_detect'])} with it. On the 16 M-cell "
+  f"scenario: {pct(t4['p_detect'])} against {pct(t4['p_detect_fixed150'])} at a fixed 150 m.</p>")
+P(fig("b_e11", 470, "Free-altitude route coloured by height, and height use with detection probability for fixed and free heights."))
+
+g12 = x12["greedy"]["curve"]; c12 = x12["coverage"]["curve"]
+P("<h2>B.11 Where should the radars go? A placement game</h2>")
+P(f"<p>The defender places {x12['K']} radars among {len(x12['candidates'])} peaks; the attacker knows them, picks the safest of three entry points and "
+  f"flies the least-risk route. Each attacker reply is one parallel field (about 0.1 s on 4 M cells), so a greedy defender can afford "
+  f"{x12['evals']} replies. Placing for routes beats placing for coverage: one routing-aware radar already forces a detection probability of "
+  f"{pct(g12[0])} and two reach {pct(g12[1])}, while the classic coverage placement (most ground seen) reaches {pct(c12[1])} with two and "
+  f"{pct(c12[-1])} with all six. The hand-placed scenario radars score {pct(x12['hand']['p_detect'])}, random placements a median of "
+  f"{pct(med(x12['random']))}.</p>")
+P(fig("b_e12", 470, "Attacker's best-route detection probability against radars placed, and the radars with the attacker's reply."))
+
+u1, u3 = x13["runs"][0]["routes"], x13["runs"][1]["routes"]
+via14, pen14 = x14["via-node"], x14["penalty"]
+mc = x15["routes"]; sen = x15["sensitivity"]
+short = [r for r in sen if r["d50_km"] < 20]; same = [r for r in sen if r["d50_km"] >= 20]
+P("<h2>B.12 Robustness: uncertain radars, alternatives, model checks</h2>")
+P(f"<p><b>Uncertain radar positions (E13).</b> If each radar is only known to within &sigma;, sampled position scenarios give sampled threat "
+  f"surfaces, and planning on their per-cell mean (expected risk) or on a high per-cell quantile (pessimistic envelope) is still an ordinary "
+  f"shortest path. Judged on unseen scenarios by the planner's own objective (length + &alpha; x risk): with &sigma; = 1 km the mean-threat "
+  f"plan is best ({f0(u1['expected']['J_mean'] / 1000)}k against {f0(u1['nominal']['J_mean'] / 1000)}k for the nominal plan); with &sigma; = 3 km "
+  f"the pessimistic plan is best on average and in bad cases ({f0(u3['envelope q90']['J_mean'] / 1000)}k / {f0(u3['envelope q90']['J_p90'] / 1000)}k "
+  f"against {f0(u3['nominal']['J_mean'] / 1000)}k / {f0(u3['nominal']['J_p90'] / 1000)}k at the 90th percentile). Note that a better objective is "
+  f"not always a lower detection probability: averaging makes each radar look weaker but wider, and the planner trades that for distance "
+  f"({f0(u1['expected']['length_km'])} km at {pct(u1['expected']['p_mean'])} mean detection against {f0(u1['nominal']['length_km'])} km at "
+  f"{pct(u1['nominal']['p_mean'])}). A probability target needs the risk budget of B.8.</p>")
+P(fig("b_e13", 470, "Uncertain radar positions: detection probability and planner objective on unseen scenarios."))
+P(f"<p><b>Alternative corridors (E14).</b> A planner should offer genuinely different options. The via-node method (choice routing) needs only "
+  f"two fields, one from the start and one to the goal, which give the best route through every cell; scanning cells at least 3 km from the "
+  f"best route found {len(via14['routes']) - 1} alternatives (+{via14['routes'][1]['stretch_pct']:.1f}% and +{via14['routes'][-1]['stretch_pct']:.1f}%) in "
+  f"{f1(via14['info']['total_s'])} s. The penalty method (make cells near each route dearer and re-plan) found {len(pen14['routes']) - 1} alternatives at "
+  f"+{min(r['stretch_pct'] for r in pen14['routes'][1:]):.1f}% to +{max(r['stretch_pct'] for r in pen14['routes'][1:]):.1f}% with at most "
+  f"{f0(100 * max(r['max_overlap'] for r in pen14['routes']))}% overlap in {f1(pen14['info']['total_s'])} s, and is the better choice on this terrain: "
+  "narrow valleys leave few near-optimal detours, which the via-node scan must search for.</p>")
+P(fig("b_e14", 470, "Three alternative corridors: via-node method (left) and penalty method (right)."))
+P(f"<p><b>Checking the detection model (E15).</b> Simulating {x15['flights']:,} flights per route (each radar detecting independently per "
+  f"segment) reproduces the formula within the 95% interval for every route (e.g. {pct(mc[2]['p_mc'])} simulated against {pct(mc[2]['p_analytic'])}). "
+  f"The model itself matters: if the target's radar cross-section fluctuates from flight to flight (a Swerling-I-like model), the same route is "
+  f"detected with {pct(mc[2]['p_fluctuating'])} instead of {pct(mc[2]['p_analytic'])}. If the true radar reach is shorter than assumed "
+  f"(d50 = 10 km instead of 20), the nominal route is {f1(min(r['regret_pct'] for r in short))}-{f1(max(r['regret_pct'] for r in short))}% worse than a re-optimised "
+  f"one and shares only {f0(100 * max(r['overlap'] for r in short))}% of it; if the reach is the same or longer it stays within "
+  f"{f1(max(r['regret_pct'] for r in same))}%. Range calibration matters more than the peak detection probability.</p>")
+P(fig("b_e15", 470, "Monte Carlo against the formula, a fluctuating-target model, and the cost of wrong model parameters."))
+P(box("Summary: what to precompute, what to compute on the fly", ul([
+    "Precompute the cost-to-go field for the current goal (exact routes from any start by lookup) and a small bank of fields for other alpha values; keep the landmark set or the tile overlay for new goals.",
+    "Compute on the fly only what an edit invalidates: one radar's viewshed window, then a parallel rebuild of the field (0.3-0.4 s on 12 cores).",
+    "When the precompute does not apply, answer at once with an approximate route (bank, coarse-to-fine, overlay) and improve it to the exact one in the background.",
+    "Pan and zoom never search: they draw the route already known.",
+    "Report risk as a probability, and answer probability targets with a certified constrained search."]), "finding"))
+
+# ---------------------------------------------------------------- appendix C
+P(f"""<h1 id="appC" style="page-break-before: always">Appendix C. Reproducibility</h1>
 <p>All code, results, the QGIS project, this report and the slide deck are in the team repository: <b>{REPO}</b>. The DEMs are not stored
 there; the first command downloads and rebuilds them.</p>""")
 P(table(["Step", "Command (Windows, QGIS 3.44 Python)"],
         [["Data", "run.bat scripts\\prepare_data.py"], ["Track 1", "run.bat -m radar.validate | radar.run_radar | radar.benchmark | radar.analysis"],
          ["Track 2", "run.bat -m flight.run_flight | flight.benchmark | flight.spacing_study | flight.analysis"],
          ["Track 3", "run.bat -m corridor.run_corridor | corridor.benchmark | corridor.analysis"],
+         ["Track 3 (App. B)", "run.bat -m corridor.interactive_bench all | corridor.extensions_bench all | corridor.interactive"],
          ["QGIS", "run_qgis.bat qgis\\build_project.py ; run_qgis.bat qgis\\render_bench.py"],
          ["Report / slides", "python report\\build_report.py ; node presentation\\build_pptx.js"]],
         "Commands to rebuild every result.", widths=[18, 82], num_from=-1, small=True))
@@ -509,7 +729,8 @@ P(table(["Folder", "Contents"],
         [["common/", "configuration, raster I/O, benchmark harness, plotting, shared radar sites"],
          ["radar/", "viewshed algorithms, validation, scenario, benchmarks, analysis"],
          ["flight/", "routes, moving-observer visibility, scenario, benchmarks, sampling study"],
-         ["corridor/", "exposure surface, route solvers (Dijkstra, A*, landmark A*, SciPy, multi-resolution)"],
+         ["corridor/", "exposure surface, route solvers (Dijkstra, A*, landmark A*, SciPy, multi-resolution); compiled C core (c/), "
+                       "interactive planner and viewer, extensions (risk budget, tiles, altitude, placement, alternatives)"],
          ["results/", "GeoTIFF, GeoJSON, CSV, JSON and figures for every track"],
          ["qgis/, report/, presentation/", "QGIS project and render benchmark, this report, slide deck"]],
         "Repository layout.", widths=[26, 74], num_from=-1, small=True))

@@ -31,8 +31,10 @@ P_MAX, D50 = 0.5, 20000.0          # detection model: 50% per km at close range,
 
 
 class RadarField:
-    def __init__(self, dem, sites, mode="exposure", radar_h=RADAR_HEIGHT, target_h=TARGET_AIRCRAFT, rng=RANGE):
+    def __init__(self, dem, sites, mode="exposure", radar_h=RADAR_HEIGHT, target_h=TARGET_AIRCRAFT, rng=RANGE,
+                 p_max=P_MAX, d50=D50):
         self.dem, self.mode, self.radar_h, self.target_h, self.rng = dem, mode, radar_h, target_h, rng
+        self.p_max, self.d50 = p_max, d50
         self.ds = dem.gdal_dataset()
         self.E = np.zeros(dem.shape, np.float64)
         self.sites, self.contrib = [], []
@@ -53,7 +55,7 @@ class RadarField:
         rr, cc = np.mgrid[r0:r0 + vis.shape[0], c0:c0 + vis.shape[1]]
         d = np.hypot(cc - c, rr - r) * dem.cell
         if self.mode == "detection":
-            p = P_MAX / (1.0 + (d / D50) ** 4)
+            p = self.p_max / (1.0 + (d / self.d50) ** 4)
             val = -np.log1p(-np.clip(p, 0, 0.999))
         else:
             val = np.clip(1.0 - d / self.rng, 0, 1)

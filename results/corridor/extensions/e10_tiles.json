@@ -1,0 +1,109 @@
+{
+ "size": 4000,
+ "alt_pre_s": 4.394385600000533,
+ "alt_query_s": 0.1870344499998282,
+ "variants": [
+  {
+   "spacing": 25,
+   "valleys": 0,
+   "tile": 250,
+   "portals": 9374,
+   "edges": 351706,
+   "pre_s": 7.50036480000017,
+   "mem_mb": 6.7987213134765625,
+   "query_ms": 17.716650000238587,
+   "unpack_ms": 52.04075000028752,
+   "gap_mean": 1.5518343713859295,
+   "gap_max": 3.5382767634107637,
+   "unpack_check": 8.881784197001252e-16
+  },
+  {
+   "spacing": 10,
+   "valleys": 0,
+   "tile": 250,
+   "portals": 23382,
+   "edges": 2193904,
+   "pre_s": 19.267922400000316,
+   "mem_mb": 42.123939514160156,
+   "query_ms": 23.837899999762158,
+   "unpack_ms": 50.164549999863084,
+   "gap_mean": 0.3805207301770819,
+   "gap_max": 0.7225361032561439,
+   "unpack_check": 8.881784197001252e-16
+  },
+  {
+   "spacing": 25,
+   "valleys": 10,
+   "tile": 250,
+   "portals": 14653,
+   "edges": 911676,
+   "pre_s": 11.999593300000015,
+   "mem_mb": 17.53704071044922,
+   "query_ms": 19.4352000003164,
+   "unpack_ms": 51.868000000013126,
+   "gap_mean": 0.6052854673202,
+   "gap_max": 2.595996902599773,
+   "unpack_check": 8.881784197001252e-16
+  },
+  {
+   "spacing": 50,
+   "valleys": 5,
+   "tile": 250,
+   "portals": 12435,
+   "edges": 674596,
+   "pre_s": 10.204558199999155,
+   "mem_mb": 12.986198425292969,
+   "query_ms": 18.966199999795208,
+   "unpack_ms": 49.553199999536446,
+   "gap_mean": 0.7794885935098339,
+   "gap_max": 1.2780909798159046,
+   "unpack_check": 1.1102230246251565e-15
+  }
+ ],
+ "updates": [
+  {
+   "move_km": 1.0,
+   "changed_frac": 0.1206314375,
+   "field_update_s": 0.3398949000002176,
+   "tiles": 99,
+   "of": 256,
+   "overlay_update_s": 5.324900500000695,
+   "gap_after_mean": 0.5065603711928057,
+   "landmarks_rebuild_s": 4.958902299999863,
+   "field_rebuild_s": 0.42864299999928335
+  },
+  {
+   "move_km": 5.0,
+   "changed_frac": 0.035397875,
+   "field_update_s": 0.1698804999996355,
+   "tiles": 34,
+   "of": 256,
+   "overlay_update_s": 2.8643081000000166,
+   "gap_after_mean": 0.5179427813586823,
+   "landmarks_rebuild_s": 5.0846980000005715,
+   "field_rebuild_s": 0.39933840000048804
+  },
+  {
+   "move_km": 10.0,
+   "changed_frac": 0.007616875,
+   "field_update_s": 0.2863774999996167,
+   "tiles": 18,
+   "of": 256,
+   "overlay_update_s": 1.4506269000003158,
+   "gap_after_mean": 0.6134590335515755,
+   "landmarks_rebuild_s": 4.933127299999796,
+   "field_rebuild_s": 0.39904979999937495
+  },
+  {
+   "move_km": 20.0,
+   "changed_frac": 0.00645675,
+   "field_update_s": 0.14332639999975072,
+   "tiles": 15,
+   "of": 256,
+   "overlay_update_s": 1.1179222000000664,
+   "gap_after_mean": 0.6134590335515755,
+   "landmarks_rebuild_s": 5.010432399999445,
+   "field_rebuild_s": 0.42153569999936735
+  }
+ ]
+}

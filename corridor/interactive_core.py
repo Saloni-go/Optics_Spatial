@@ -234,17 +234,90 @@ class Pyramid:
         return out
 
 
+# ------------------------------------------------------------------ A1: precomputed fields for a ladder of alphas
+def cost_at(p, path, alpha):
+    """Route cost under a different exposure weight (same surface)."""
+    import copy
+    q = copy.copy(p); q.alpha = float(alpha)
+    return evaluate(q, path)["cost"] if path else math.inf
+
+
+class AlphaBank:
+    """Next-step fields to one goal for a ladder of alpha values (only the int32 next pointers are kept:
+    64 MB per alpha on 16 M cells).  Moving the alpha slider then needs no search: the route for the
+    nearest banked alpha is followed at once (exact when alpha is on the ladder), while the exact field
+    for the new alpha is rebuilt in the background.  Built with one C search per alpha on parallel threads."""
+
+    def __init__(self, p, goal, alphas=(2.0, 5.0, 10.0, 20.0, 50.0), threads=None):
+        self.p, self.goal_rc = p, goal
+        self.goal = p.idx(goal)
+        self.alphas = sorted(float(a) for a in alphas)
+        self.threads = threads
+        self.next, self.valid = {}, False
+        self.build()
+
+    def build(self):
+        """threads=None: one field after another, each with the parallel delta-stepping search (fastest);
+        threads=k: k serial Dijkstra searches side by side (one per alpha)."""
+        from concurrent.futures import ThreadPoolExecutor
+        import copy
+        p = self.p
+        L = cgrid.lib()
+        z, E, blk = cgrid._arrays(p)
+        N = p.H * p.W
+
+        def one(a):
+            d = np.empty(N, np.float64); nx = np.empty(N, np.int32)
+            L.grid_costtogo(p.H, p.W, z, E, blk, p.cell, a, p.beta, self.goal, d, nx)
+            return a, nx
+
+        def one_par(a):
+            q = copy.copy(p); q.alpha = float(a)
+            return a, cgrid.CostToGo(q, self.goal_rc, threads=cgrid.THREADS).next
+        t = time.perf_counter()
+        if self.threads is None:
+            nexts = dict(one_par(a) for a in self.alphas)
+        else:
+            with ThreadPoolExecutor(max_workers=min(self.threads, len(self.alphas))) as ex:
+                nexts = dict(ex.map(one, self.alphas))
+        self.next, self.valid = nexts, True
+        self.pre_s = time.perf_counter() - t
+        self.mem_mb = len(self.alphas) * N * 4 / 2 ** 20
+        return self.pre_s
+
+    def nearest(self, alpha):
+        if alpha <= 0:
+            return self.alphas[0]
+        return min(self.alphas, key=lambda a: abs(math.log(a) - math.log(alpha)))
+
+    def route(self, start, alpha):
+        """(path, cost at the requested alpha, banked alpha used)."""
+        a = self.nearest(alpha)
+        s = self.p.idx(start) if isinstance(start, tuple) else int(start)
+        cap = 40 * (self.p.H + self.p.W)
+        while True:
+            path = np.empty(cap, np.int32)
+            n = cgrid.lib().grid_follow(self.next[a], s, self.goal, path, cap)
+            if n >= 0:
+                break
+            cap = -n
+        path = path[:n].tolist() if n > 0 else None
+        return path, cost_at(self.p, path, alpha), a
+
+
 # ------------------------------------------------------------------ the planner
 class Planner:
-    def __init__(self, size=4000, mode="exposure", alpha=10.0, beta=2.0, n_radars=6, landmarks=4):
+    def __init__(self, size=4000, mode="exposure", alpha=10.0, beta=2.0, n_radars=6, landmarks=4, threads=cgrid.THREADS):
+        """threads: cores for field (re)builds (delta-stepping); None = serial Dijkstra."""
         t = time.perf_counter()
+        self.threads = threads
         self.size, self.mode = size, mode
         self.dem = DEM(dem_path(size))
         self.field = RadarField(self.dem, sites_for(self.dem, size, n_radars), mode)
         self.p = Problem(self.dem.z, self.field.E.copy(), blocked_mask(self.dem), self.dem.cell, alpha, beta)
         self.start, self.goal = scenario_endpoints(self.dem, size, self.p.blocked)
         self.n_landmarks = landmarks
-        self.ctg = self.lm = self.dstar = self.pyr = None
+        self.ctg = self.lm = self.dstar = self.pyr = self.bank = None
         self.events = []
         self.log("load", time.perf_counter() - t, "DEM + radar threat surface")
 
@@ -254,16 +327,46 @@ class Planner:
         return e
 
     # -------------------------------------------------------------- precompute
-    def precompute(self, level2=True, landmarks=True, pyramid=True):
+    def precompute(self, level2=True, landmarks=True, pyramid=True, bank=None):
         if level2:
-            self.ctg = cgrid.CostToGo(self.p, self.goal)
-            self.log("precompute", self.ctg.pre_s, "Level 2 cost-to-go field (one backward C Dijkstra)", mem_mb=self.ctg.mem_mb)
+            self.ctg = cgrid.CostToGo(self.p, self.goal, threads=self.threads)
+            how = f"parallel delta-stepping, {self.threads} threads" if self.threads else "one backward C Dijkstra"
+            self.log("precompute", self.ctg.pre_s, f"Level 2 cost-to-go field ({how})", mem_mb=self.ctg.mem_mb)
         if landmarks:
             self.lm = cgrid.CLandmarks(self.p, self.n_landmarks)
             self.log("precompute", self.lm.pre_s, f"Level 1 landmarks ({self.n_landmarks}, C, 8 threads)", mem_mb=self.lm.mem_mb)
         if pyramid:
             self.pyr = Pyramid(self.p)
             self.log("precompute", self.pyr.pre_s, "Level 3 pyramid (coarse grids x2..x32)", mem_mb=self.pyr.mem_mb)
+        if bank:
+            self.bank = AlphaBank(self.p, self.goal, bank)
+            self.log("precompute", self.bank.pre_s, f"alpha bank {self.bank.alphas} (parallel C)", mem_mb=self.bank.mem_mb)
+
+    def _bank_ok(self):
+        b = self.bank
+        return b is not None and b.valid and b.goal == self.p.idx(self.goal)
+
+    def rebuild_bank(self, background=True):
+        """The bank is stale after a radar edit or a new goal: rebuild all ladder fields (parallel threads)."""
+        if self.bank is None:
+            return
+        self.bank.valid = False
+        self._bgen = getattr(self, "_bgen", 0) + 1
+        gen, alphas, threads = self._bgen, self.bank.alphas, self.bank.threads
+
+        def work():
+            nb = AlphaBank.__new__(AlphaBank)
+            nb.__dict__.update({"p": self.p, "goal_rc": self.goal, "goal": self.p.idx(self.goal),
+                                "alphas": alphas, "threads": threads, "next": {}, "valid": False})
+            nb.build()
+            if gen == self._bgen:
+                self.bank = nb
+                self.log("alpha bank ready", nb.pre_s, f"{len(nb.alphas)} ladder fields rebuilt" + (" (background)" if background else ""))
+        if background:
+            import threading
+            threading.Thread(target=work, daemon=True).start()
+        else:
+            work()
 
     # -------------------------------------------------------------- Level 2 field upkeep
     def rebuild_field(self, background=False, done=None):
@@ -274,7 +377,7 @@ class Planner:
         gen, self.ctg = self._gen, None
 
         def work():
-            c = cgrid.CostToGo(self.p, self.goal)
+            c = cgrid.CostToGo(self.p, self.goal, threads=self.threads)
             if gen == self._gen:
                 self.ctg = c
                 self.log("field ready", c.pre_s, "Level 2 field rebuilt" + (" (background thread)" if background else ""))
@@ -308,6 +411,9 @@ class Planner:
         if ctg is not None:
             self.path, self.cost = ctg.route(start)
             how = "Level 2 lookup (no search)"
+        elif self._bank_ok():
+            self.path, self.cost, a = self.bank.route(start, self.p.alpha)
+            how = f"alpha-bank lookup (alpha={a:g}" + (")" if a == self.p.alpha else ", nearest; exact field rebuilding)")
         else:
             self.path, self.cost, how = self._quick(start, self.goal)
             how += " (field not ready)"
@@ -321,10 +427,14 @@ class Planner:
         self.path, self.cost, how = self._quick(self.start, goal)
         e = self.log("set goal (first answer)", time.perf_counter() - t, how, cost=self.cost)
         self.rebuild_field(background, done)
+        self.rebuild_bank(background)
         return e
 
-    def edit_radar(self, kind, i=None, x=None, y=None, repair=True, use_dstar=False, background=False, done=None):
-        """Move / add / remove a radar: update the threat surface for that radar only, then repair."""
+    def edit_radar(self, kind, i=None, x=None, y=None, repair=None, use_dstar=False, background=False, done=None):
+        """Move / add / remove a radar: update the threat surface for that radar only, then fix the field.
+        repair=None: with several cores rebuild the field in parallel (faster than repairing it, E8), else repair."""
+        if repair is None:
+            repair = not self.threads
         t = time.perf_counter()
         if kind == "move":
             changed, tf = self.field.move(i, x, y)
@@ -345,11 +455,19 @@ class Planner:
             info = self.ctg.repair(changed); self.path, self.cost = self.ctg.route(self.start)
             out.update({"repair_ms": 1000 * info["repair_s"], "affected": info["affected"]})
             how = "threat window + Level 2 field repair (exact)"
+        elif self.threads:                                     # 0.3-0.4 s: exact at once, no background needed
+            self.ctg = cgrid.CostToGo(self.p, self.goal, threads=self.threads)
+            self.path, self.cost = self.ctg.route(self.start)
+            out["rebuild_ms"] = 1000 * self.ctg.pre_s
+            how = f"threat window + parallel field rebuild, {self.threads} threads (exact)"
         else:
             self.path, self.cost, how = self._quick(self.start, self.goal)
             how = "threat window + " + how
             self.rebuild_field(background, done)
-        return self.log(f"{kind} radar", time.perf_counter() - t, how, cost=self.cost, **out)
+        e = self.log(f"{kind} radar", time.perf_counter() - t, how, cost=self.cost, **out)
+        if self.bank is not None:
+            self.rebuild_bank(background)                      # the alpha ladder is stale too (not counted above)
+        return e
 
     def set_alpha(self, alpha, on_route=None, background=False, done=None):
         """Change the exposure weight.  The cost-to-go field and the landmarks are invalid, but the
@@ -365,7 +483,23 @@ class Planner:
         self.pyr.set_weights(self.p.alpha, self.p.beta)
         t = time.perf_counter()
         drawing = 0.0                                          # time spent in on_route is not planning time
-        for i, r in enumerate(progressive(self.pyr, self.start, self.goal, exact=False)):
+        stages = progressive(self.pyr, self.start, self.goal, exact=False)
+        if self._bank_ok():
+            path, cost, a = self.bank.route(self.start, self.p.alpha)
+            r = {"stage": f"alpha bank (alpha={a:g})", "path": path, "cost": cost, "level": 1,
+                 "elapsed_s": time.perf_counter() - t}
+            self.path, self.cost = path, cost
+            self.log("set alpha (first route)", r["elapsed_s"], f"alpha-bank lookup, nearest alpha={a:g}" +
+                     (" (exact)" if a == self.p.alpha else ""), cost=cost)
+            if on_route:
+                t1 = time.perf_counter(); on_route(r); drawing += time.perf_counter() - t1
+            if a == self.p.alpha:
+                stages = []                                    # already exact: skip coarse-to-fine
+            else:
+                stages = (st for st in stages if st["level"] == 1)   # only full-res stages can beat it
+        for i, r in enumerate(stages):
+            if self._bank_ok() and r["cost"] >= self.cost:
+                continue                                       # keep the better bank route on screen
             self.path, self.cost = r["path"], r["cost"]
             r["elapsed_s"] -= drawing
             self.log("set alpha (%s)" % ("first route" if i == 0 else "improved"), r["elapsed_s"],
@@ -406,53 +540,22 @@ class Planner:
         src = "exact route (field)" if self.ctg is not None else "best anytime route so far"
         return self.log("pan/zoom", self.lod["total_s"], f"draw {src}, every {step} point(s); no search")
 
-    def risk_budget(self, p_max, alphas=None, tol=0.01):
-        """Shortest route whose detection probability is at most p_max (detection model).
-        -ln P(undetected) is additive, so this is a resource-constrained shortest path; it is solved
-        by Lagrangian relaxation: bisection on the price alpha of risk (each step one exact C search).
-        Returns the cheapest-in-length feasible route found and the search trace."""
+    def risk_budget(self, p_max, exact=True):
+        """Shortest route whose detection probability is at most p_max (detection model): LARAC on parallel
+        fields, then an exact label search in a corridor (corridor/riskcsp.py).  Reports the certified gap
+        to the best possible length."""
         assert self.mode == "detection"
-        lo, hi = 0.0, 1.0
-        trace, best = [], None
-        q = Problem.__new__(Problem); q.__dict__.update(self.p.__dict__)
-        q.__dict__.pop("_c_arrays", None)
-
-        def solve(a):
-            q.alpha = a
-            r = cgrid.dijkstra_c(q, self.start, self.goal)
-            pd = self.field.detection_probability(r["path"], q.W, q.cell)
-            ev = evaluate(q, r["path"])
-            trace.append({"alpha": a, "p_detect": pd, "length_km": ev["length_km"], "solve_s": r["solve_s"]})
-            r["alpha"] = a
-            return r, pd, ev
+        from corridor.riskcsp import RiskCSP
         t = time.perf_counter()
-        r, pd, ev = solve(0.0)
-        if pd <= p_max:
-            best = (r, pd, ev)
-        else:
-            while True:                                        # grow the price until the budget is met
-                r, pd, ev = solve(hi)
-                if pd <= p_max or hi > 1e4:
-                    break
-                lo, hi = hi, hi * 4
-            best = (r, pd, ev) if pd <= p_max else None
-            for _ in range(12):                                # then bisect (geometric) on the price
-                if best is None or hi / max(lo, 1e-9) < 1 + tol * 10:
-                    break
-                mid = math.sqrt(max(lo, hi / 64) * hi)
-                r, pd, ev = solve(mid)
-                if pd <= p_max:
-                    hi = mid
-                    if ev["length_km"] < best[2]["length_km"]:
-                        best = (r, pd, ev)
-                else:
-                    lo = mid
-        dt = time.perf_counter() - t
-        if best is not None:
-            self.path, self.cost = best[0]["path"], best[0]["cost"]
-        return {"p_max": p_max, "found": best is not None, "p_detect": best[1] if best else None,
-                "length_km": best[2]["length_km"] if best else None, "alpha": best[0]["alpha"] if best else None,
-                "solves": len(trace), "seconds": dt, "trace": trace}
+        C = RiskCSP(self.p, self.goal, threads=self.threads or cgrid.THREADS)
+        r = C.query(self.start, p_max, width_cells=15, resolution=1e-2, max_labels=4_000_000, exact=exact)
+        found = r.get("path") is not None
+        if found:
+            self.path = r["path"]
+            self.cost = cost_at(self.p, self.path, self.p.alpha)
+        return {"p_max": p_max, "found": found, "p_detect": r.get("p_detect"), "length_km": r.get("length_km"),
+                "gap_pct": r.get("gap_pct"), "solves": r["solves"], "seconds": time.perf_counter() - t,
+                "status": r["status"], "exact_status": r.get("exact_status")}
 
     def detection_probability(self, path=None):
         return self.field.detection_probability(path or self.path, self.p.W, self.p.cell) if self.mode == "detection" else None

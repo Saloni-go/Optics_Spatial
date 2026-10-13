@@ -7,7 +7,7 @@
  * The graph is never stored: neighbours and edge costs are computed from the grid on the fly, so
  * memory is a few arrays of N values instead of SciPy's explicit sparse graph (8 edges per node).
  *
- * Build (MinGW-w64 GCC):  gcc -O3 -shared -o gridsearch.dll gridsearch.c
+ * Build (MinGW-w64 GCC):  gcc -O3 -fopenmp -shared -static -o gridsearch.dll gridsearch.c
  * Called from Python through ctypes (corridor/cgrid.py); ctypes releases the GIL during calls, so
  * independent searches (e.g. landmark preprocessing) can run on several threads.
  */
@@ -345,3 +345,7 @@ done:
 }
 
 #include "dstar.inc"
+#include "parallel.inc"
+#include "csp.inc"
+#include "tiles.inc"
+#include "layers.inc"

@@ -26,3 +26,4 @@ presentation/node_modules/
 presentation/render/
 results/*/*_log.txt
 results/corridor/interactive/*_log.txt
+results/corridor/extensions/*_log.txt

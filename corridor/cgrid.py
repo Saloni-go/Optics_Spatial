@@ -20,22 +20,25 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent / "c"
 SRC, DLL = HERE / "gridsearch.c", HERE / "gridsearch.dll"
-INC = HERE / "dstar.inc"
+INCS = [HERE / "dstar.inc", HERE / "parallel.inc", HERE / "csp.inc", HERE / "tiles.inc", HERE / "layers.inc"]
 
 
 def build(force=False):
-    if DLL.exists() and not force and DLL.stat().st_mtime >= max(SRC.stat().st_mtime, INC.stat().st_mtime):
+    if DLL.exists() and not force and DLL.stat().st_mtime >= max(f.stat().st_mtime for f in [SRC] + INCS):
         return DLL
     import os
     gcc = os.environ.get("GCC") or shutil.which("gcc")
     if not gcc:
         raise RuntimeError("gcc not found: install MinGW-w64 or build corridor/c/gridsearch.dll by hand")
-    subprocess.run([gcc, "-O3", "-shared", "-o", str(DLL), str(SRC)], check=True)
+    # -static: OpenMP and pthread runtimes linked in, so the DLL loads without MinGW on PATH
+    subprocess.run([gcc, "-O3", "-fopenmp", "-shared", "-static", "-o", str(DLL), str(SRC)], check=True)
     return DLL
 
 
 _lib = None
 _lock = __import__("threading").Lock()
+PAR_LOCK = __import__("threading").Lock()     # one parallel search at a time: its threads spin at barriers
+THREADS = min(12, __import__("os").cpu_count() or 1)
 
 
 def lib():
@@ -73,6 +76,29 @@ def lib():
                 L.dstar_cost.argtypes = [ct.c_void_p]
                 L.dstar_path.restype = ct.c_int64
                 L.dstar_path.argtypes = [ct.c_void_p, i32, ct.c_int64]
+                L.grid_costtogo_par.restype = ct.c_int64
+                L.grid_costtogo_par.argtypes = [ct.c_int32, ct.c_int32, f64, f64, u8, ct.c_double, ct.c_double, ct.c_double,
+                                                ct.c_int32, ct.c_double, ct.c_int32, f64, i32, ct.POINTER(ct.c_int64)]
+                L.grid_costtogo_w.restype = ct.c_int64
+                L.grid_costtogo_w.argtypes = [ct.c_int32, ct.c_int32, f64, f64, u8, ct.c_double, ct.c_double, ct.c_double,
+                                              ct.c_double, ct.c_double, ct.c_int32, f64]
+                L.csp_label.restype = ct.c_int64
+                L.csp_label.argtypes = [ct.c_int32, ct.c_int32, f64, f64, u8, ct.c_double, ct.c_double, ct.c_int32, ct.c_int32,
+                                        ct.c_double, ct.c_double, f64, f64, ct.c_double, ct.c_void_p, ct.c_double, ct.c_int64,
+                                        ct.POINTER(ct.c_double),
+                                        ct.POINTER(ct.c_double), ct.POINTER(ct.c_int64), i32, ct.c_int64]
+                L.window_multi.restype = ct.c_int64
+                L.window_multi.argtypes = [ct.c_int32, ct.c_int32, f64, f64, u8, ct.c_double, ct.c_double, ct.c_double,
+                                           ct.c_int32, ct.c_int32, ct.c_int32, ct.c_int32, ct.c_int32, ct.c_void_p,
+                                           ct.c_int32, ct.c_void_p, ct.c_int32, ct.c_void_p]
+                L.overlay_query.restype = ct.c_int32
+                L.overlay_query.argtypes = [ct.c_int32, ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_int32, ct.c_void_p,
+                                            ct.c_void_p, ct.c_int32, ct.c_void_p, ct.c_void_p, ct.POINTER(ct.c_double),
+                                            ct.c_void_p]
+                V = ct.c_void_p
+                L.grid3_costtogo.restype = ct.c_int64
+                L.grid3_costtogo.argtypes = [ct.c_int32, ct.c_int32, ct.c_int32, V, V, V, V, V, ct.c_double, ct.c_double,
+                                             ct.c_double, ct.c_double, ct.c_int32, V, V]
                 L.dstar_free.restype = None
                 L.dstar_free.argtypes = [ct.c_void_p]
                 _lib = L
@@ -100,12 +126,16 @@ class CostToGo:
     compute() is one backward Dijkstra in C; route() then needs no search at all;
     repair() updates the field after the exposure changed in a region (incremental)."""
 
-    def __init__(self, p, goal):
-        self.p, self.goal = p, p.idx(goal)
+    def __init__(self, p, goal, threads=None, delta=None):
+        self.p, self.goal = p, (p.idx(goal) if isinstance(goal, tuple) else int(goal))
         N = p.H * p.W
         self.dist = np.empty(N, np.float64)
         self.next = np.empty(N, np.int32)
-        self.compute()
+        if threads:                                   # delta-stepping on `threads` cores
+            self.compute_parallel(threads, delta)
+            self.mem_mb = (self.dist.nbytes + self.next.nbytes) / 2 ** 20
+        else:
+            self.compute()
 
     def compute(self):
         p = self.p
@@ -114,6 +144,23 @@ class CostToGo:
         self.settled = lib().grid_costtogo(p.H, p.W, z, E, blk, p.cell, p.alpha, p.beta, self.goal, self.dist, self.next)
         self.pre_s = time.perf_counter() - t
         self.mem_mb = (self.dist.nbytes + self.next.nbytes) / 2 ** 20
+        return self.pre_s
+
+    def compute_parallel(self, threads=THREADS, delta=None):
+        """Same field with delta-stepping on several cores (exact; corridor/c/parallel.inc)."""
+        p = self.p
+        z, E, blk = _arrays(p)
+        # bucket width ~16 typical edge costs (scales with alpha, so large risk prices stay cheap)
+        delta = delta or 16 * p.cell * (1.0 + p.alpha * float(E.mean()))
+        rel = ct.c_int64()
+        with PAR_LOCK:
+            t = time.perf_counter()
+            phases = lib().grid_costtogo_par(p.H, p.W, z, E, blk, p.cell, p.alpha, p.beta, self.goal, delta, threads,
+                                             self.dist, self.next, ct.byref(rel))
+            self.pre_s = time.perf_counter() - t
+        if phases < 0:
+            raise MemoryError("grid_costtogo_par: allocation failed")
+        self.phases, self.relaxations = int(phases), int(rel.value)
         return self.pre_s
 
     def route(self, start):

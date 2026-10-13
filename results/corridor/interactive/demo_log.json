@@ -4,116 +4,135 @@
  "events": [
   {
    "action": "load",
-   "ms": 2294.398000000001,
+   "ms": 2081.1487000000852,
    "how": "DEM + radar threat surface"
   },
   {
    "action": "precompute",
-   "ms": 3179.952100000037,
-   "how": "Level 2 cost-to-go field (one backward C Dijkstra)",
+   "ms": 316.1064999994778,
+   "how": "Level 2 cost-to-go field (parallel delta-stepping, 12 threads)",
    "mem_mb": 183.10546875
   },
   {
    "action": "precompute",
-   "ms": 503.12320000011823,
+   "ms": 459.82550000007905,
    "how": "Level 3 pyramid (coarse grids x2..x32)",
    "mem_mb": 102.59449481964111
   },
   {
+   "action": "precompute",
+   "ms": 2094.5652999998856,
+   "how": "alpha bank [2.5, 5.0, 10.0, 20.0, 40.0, 80.0] (parallel C)",
+   "mem_mb": 366.2109375
+  },
+  {
    "action": "set start",
-   "ms": 0.16559999994569807,
+   "ms": 0.2345000002605957,
    "how": "Level 2 lookup (no search)",
    "cost": 220633.54775589853
   },
   {
    "action": "set start",
-   "ms": 0.20040000003973546,
+   "ms": 0.1461000001654611,
    "how": "Level 2 lookup (no search)",
    "cost": 100545.73254265648
   },
   {
    "action": "set start",
-   "ms": 0.14409999994313694,
+   "ms": 0.1097999993362464,
    "how": "Level 2 lookup (no search)",
    "cost": 123599.77592676162
   },
   {
    "action": "set start",
-   "ms": 0.11309999990771757,
+   "ms": 0.11389999963284936,
    "how": "Level 2 lookup (no search)",
    "cost": 137904.30715301927
   },
   {
    "action": "set start",
-   "ms": 0.15389999998660642,
+   "ms": 0.12119999973947415,
    "how": "Level 2 lookup (no search)",
    "cost": 137904.30715301927
   },
   {
    "action": "move radar",
-   "ms": 988.1540999999743,
-   "how": "threat window + Level 2 field repair (exact)",
+   "ms": 624.6107000006305,
+   "how": "threat window + parallel field rebuild, 12 threads (exact)",
    "cost": 138378.53887514712,
-   "field_ms": 251.25349999984792,
+   "field_ms": 223.9873999997144,
    "changed_cells": 608268,
-   "pyramid_ms": 53.538500000058775,
-   "repair_ms": 661.2755000001016,
-   "affected": 2774165
+   "pyramid_ms": 48.36949999935314,
+   "rebuild_ms": 311.72590000005584
+  },
+  {
+   "action": "alpha bank ready",
+   "ms": 2077.4892999997974,
+   "how": "6 ladder fields rebuilt"
   },
   {
    "action": "set alpha (first route)",
-   "ms": 8.950500000082684,
-   "how": "coarse-to-fine: coarse x16",
-   "cost": 239206.63073498147
-  },
-  {
-   "action": "set alpha (improved)",
-   "ms": 121.36780000014369,
-   "how": "coarse-to-fine: coarse x4",
-   "cost": 193298.96738637815
-  },
-  {
-   "action": "set alpha (improved)",
-   "ms": 466.448000000355,
-   "how": "coarse-to-fine: full-res corridor (+/-0.5 km of 2 x4 routes)",
-   "cost": 179905.53710696596
+   "ms": 1.3724000000365777,
+   "how": "alpha-bank lookup, nearest alpha=40 (exact)",
+   "cost": 179905.5371069612
   },
   {
    "action": "field ready",
-   "ms": 3444.2761999998766,
+   "ms": 332.60559999962425,
    "how": "Level 2 field rebuilt"
   },
   {
    "action": "set alpha (exact)",
-   "ms": 3911.140600000408,
+   "ms": 348.81570000015927,
    "how": "Level 2 field rebuilt: exact, lookups valid again",
    "cost": 179905.537106964
   },
   {
+   "action": "set alpha (first route)",
+   "ms": 0.939499999731197,
+   "how": "alpha-bank lookup, nearest alpha=40",
+   "cost": 167121.91360567964
+  },
+  {
+   "action": "field ready",
+   "ms": 326.6342999995686,
+   "how": "Level 2 field rebuilt"
+  },
+  {
+   "action": "set alpha (exact)",
+   "ms": 756.9705999985672,
+   "how": "Level 2 field rebuilt: exact, lookups valid again",
+   "cost": 167121.9136056825
+  },
+  {
    "action": "pan/zoom",
-   "ms": 1.4189000000897067,
+   "ms": 0.9947999997166335,
    "how": "draw exact route (field), every 2 point(s); no search"
   },
   {
    "action": "pan/zoom",
-   "ms": 1.0772000000542903,
+   "ms": 1.0403000005680951,
    "how": "draw exact route (field), every 1 point(s); no search"
   },
   {
    "action": "add radar",
-   "ms": 1357.8666000000794,
-   "how": "threat window + Level 2 field repair (exact)",
-   "cost": 198984.99301161256,
-   "field_ms": 282.60150000005524,
+   "ms": 644.4004000004497,
+   "how": "threat window + parallel field rebuild, 12 threads (exact)",
+   "cost": 181586.50673947198,
+   "field_ms": 254.68300000011368,
    "changed_cells": 39632,
-   "pyramid_ms": 17.094799999995303,
-   "repair_ms": 1037.8946000000724,
-   "affected": 4560861
+   "pyramid_ms": 15.843299999687588,
+   "rebuild_ms": 337.1674999998504
+  },
+  {
+   "action": "alpha bank ready",
+   "ms": 2105.427000000418,
+   "how": "6 ladder fields rebuilt"
   },
   {
    "action": "risk budget 50%",
-   "ms": 23645.03089999994,
-   "how": "Lagrangian bisection, 10 exact searches, 238 km, P(detect) 35%"
+   "ms": 8252.658200000042,
+   "how": "LARAC + exact search, 10 fields, 238 km, P(detect) 50%, within 11.9% of optimal"
   }
  ]
 }

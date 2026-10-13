@@ -1,5 +1,5 @@
 // Builds presentation/Terrain_Visibility_Mid_Evaluation.pptx from the result figures.
-// Same content as the online deck: 15 mid-evaluation slides + a backup section (beyond 50%).
+// 15 mid-evaluation slides + backup sections (beyond 50%; Track 3 interactive planning after the mid-submission).
 // Run:  node presentation/build_pptx.js   (needs `npm install` in presentation/ once)
 const path = require("path");
 const pptxgen = require("pptxgenjs");
@@ -290,7 +290,134 @@ table(s, [["Same optimal route", "Plain A*", "Landmark A*", "C Dijkstra"], ["4 M
   ["16 M nodes, scenario", "14.3 M nodes, 67 s", "4.6 M, 22 s (+37 s once)", "all, 9 s · 6 GB"]], 0.6, 4.75, 12.1, [3.1, 3.0, 3.0, 3.0], { fontSize: 15 });
 s.addNotes("Landmark A* returns the same cost as Dijkstra in every case and searches 3.5 to 15% of the nodes, yet in Python it only matches the C Dijkstra per route (8 routes on 16 M nodes: 6.1 s vs 4.4 s each) because Python costs far more per node. Next step: the same algorithm in compiled code. Multi-resolution stays the fastest approximate option (16 M nodes: k = 4, 2.1 s, 1.4% above optimum).");
 
-s = add("BACKUP", "Backup: beyond the mid-submission");
+// ================================================================ BACKUP: TRACK 3 INTERACTIVE PLANNING (after the mid-submission)
+const IXJ = (n) => JSON.parse(require("fs").readFileSync(R(`corridor/interactive/${n}.json`)));
+const EXJ = (n) => JSON.parse(require("fs").readFileSync(R(`corridor/extensions/${n}.json`)));
+const SEC3 = "Backup: Track 3 interactive planning";
+const x1 = Object.fromEntries(IXJ("e1_ladder").rows.map((r) => [r.strategy, r]));
+const x8 = EXJ("e8_parallel"), x9 = EXJ("e9_csp"), x10 = EXJ("e10_tiles"), x11 = EXJ("e11_altitude"), x12 = EXJ("e12_placement");
+const sc4 = x8.scaling.find((r) => r.size === 4000);
+const thr = Object.entries(sc4.threads).map(([k, v]) => [Number(k), v.s]).sort((a, b) => a[1] - b[1])[0];
+const f1 = (v) => v.toFixed(1), f2 = (v) => v.toFixed(2), f0 = (v) => Math.round(v).toLocaleString("en-US");
+const pc = (v) => `${(100 * v).toFixed(0)}%`;
+
+s = add("DARK", SEC3);
+T(s, "BACKUP · TRACK 3 AFTER THE MID-SUBMISSION", { x: 0.8, y: 1.4, w: 11, h: 0.4, fontSize: 14, bold: true, color: HEX.accent6, charSpacing: 3 });
+s.addText("Interactive planning: what to precompute, what to compute on the fly", { placeholder: "title" });
+T(s, "Precompute vs on-the-fly, smooth pan / zoom / edits, what to do when precompute stops being valid, and extensions of the corridor model.",
+  { x: 0.8, y: 4.5, w: 11, h: 0.9, fontSize: 20, color: "CDD6E4" });
+s.addNotes("This answers the question raised in our meeting with the professor. All numbers are on the 16 M-cell map unless stated; every route is checked against an exact search.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · What to precompute", HEX.accent3);
+s.addText("Precompute the field for the current goal", { placeholder: "title" });
+img(s, "corridor/interactive/fig_e1_ladder.png", 0.6, 1.7, 7.0, 2.45, "Precompute against query time for each level, and total time after n clicks");
+table(s, [["Level (16 M cells)", "Precompute", "New start", "New goal"],
+  ["0 · C Dijkstra", "-", `${f0(x1["Dijkstra (C)"].query_fixed_goal_ms)} ms`, `${f0(x1["Dijkstra (C)"].query_any_pair_ms)} ms`],
+  ["1 · 4 landmarks (ALT)", `${f1(x1["ALT, 4 landmarks (C)"].pre_s)} s · ${f0(x1["ALT, 4 landmarks (C)"].mem_mb)} MB`, `${f0(x1["ALT, 4 landmarks (C)"].query_fixed_goal_ms)} ms`, `${f0(x1["ALT, 4 landmarks (C)"].query_any_pair_ms)} ms`],
+  ["2 · cost-to-go field", `${f2(thr[1])} s · ${f0(x1["Level 2 cost-to-go field (C)"].mem_mb)} MB`, `${f2(x1["Level 2 cost-to-go field (C)"].query_fixed_goal_ms)} ms`, "new field"]],
+  0.6, 4.4, 7.0, [2.4, 2.0, 1.3, 1.3], { fontSize: 13, hl: [2] });
+T(s, [{ text: "Cost-to-go field: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "for every cell, the cost of the best route to the goal and the next step. One backward search builds it; then a route from any start is a lookup: exact, no search." }],
+  { x: 8.0, y: 1.8, w: 4.7, h: 2.0, fontSize: 16 });
+T(s, [{ text: "Landmarks ", options: { bold: true, color: HEX.dk1 } },
+      { text: "when the goal changes often; 4 is the sweet spot (8 doubles memory for ~10% faster queries)." }], { x: 8.0, y: 4.0, w: 4.7, h: 1.2, fontSize: 16 });
+T(s, "All solvers in C on the implicit grid (corridor/c/gridsearch.c); every route identical to the exact optimum.", { x: 0.6, y: 6.45, w: 12.1, h: 0.35, fontSize: 13, color: MUTED });
+s.addNotes("Level 0 = no precompute; level 1 = landmarks for any start and goal; level 2 = a cost-to-go field per goal. The field pays off from the second click.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · 12 cores for one field", HEX.accent3);
+s.addText(`Field rebuild: ${f2(sc4.dijkstra_s)} s → ${f2(thr[1])} s, exact`, { placeholder: "title" });
+img(s, "corridor/extensions/fig_e8_parallel.png", 0.6, 1.7, 12.1, 3.6, "Speed-up against threads, bucket width trade-off, repair against parallel rebuild");
+T(s, [{ text: "Delta-stepping: ", options: { bold: true, color: HEX.dk1 } },
+      { text: `relax a whole bucket of similar-cost nodes in parallel; lock-free atomic minimum keeps it exact. ${f1(sc4.dijkstra_s / thr[1])}× on ${thr[0]} threads. ` },
+      { text: "Lesson: ", options: { bold: true, color: HEX.accent1 } },
+      { text: "the MinGW OpenMP barrier sleeps between phases (slower than 1 core); a spinning barrier fixed it." }],
+  { x: 0.6, y: 5.45, w: 12.1, h: 1.0, fontSize: 16 });
+T(s, "With 12 cores a full rebuild (~0.4 s) beats incremental repair (0.9-3.9 s) after every radar edit measured.", { x: 0.6, y: 6.45, w: 12.1, h: 0.35, fontSize: 13, color: MUTED });
+s.addNotes("Meyer and Sanders 2003. Next-step pointers are set in a final parallel pass from the final costs, so racing writers cannot leave them inconsistent.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · When precompute stops being valid", HEX.accent3);
+s.addText("Changing α: answer now, exact soon", { placeholder: "title" });
+img(s, "corridor/interactive/fig_e2_anytime.png", 0.6, 1.7, 6.0, 3.6, "Cost above optimum against time for coarse-to-fine and weighted A*");
+img(s, "corridor/extensions/fig_e7_bank.png", 6.75, 1.7, 5.95, 2.1, "Alpha bank: cost of nearest banked route, and bank build cost");
+T(s, [{ text: "α bank: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "next-step fields for α = 2, 5, 10, 20, 50 (305 MB, 1.9 s on 12 cores). Banked α: exact route in ~1 ms; in between: nearest banked route, ≤1.2% above on average." }],
+  { x: 6.75, y: 3.95, w: 5.95, h: 1.4, fontSize: 15 });
+T(s, [{ text: "Coarse-to-fine anytime: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "16× and 4× coarser grids, then full resolution in a corridor, then the exact field: first route in ~10 ms, within 0.2% at ~0.5 s. Weighted A* lost at every quality level." }],
+  { x: 0.6, y: 5.5, w: 12.1, h: 0.95, fontSize: 15 });
+s.addNotes("The pyramid stores exposure and height, not costs, so it stays valid when alpha changes; the field and landmarks do not.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · Edits, pan and zoom", HEX.accent3);
+s.addText("Recompute only what an edit invalidates", { placeholder: "title" });
+img(s, "corridor/interactive/fig_e3_incremental.png", 0.6, 1.7, 6.6, 2.4, "Incremental against from-scratch time for radar edits, and start moves");
+img(s, "corridor/interactive/fig_e4_lod.png", 0.6, 4.2, 6.6, 2.4, "Pan and zoom latency and on-screen error");
+card(s, 7.5, 1.75, 5.2, 1.5, "Start moved", "Field lookup 0.1 ms vs 2.7 s Dijkstra. D* Lite often needs no work, but the lookup is simpler.", HEX.accent3);
+card(s, 7.5, 3.4, 5.2, 1.5, "Radar dragged", "Recompute that radar's viewshed window (~0.2 s), then rebuild the field in parallel (~0.4 s). Exact.", HEX.accent3);
+card(s, 7.5, 5.05, 5.2, 1.5, "Pan / zoom", "Never search: draw the known route (0.03 ms). Re-solving each view: 30-240 ms and often the wrong valley.", HEX.accent3);
+s.addNotes("A radar reaches 40 km, so an edit changes many routes: dynamic shortest-path repair and D* Lite are exact but often no faster than a rebuild. A route is a global object: solving the visible window separately gives inconsistent pieces.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · Latency budget", HEX.accent3);
+s.addText("Every interaction within a frame or under a second", { placeholder: "title" });
+table(s, [["Interaction (16 M cells)", "Strategy", "Latency"],
+  ["Click a new start", "field lookup", "0.1 ms"], ["α slider, banked value", "α bank lookup", "~1 ms"],
+  ["α slider, other value", "nearest bank route → corridor → exact field", "1 ms / 0.5 s / 0.35 s"],
+  ["Drag a radar", "one viewshed window + parallel field rebuild", "~0.6 s"],
+  ["New goal", "landmark A* now, field in the background", "0.27 s"], ["Pan / zoom", "draw the known route", "0.03 ms"]],
+  0.6, 1.85, 7.3, [2.3, 3.6, 1.4], { fontSize: 14 });
+img(s, "corridor/interactive/demo_last.png", 8.2, 1.7, 4.5, 4.9, "Interactive viewer after a scripted session");
+T(s, "Viewer: run.bat -m corridor.interactive · scripted demo GIF: --demo", { x: 0.6, y: 6.45, w: 12.1, h: 0.35, fontSize: 13, color: MUTED });
+s.addNotes("The viewer logs, for every action, which level answered it and how long it took. Click = start, right click = goal, drag = move a radar, +/- = alpha, b = risk budget.");
+
+const sc9 = x9.scenario.filter((r) => r.p_detect != null);
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · Detection probability", HEX.accent3);
+s.addText("A risk budget with a certificate", { placeholder: "title" });
+img(s, "corridor/interactive/fig_e5_detection.png", 0.6, 1.7, 5.4, 3.2, "Detection probability against length, and risk-budget answers");
+img(s, "corridor/extensions/fig_e9_csp.png", 6.2, 1.7, 6.5, 2.3, "Exact search closes the gap on 1 M cells; time and certified gap on 16 M cells");
+T(s, [{ text: "Model: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "each radar that sees the aircraft detects it with p(d) per km; P(detected) = 1 − exp(−Σ length·hazard) is additive, so all solvers apply." }],
+  { x: 6.2, y: 4.15, w: 6.5, h: 1.0, fontSize: 15 });
+T(s, [{ text: "Shortest route with P(detect) ≤ p: ", options: { bold: true, color: HEX.dk1 } },
+      { text: `LARAC (Lagrangian) in ${f1(Math.min(...sc9.map((r) => r.larac_s)))}-${f1(Math.max(...sc9.map((r) => r.larac_s)))} s instead of ~25 s bisection, then an exact label search in a corridor. ` },
+      { text: `≤ 25%: ${f0(sc9[sc9.length - 1].length_km)} km (bisection: 261 km), certified within ${f1(sc9[sc9.length - 1].gap_pct)}%.`, options: { bold: true, color: HEX.accent3 } }],
+  { x: 0.6, y: 5.25, w: 12.1, h: 1.1, fontSize: 15 });
+T(s, "Exact on 1 M cells (corridor answer = whole-map optimum); on 16 M cells the gap is certified, not always closed.", { x: 0.6, y: 6.45, w: 12.1, h: 0.35, fontSize: 13, color: MUTED });
+s.addNotes("Resource-constrained shortest path is NP-hard. The Lagrangian lower bound certifies how far the answer can be from the best possible length. Monte Carlo with 200,000 simulated flights per route matches the formula.");
+
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · Extensions", HEX.accent3);
+s.addText("Tile overlay and a radar-placement game", { placeholder: "title" });
+img(s, "corridor/extensions/fig_e10_tiles.png", 0.6, 1.7, 6.0, 2.1, "Tile overlay accuracy and update time");
+img(s, "corridor/extensions/fig_e12_placement.png", 6.75, 1.7, 5.95, 2.6, "Placement game scores and radar sites with attacker routes");
+const tv = x10.variants.find((r) => r.valleys === 10) || x10.variants[0];
+T(s, [{ text: "Tile overlay (CRP idea): ", options: { bold: true, color: HEX.dk1 } },
+      { text: `costs between border portals of 250×250 tiles; any start and goal in ~${f0(tv.query_ms)} ms, ${f1(tv.gap_mean)}% above exact. Portals at valley floors cut the error several-fold. A radar edit recomputes only the tiles it touches (${x10.updates[x10.updates.length - 1].tiles}-${x10.updates[0].tiles} of 256).` }],
+  { x: 0.6, y: 4.0, w: 6.0, h: 2.3, fontSize: 15 });
+T(s, [{ text: "Placement: ", options: { bold: true, color: HEX.dk1 } },
+      { text: `defender places radars, attacker flies the safest route (one field per reply, ${x12.evals} replies). Routing-aware greedy: 2 radars force ${pc(x12.greedy.curve[1])} detection; coverage greedy: ${pc(x12.coverage.curve[1])}.` }],
+  { x: 6.75, y: 4.45, w: 5.95, h: 1.9, fontSize: 15 });
+s.addNotes("Delling et al. 2011 customizable route planning: the partition never changes, only tile costs are recomputed. Placing radars for routes beats placing them for coverage.");
+
+const fx150 = x11.fixed.find((r) => r.agl === 150), fr0 = x11.runs.find((r) => r.gamma_scale === 0), t4 = x11.timing[x11.timing.length - 1];
+s = add("BACKUP", SEC3);
+eyebrow(s, "Track 3 · Extensions", HEX.accent3);
+s.addText("Altitude as a decision; robustness checks", { placeholder: "title" });
+img(s, "corridor/extensions/fig_e11_altitude.png", 0.6, 1.7, 6.3, 3.2, "Free-altitude route coloured by height and height use per setting");
+img(s, "corridor/extensions/fig_e15_montecarlo.png", 7.1, 1.7, 5.6, 2.0, "Monte Carlo check and sensitivity to model parameters");
+img(s, "corridor/extensions/fig_e14_alternatives.png", 7.1, 3.8, 5.6, 2.5, "Alternative corridors: via-node and penalty methods");
+T(s, [{ text: "3-D search ", options: { bold: true, color: HEX.dk1 } },
+      { text: `over 4 heights × cells (64 M nodes, ${f0(t4.s)} s): free height cuts P(detect) from ${pc(fx150.p_detect)} (fixed 150 m) to ${pc(fr0.p_detect)} on the 60 km map.` }],
+  { x: 0.6, y: 5.05, w: 6.3, h: 1.3, fontSize: 15 });
+T(s, "Also: uncertain radar positions (plan on mean or pessimistic threat), alternative corridors, Monte Carlo = formula; wrong radar range costs up to 14%.", { x: 0.6, y: 6.45, w: 12.1, h: 0.35, fontSize: 13, color: MUTED });
+s.addNotes("Each flight level has its own viewsheds and ceiling; flying low has a per-km penalty, otherwise the answer is always to hug the ground.");
+
+
+s = add("BACKUP", "Backup: across the tracks");
 eyebrow(s, "Backup · Visualisation performance", MUTED);
 s.addText("QGIS cost follows the screen, not the raster", { placeholder: "title" });
 img(s, "shared/fig_render_benchmark.png", 0.6, 1.75, 12.1, 3.6, "QGIS render time against raster cells for three storage formats and three views");
@@ -298,7 +425,7 @@ T(s, "Plain or pyramided rasters draw in 55–80 ms at any size. Compressed, til
   { x: 0.6, y: 5.55, w: 12.1, h: 1.2, fontSize: 16 });
 s.addNotes("Each render opens a fresh layer, so GDAL's block cache is cold; the operating-system file cache stays warm. Algorithm time and render time are measured separately.");
 
-s = add("BACKUP", "Backup: beyond the mid-submission");
+s = add("BACKUP", "Backup: across the tracks");
 eyebrow(s, "Backup · Across the tracks", MUTED);
 s.addText("Three workloads, three different cost drivers", { placeholder: "title" });
 table(s, [["Track", "Unit of work", "Grows with", "16 M cells", "Best lever"],
