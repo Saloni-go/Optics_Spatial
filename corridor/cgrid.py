@@ -29,6 +29,8 @@ def build(force=False):
     import os
     gcc = os.environ.get("GCC") or shutil.which("gcc")
     if not gcc:
+        if DLL.exists() and not force:
+            return DLL                     # sources look newer (e.g. after git clone) but no compiler: use the shipped DLL
         raise RuntimeError("gcc not found: install MinGW-w64 or build corridor/c/gridsearch.dll by hand")
     # -static: OpenMP and pthread runtimes linked in, so the DLL loads without MinGW on PATH
     subprocess.run([gcc, "-O3", "-fopenmp", "-shared", "-static", "-o", str(DLL), str(SRC)], check=True)

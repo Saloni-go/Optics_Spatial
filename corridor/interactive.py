@@ -2,6 +2,7 @@
 
     run.bat -m corridor.interactive [--size 4000] [--mode exposure|detection]
     run.bat -m corridor.interactive --demo results/corridor/interactive/demo.gif     (scripted, no window)
+    run.bat -m corridor.interactive --web [--size 2000]     (browser: any phone / laptop on the same network)
 
 Mouse / keys (window mode):
     left click            new start      -> Level 2 lookup (exact, < 1 ms)
@@ -305,11 +306,18 @@ def main():
     ap.add_argument("--size", type=int, default=4000)
     ap.add_argument("--mode", default="detection", choices=["exposure", "detection"])
     ap.add_argument("--demo", default=None, help="write a scripted demo GIF instead of opening a window")
+    ap.add_argument("--web", action="store_true", help="serve the viewer to browsers (any device on the same network)")
+    ap.add_argument("--port", type=int, default=8988)
     a = ap.parse_args()
     if a.demo:
         return demo(a.demo, a.size, a.mode)
     import matplotlib
-    matplotlib.use("QtAgg")
+    if a.web:
+        matplotlib.use("WebAgg")
+        matplotlib.rcParams.update({"webagg.address": "0.0.0.0", "webagg.port": a.port,
+                                    "webagg.port_retries": 10, "webagg.open_in_browser": True})
+    else:
+        matplotlib.use("QtAgg")
     import matplotlib.pyplot as plt
     P = Planner(a.size, a.mode)
     P.precompute(landmarks=False, bank=(2.5, 5, 10, 20, 40, 80))
@@ -318,6 +326,14 @@ def main():
     for e in P.events:
         V.note(e)
     V.refresh()
+    if a.web:
+        import socket
+        ips = sorted({i[4][0] for i in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET)})
+        print("Viewer is served at:")
+        print(f"   this computer:   http://127.0.0.1:{a.port}")
+        for ip in ips:
+            print(f"   other devices:   http://{ip}:{a.port}   (same Wi-Fi / network)")
+        print("Keep this window open; Ctrl+C stops the server.", flush=True)
     plt.show()
 
 
