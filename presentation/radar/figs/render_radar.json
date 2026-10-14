@@ -1,0 +1,30 @@
+[
+ {
+  "layer": "DEM 4000 (input)",
+  "file_mb": 37.65,
+  "load_s": 0.010127199930138886,
+  "render_full_s": 1.2093741000862792,
+  "render_zoom_s": 0.31046629999764264
+ },
+ {
+  "layer": "Viewshed R1",
+  "file_mb": 0.12,
+  "load_s": 0.01071950001642108,
+  "render_full_s": 0.2672687000595033,
+  "render_zoom_s": 0.18320139998104423
+ },
+ {
+  "layer": "Coverage count, ground",
+  "file_mb": 0.41,
+  "load_s": 0.010739600053057075,
+  "render_full_s": 0.2538433999288827,
+  "render_zoom_s": 0.1916189999319613
+ },
+ {
+  "layer": "Coverage count, aircraft 150 m",
+  "file_mb": 0.35,
+  "load_s": 0.011266999994404614,
+  "render_full_s": 0.27036220009904355,
+  "render_zoom_s": 0.23733949998859316
+ }
+]
