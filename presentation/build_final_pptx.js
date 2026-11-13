@@ -177,7 +177,7 @@ img(s, "radar/fig_bench_size.png", 0.6, 1.75, 8.6, 4.5, "Compute time and memory
 stat(s, 9.6, 1.9, 3.1, nv.projected_16M_s ? secs(nv.projected_16M_s) : "–", "exact method, 16 M cells (projected)", HEX.accent1);
 stat(s, 9.6, 3.5, 3.1, secs(last(g1.compute_s)), "GDAL, same DEM", HEX.accent2);
 T(s, `Fitted slopes: naive ${f2(nv.exponent)}, R2 ${f2(r21.exponent)}, GDAL ${f2(g1.exponent)} (theory 1.5, 1, 1).`, { x: 9.6, y: 5.1, w: 3.1, h: 1.0, fontSize: 15 });
-foot(s, `R2 timings: original R2 on the team PC; the fixed R2 is 1.5–1.9× slower (laptop re-run) · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
+foot(s, `R2 timings: original R2 on the team PC; the fixed R2 is 1.5–1.9× slower (laptop, results/linux64) · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
 s.addNotes("Naive is measured on 0.25 M and 1 M cells and extrapolated with its slope. GDAL's slope is under 1 because fixed overheads dominate small DEMs.");
 
 const E4 = RB.E4 || {}, sp = (E4.speedup_threads || []), E2 = RB.E2 || {}, E6 = RB.E6 || [];
@@ -574,10 +574,37 @@ T(s, "Plain or pyramided rasters draw in tens of milliseconds at any size. Compr
   { x: 0.6, y: 5.55, w: 12.1, h: 1.2, fontSize: 16 });
 s.addNotes("Algorithm time and render time are measured separately; each render opens a fresh layer, so GDAL's block cache is cold.");
 
+// ---------------------------------------------------------------- Scale test: 64 M cells (Linux laptop, results/linux64)
+const SC = J("linux64/integration/scale64m.json") || {}, scs = SC.series || [];
+const sc = (lab) => scs.find((r) => r.label === lab) || {};
+const scLine = "Linux laptop, 15.3 GB · dem_8000: 8000 × 8000 cells, 240 × 240 km, same grid as the 500–4000 DEMs · results/linux64";
+const errs = scs.filter((r) => r.mem64_err_pct != null).map((r) => Math.abs(r.mem64_err_pct));
+
+s = add("CONTENT", "Integration: across the tracks");
+eyebrow(s, "Scale test · 64 M cells, all three tracks", MUTED);
+s.addText("4× the largest map: the scaling laws hold, with two exceptions", { placeholder: "title" });
+img(s, "linux64/integration/fig_scale64m_runtime.png", 0.6, 1.7, 12.1, 3.55, "Runtime from 0.25 M to 64 M cells per track with the power law fitted up to 16 M");
+table(s, [["Method", "16 M → 64 M", "64 M measured", "Predicted from ≤ 16 M"],
+  ["T1 GDAL viewshed", `×${f1(sc("T1 GDAL viewshed").step_16_to_64)}`, secs(sc("T1 GDAL viewshed").t64_s), `${f0(sc("T1 GDAL viewshed").t64_err_pct)}%`],
+  ["T1 R2 ray casting", `×${f1(sc("T1 R2 ray casting").step_16_to_64)}`, secs(sc("T1 R2 ray casting").t64_s), `${f0(sc("T1 R2 ray casting").t64_err_pct)}% (cache)`],
+  ["T2 route grows with map", `×${f1(sc("T2 route grows with map").step_16_to_64)}`, secs(sc("T2 route grows with map").t64_s), `${f0(sc("T2 route grows with map").t64_err_pct)}%`],
+  ["T3 C Dijkstra / C A*", `×${f1(sc("T3 C Dijkstra").step_16_to_64)} / ×${f1(sc("T3 C A*").step_16_to_64)}`, `${secs(sc("T3 C Dijkstra").t64_s)} / ${secs(sc("T3 C A*").t64_s)}`, `${f0(sc("T3 C Dijkstra").t64_err_pct)}% / ${f0(sc("T3 C A*").t64_err_pct)}%`]],
+  0.6, 5.3, 12.1, [3.8, 2.4, 2.9, 3.0], { fontSize: 11 });
+s.addNotes("Power law t = c·N^b fitted on 0.25–16 M cells, extrapolated to 64 M. R2's arrays stop fitting in cache; Track 2's route grows with the map, so its cost also picks up a map-size term.");
+
+s = add("CONTENT", "Integration: across the tracks");
+eyebrow(s, "Scale test · memory", MUTED);
+s.addText("Memory, not time, decides what runs at 64 M cells", { placeholder: "title" });
+img(s, "linux64/integration/fig_scale64m_memory.png", 0.6, 1.65, 12.1, 3.35, "Peak memory from 0.25 M to 64 M cells per track against the laptop's RAM");
+stat(s, 0.6, 5.05, 3.8, `${f0(Math.min(...errs))}–${f0(Math.max(...errs))}%`, "memory prediction error (base + bytes per cell)", HEX.accent1);
+stat(s, 4.75, 5.05, 3.8, "~24 GB", "SciPy graph at 64 M: not run on 15.3 GB", HEX.dk1);
+stat(s, 8.9, 5.05, 3.8, `${f1(sc("T3 C Dijkstra").peak64_mb / 1024)} GB`, `C Dijkstra: same job in ${secs(sc("T3 C Dijkstra").t64_s)}`, HEX.accent2);
+s.addNotes(scLine + ". Memory is a straight line in cells (a power law was 50% low). The explicit SciPy graph costs ~387 bytes per cell, the C solvers ~39.");
+
 // ================================================================ CONCLUSION
 s = add("CONTENT", "Conclusion");
 s.addText("What we learned", { placeholder: "title" });
-card(s, 0.6, 1.85, 3.85, 4.4, "Track 1", `Exact viewsheds cost N^1.5; R2 and GDAL stay linear at 99.8% agreement. Read only the range window, run many radars on threads (${f1(last(sp))}×), coarsen only with a kappa check.`, HEX.accent1, 17);
+card(s, 0.6, 1.85, 3.85, 4.4, "Track 1", `Exact viewsheds cost N^1.5; R2 (bias fixed) and GDAL stay linear. Threads for many radars (${f1(last(sp))}×). Greedy siting sees 29% more with the same six radars; seen is not detected.`, HEX.accent1, 17);
 card(s, 4.7, 1.85, 3.85, 4.4, "Track 2", `Cost = positions × min(radius², map), fitted within 5%. Sharing the DEM across threads is fastest (exact); spacing should follow altitude. A real camera sees 5–18% of line of sight in the valley; ~8% of a low-flight coverage map is uncertain.`, HEX.accent2, 17);
 card(s, 8.8, 1.85, 3.9, 4.4, "Track 3", "Precompute per goal and every start is a lookup; parallel C makes rebuilds sub-second; a certified risk budget; 4× less memory with direction codes; shipped as a QGIS plugin with Processing tools.", HEX.accent3, 17);
 foot(s, "Across tracks: one pipeline on one machine, detection consistent with coverage, and every route scored by all three tracks.");

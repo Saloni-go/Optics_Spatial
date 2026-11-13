@@ -16,6 +16,12 @@ CRS_EPSG = 32644                 # WGS 84 / UTM zone 44N, metres
 CELL = 30.0                      # metres, same for every size (coverage grows, resolution fixed)
 CENTER_LONLAT = (78.98, 30.285)  # Rudraprayag; all subsets are centred here
 SIZES = [500, 1000, 2000, 4000]  # cells per side -> 0.25M, 1M, 4M, 16M cells
+# Sizes for the size-scaling benchmarks (E1, F1, F1b, C1, C7, C8).  Default = SIZES; set e.g.
+# OPTICS_BENCH_SIZES=500,1000,2000,4000,8000 to add the 64 M-cell map (scripts/prepare_8000.py).
+BENCH_SIZES = [int(v) for v in os.environ["OPTICS_BENCH_SIZES"].split(",")] if os.environ.get("OPTICS_BENCH_SIZES") else list(SIZES)
+# Methods whose memory grows past a 15 GB laptop at 64 M cells are skipped above this size (cells per side);
+# the skip is logged with the reason, not silently dropped.
+EXPLICIT_GRAPH_MAX = int(os.environ.get("OPTICS_EXPLICIT_GRAPH_MAX", "4000"))
 NODATA = -9999.0
 COP_TILES = [(29, 78), (29, 79), (30, 78), (30, 79)]  # (lat, lon) of 1x1 degree tiles
 

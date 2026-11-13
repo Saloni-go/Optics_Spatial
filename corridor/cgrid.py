@@ -19,7 +19,10 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent / "c"
-SRC, DLL = HERE / "gridsearch.c", HERE / "gridsearch.dll"
+import sys as _sys
+# Windows ships gridsearch.dll; on Linux / macOS the same source is built into gridsearch.so / .dylib on first use
+_EXT = ".dll" if _sys.platform == "win32" else (".dylib" if _sys.platform == "darwin" else ".so")
+SRC, DLL = HERE / "gridsearch.c", HERE / ("gridsearch" + _EXT)
 INCS = [HERE / "dstar.inc", HERE / "parallel.inc", HERE / "csp.inc", HERE / "tiles.inc", HERE / "layers.inc"]
 
 
@@ -33,9 +36,13 @@ def build(force=False):
     if not gcc:
         if DLL.exists() and not force:
             return DLL                     # sources look newer (e.g. after git clone) but no compiler: use the shipped DLL
-        raise RuntimeError("gcc not found: install MinGW-w64 or build corridor/c/gridsearch.dll by hand")
-    # -static: OpenMP and pthread runtimes linked in, so the DLL loads without MinGW on PATH
-    subprocess.run([gcc, "-O3", "-fopenmp", "-shared", "-static", "-o", str(DLL), str(SRC)], check=True)
+        raise RuntimeError(f"gcc not found: install a C compiler (MinGW-w64 on Windows) or build {DLL.name} by hand")
+    if _sys.platform == "win32":
+        # -static: OpenMP and pthread runtimes linked in, so the DLL loads without MinGW on PATH
+        cmd = [gcc, "-O3", "-fopenmp", "-shared", "-static", "-o", str(DLL), str(SRC)]
+    else:
+        cmd = [gcc, "-O3", "-fopenmp", "-shared", "-fPIC", "-o", str(DLL), str(SRC)]
+    subprocess.run(cmd, check=True)
     return DLL
 
 

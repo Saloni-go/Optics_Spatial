@@ -16,7 +16,7 @@ import argparse
 import json
 
 from common.bench import run_series, machine_info
-from common.config import RESULTS, CELL
+from common.config import RESULTS, CELL, BENCH_SIZES, EXPLICIT_GRAPH_MAX
 from corridor.prep import exposure_for
 
 OUT = RESULTS / "corridor"
@@ -30,10 +30,25 @@ def base(size, **kw):
     return d
 
 
+SKIPPED = []          # (experiment, algorithm, size, reason): written to skipped.json, shown in the analysis
+
+
+def _fits(exp, alg, s):
+    """Explicit-graph methods (SciPy CSR, Python landmarks built on it) need ~0.4 GB per M cells:
+    ~6 GB at 16 M, ~24 GB at 64 M - more than a 15 GB laptop.  Skip them above EXPLICIT_GRAPH_MAX."""
+    if alg in ("dijkstra_csgraph", "astar_alt", "csgraph", "alt") and s > EXPLICIT_GRAPH_MAX:
+        SKIPPED.append({"experiment": exp, "algorithm": alg, "size": s, "cells": s * s,
+                        "reason": "explicit graph: ~0.37 GB per M cells measured (6.0 GB at 16 M) -> ~24 GB at 64 M"})
+        return False
+    return True
+
+
 def c1(r):
     jobs = []
-    for s in (500, 1000, 2000, 4000):
+    for s in BENCH_SIZES:
         for alg in ("dijkstra_csgraph", "astar_py", "multires", "dijkstra_py"):
+            if not _fits("C1_size", alg, s):
+                continue
             reps = r if s <= 1000 else (3 if s == 2000 else 1)
             jobs.append(base(s, experiment="C1_size", algorithm=alg, param_name="nodes", param_value=s * s, _repeats=reps))
     return jobs
@@ -81,8 +96,10 @@ def c7(r):
     """Compiled solvers (corridor/c/gridsearch.c) against the Python and SciPy ones, all sizes, alpha 10.
     Query time is compute_s; landmark preprocessing is reported separately (pre_s)."""
     jobs = []
-    for s in (500, 1000, 2000, 4000):
+    for s in BENCH_SIZES:
         for alg in ("dijkstra_c", "astar_c", "alt_c", "astar_alt"):
+            if not _fits("C7_compiled", alg, s):
+                continue
             reps = r if s <= 1000 else (3 if s == 2000 else (1 if alg == "astar_alt" else 3))
             jobs.append(base(s, experiment="C7_compiled", algorithm=alg, param_name="nodes", param_value=s * s,
                              landmarks=4, threads=8, _repeats=reps))
@@ -92,8 +109,8 @@ def c7(r):
 def c8(r):
     """Eight routes on one map with the compiled solvers (compare with C6)."""
     return [base(s, job="multi_query", experiment="C8_multi_query_c", algorithm=alg, param_name="nodes", param_value=s * s,
-                 queries=8, landmarks=4, threads=8, _repeats=1 if s == 4000 else 3)
-            for s in (1000, 2000, 4000) for alg in ("dijkstra_c", "alt_c")]
+                 queries=8, landmarks=4, threads=8, _repeats=1 if s >= 4000 else 3)
+            for s in [x for x in BENCH_SIZES if x >= 1000] for alg in ("dijkstra_c", "alt_c")]
 
 
 EXPS = {"C1": c1, "C2": c2, "C3": c3, "C4": c4, "C5": c5, "C6": c6, "C7": c7, "C8": c8}
@@ -105,8 +122,10 @@ if __name__ == "__main__":
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     json.dump(machine_info(), open(OUT / "machine.json", "w"), indent=1)
-    for s in (500, 1000, 2000, 4000):
+    for s in BENCH_SIZES:
         exposure_for(s)
     for e in a.exps:
         print("==", e, flush=True)
         run_series("corridor.jobs", EXPS[e](a.repeats), CSV, repeats=a.repeats)
+    if SKIPPED:
+        json.dump(SKIPPED, open(OUT / "skipped.json", "w"), indent=1)

@@ -1,0 +1,18 @@
+== S1_F1_window
+  S1_F1_window/window cells=64000000 dem=8000: median 161.762s, peak 1493 MB (n=2)
+== S1_F1_shared_threads
+  S1_F1_shared_threads/shared_threads cells=64000000 dem=8000: median 43.697s, peak 9700 MB (n=3)
+== S2_F1b_window
+  S2_F1b_window/window cells=64000000 dem=8000: median 1.685s, peak 890 MB (n=3)
+== S3_r20_8000
+  S3_r20_8000/window cells=64000000 dem=8000: median 4.816s, peak 910 MB (n=3)
+== S3_r40_8000
+  S3_r40_8000/window cells=64000000 dem=8000: median 14.811s, peak 959 MB (n=3)
+== S3_r60_8000
+  S3_r60_8000/window cells=64000000 dem=8000: median 31.621s, peak 1087 MB (n=3)
+== S3_r80_8000
+  S3_r80_8000/window cells=64000000 dem=8000: median 54.101s, peak 1245 MB (n=3)
+== S3_r60_4000
+  S3_r60_4000/window cells=16000000 dem=4000: median 22.043s, peak 488 MB (n=3)
+== S3_r80_4000
+  S3_r80_4000/window cells=16000000 dem=4000: median 29.652s, peak 490 MB (n=3)

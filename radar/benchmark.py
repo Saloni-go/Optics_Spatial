@@ -13,11 +13,11 @@ import argparse
 import json
 
 from common.bench import run_series, machine_info
-from common.config import RESULTS, CELL
+from common.config import RESULTS, CELL, BENCH_SIZES
 
 OUT = RESULTS / "radar"
 CSV = OUT / "benchmark_raw.csv"
-SIZES = [500, 1000, 2000, 4000]
+SIZES = BENCH_SIZES
 
 
 def base(size):
@@ -29,7 +29,8 @@ def e1(rep):
     for s in SIZES:
         for alg in ("gdal", "r2"):
             jobs.append({**base(s), "job": "viewshed", "experiment": "E1_size", "algorithm": alg,
-                         "param_name": "cells", "param_value": s * s, "radar_count": 1, "range_m": 0})
+                         "param_name": "cells", "param_value": s * s, "radar_count": 1, "range_m": 0,
+                         **({"_repeats": 3} if s > 4000 else {})})
         if s <= 1000:
             jobs.append({**base(s), "job": "viewshed", "experiment": "E1_size", "algorithm": "naive",
                          "param_name": "cells", "param_value": s * s, "radar_count": 1, "range_m": 0,
