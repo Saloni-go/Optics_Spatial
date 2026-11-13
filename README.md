@@ -1,9 +1,9 @@
 # Large-Scale Terrain Data Analysis 2: terrain visibility
 
 Three terrain-visibility applications on the same DEMs, each benchmarked for runtime, memory,
+scaling, complexity, rendering and accuracy.
 
 **Final report:** [`report/FINAL_REPORT.md`](report/FINAL_REPORT.md) ([PDF](report/final_report.pdf)) · **Final presentation:** [`presentation/Terrain_Visibility_Final.pdf`](presentation/Terrain_Visibility_Final.pdf)
-scaling, complexity, rendering and accuracy.
 
 | Track | Owner | Question | Code |
 |---|---|---|---|
