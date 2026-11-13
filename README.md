@@ -1,6 +1,8 @@
 # Large-Scale Terrain Data Analysis 2: terrain visibility
 
 Three terrain-visibility applications on the same DEMs, each benchmarked for runtime, memory,
+
+**Final report:** [`report/FINAL_REPORT.md`](report/FINAL_REPORT.md) ([PDF](report/final_report.pdf)) · **Final presentation:** [`presentation/Terrain_Visibility_Final.pdf`](presentation/Terrain_Visibility_Final.pdf)
 scaling, complexity, rendering and accuracy.
 
 | Track | Owner | Question | Code |
@@ -44,6 +46,7 @@ run.bat -m corridor.interactive --demo results\corridor\interactive\demo.gif   #
 run_qgis.bat qgis\build_project.py       # styled QGIS project + QGIS map renders
 run_qgis.bat qgis\render_bench.py        # visualization performance benchmark
 python report\build_report.py            # report/mid_submission_report.pdf (system Python + PyMuPDF)
+python3 report/build_final_report.py     # report/final_report.pdf from report/FINAL_REPORT.md (headless Chrome)
 node presentation\build_pptx.js          # presentation/Terrain_Visibility_Mid_Evaluation.pptx (`npm install` in presentation/ once)
 ```
 
