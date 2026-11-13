@@ -27,14 +27,23 @@ FIELDS = ["track", "experiment", "algorithm", "dem_id", "width", "height", "cell
 
 
 def peak_kb():
-    """Peak resident memory of this process in KB: peak_wset on Windows, ru_maxrss on Linux/macOS
+    """Peak resident memory of this process in KB: peak_wset on Windows, VmHWM on Linux, ru_maxrss on macOS
     (psutil has no peak there; falling back to rss would report the memory in use at the END)."""
     mi = psutil.Process().memory_info()
     if hasattr(mi, "peak_wset"):
         return int(mi.peak_wset / 1024)
+    try:                                  # Linux: high-water mark of THIS process image (fresh after exec)
+        with open("/proc/self/status") as f:
+            for line in f:
+                if line.startswith("VmHWM:"):
+                    return int(line.split()[1])
+    except OSError:
+        pass
+    # macOS / fallback.  Note: on Linux ru_maxrss survives exec, so a child started by a large
+    # parent would report the parent's peak - that is why /proc is preferred above.
     import resource, sys
     m = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return int(m / 1024) if sys.platform == "darwin" else int(m)     # bytes on macOS, KB on Linux
+    return int(m / 1024) if sys.platform == "darwin" else int(m)
 
 
 def current_kb():

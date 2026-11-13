@@ -97,15 +97,18 @@ def sensor_mask(dem, rc, cc, ox, oy, alt, heading, r0, c0, vis, s):
 
 
 _GRAD = {}
+_GRAD_LOCK = threading.Lock()
 
 
 def _gradients(dem):
     """dz/d(east) and dz/d(north) for the whole DEM, float32, computed once per DEM."""
     key = id(dem.z)
-    if key not in _GRAD:
+    with _GRAD_LOCK:
+        if key in _GRAD:
+            return _GRAD[key]
         gs, ge = np.gradient(np.nan_to_num(dem.z, nan=0.0).astype(np.float32), dem.cell)
         _GRAD.clear(); _GRAD[key] = (ge.astype(np.float32), (-gs).astype(np.float32))
-    return _GRAD[key]
+        return _GRAD[key]
 
 
 class _Ctx:
@@ -119,6 +122,8 @@ def run_sensor(dem, xs, ys, alts, heads, radius, sensor, workers=12, target_h=0.
     t0 = time.perf_counter()
     shared = shared or SharedDEM(dem.z, dem.gt, dem.proj)
     acc = Accumulator(dem.shape, dem.cell)
+    if sensor.ifov:
+        _gradients(dem)                  # once, before the threads (else every thread builds its own)
 
     def one(i):
         c, r = dem.to_pixel(xs[i], ys[i])

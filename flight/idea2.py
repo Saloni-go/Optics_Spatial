@@ -2,7 +2,8 @@
 
   sensors   F11  valley (300 m AGL) and cruise (5500 m MSL), 500 m spacing, 20 km radius, five sensors
                  (omni, omni + 3 m resolution limit, forward camera, side-looking pair, nadir camera):
-                 area observed, dwell time at 60 m/s, rasters; runtime / memory in fresh processes
+                 area observed, dwell time at 60 m/s, rasters
+  timing    F11  runtime / peak memory per sensor in fresh processes
   gsd       F11b area observed vs required ground resolution (0.5 .. 30 m) for the omni camera
   mc        F12  Monte Carlo: DEM error, position error, both; 20 runs each, both profiles;
                  P(seen) rasters and reliable / uncertain area
@@ -38,7 +39,7 @@ def _setup():
     return dem, v, pts, ams
 
 
-def sensors(repeats):
+def sensors():
     dem, v, pts, ams = _setup()
     a = dem.cell ** 2 / 1e6
     res = {}
@@ -57,7 +58,11 @@ def sensors(repeats):
             write_raster(OUT / f"dwell_{prof}_{name}.tif", dwell, dem.gt, dem.proj, gdal.GDT_Float32, nodata=0)
             print(prof, name, {k: (round(x, 2) if isinstance(x, float) else x) for k, x in res[prof][name].items() if k != "sensor"}, flush=True)
     json.dump(res, open(OUT / "sensors.json", "w"), indent=1)
-    # timing and peak memory in fresh processes
+
+
+def timing(repeats):
+    """Runtime and peak memory per sensor, each run in a fresh process (start this step on its own,
+    from a small parent process)."""
     jobs = []
     for prof, kw in PROFILES.items():
         kw = {k: x for k, x in kw.items() if k != "label"}
@@ -169,7 +174,7 @@ def figs():
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("steps", nargs="*", default=["sensors", "gsd", "mc", "figs"])
+    ap.add_argument("steps", nargs="*", default=["sensors", "timing", "gsd", "mc", "figs"])
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--runs", type=int, default=20)
     a = ap.parse_args()
@@ -177,4 +182,4 @@ if __name__ == "__main__":
     json.dump(machine_info(), open(OUT / "machine.json", "w"), indent=1)
     for st in a.steps:
         print("==", st, flush=True)
-        {"sensors": lambda: sensors(a.repeats), "gsd": gsd, "mc": lambda: mc(a.runs), "figs": figs}[st]()
+        {"sensors": sensors, "timing": lambda: timing(a.repeats), "gsd": gsd, "mc": lambda: mc(a.runs), "figs": figs}[st]()
