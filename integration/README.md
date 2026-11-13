@@ -19,6 +19,7 @@ commit recorded in `results/integration/run_manifest.json`. The per-step output 
 |---|---|---|
 | radar.validate, radar.run_radar, radar.benchmark, radar.analysis | 1 | viewshed validation, six-radar coverage, E1-E6, fits |
 | flight.run_flight, flight.benchmark, flight.spacing_study, flight.analysis | 2 | valley route visibility, F1-F6, spacing study |
+| flight.idea1_bench, flight.idea1_analysis, flight.idea2, flight.idea2_timing, flight.usecases | 2 | extensions: shared-DEM threads, complexity model, sensor model, Monte Carlo, six applications (see `flight/TRACK2_EXTENSIONS.md`) |
 | corridor.run_corridor, corridor.benchmark, corridor.analysis | 3 | least-exposure routes, C1-C8 |
 | corridor.interactive_bench, corridor.extensions_bench | 3 | interactive levels, alpha bank, risk budget, tiles, altitude, placement, robustness |
 | corridor.efficiency_bench | 3 | memory-efficient fields and on-the-fly operations |

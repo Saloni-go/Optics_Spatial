@@ -66,8 +66,11 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("exps", nargs="*", default=list(EXPS))
     ap.add_argument("--repeats", type=int, default=5)
+    ap.add_argument("--fresh", action="store_true", help="delete earlier rows first (one machine per CSV)")
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True); UNIONS.mkdir(exist_ok=True)
+    if a.fresh:
+        CSV.unlink(missing_ok=True)
     json.dump(machine_info(), open(OUT / "machine.json", "w"), indent=1)
     for e in a.exps:
         print("==", e, flush=True)

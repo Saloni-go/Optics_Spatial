@@ -39,6 +39,10 @@ Slides/report sections for the mid version: problem and shared setup, one slide 
 - [x] Track 3 implementation, scenario, benchmarks C1-C5, analysis
 - [x] QGIS project and QGIS render benchmark
 - [x] Mid-submission report and slide deck
+- [x] Integrated run of all tracks on one machine, QGIS plugin, final deck (`presentation/Terrain_Visibility_Final.pptx`)
+- [x] Track 2 extensions (Linux laptop, `results/linux/`; write-up `flight/TRACK2_EXTENSIONS.md`):
+      shared-DEM threads and complexity model (F7-F10), sensor model and Monte Carlo uncertainty (F11-F12),
+      six applications (U1-U6), QGIS flight playback and render benchmark; five slides in the final deck
 
 ## Decisions made (from context.md section 11)
 
@@ -52,4 +56,6 @@ Slides/report sections for the mid version: problem and shared setup, one slide 
    GDAL 3.13.1, Python 3.12.
 5. Benchmark sizes: 0.25M, 1M, 4M, 16M cells; slow baselines run only where feasible and are
    projected beyond.
-6. Owners: Person 1 / 2 / 3 placeholders.
+6. Owners: Track 1 Sravani, Track 2 Saloni, Track 3 Akshat.
+7. Second machine: Track 2 extensions ran on a Linux laptop (10 cores / 12 threads, 15.3 GB, GDAL 3.4.1);
+   its results are kept apart in `results/linux/` (set `OPTICS_RESULTS`), never mixed with the Ryzen runs.

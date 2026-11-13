@@ -246,6 +246,84 @@ T(s, [{ text: "Sampling: ", options: { bold: true, color: HEX.dk1 } },
   { x: 6.75, y: 4.85, w: 5.95, h: 1.5, fontSize: 15 });
 s.addNotes("Coverage grows smoothly along the route, so uniform spacing is already efficient.");
 
+// ---------------------------------------------------------------- Track 2 extensions (Linux laptop, results/linux/flight)
+const LF = (p) => J(`linux/flight/${p}`) || {};
+const I1 = LF("idea1_summary.json"), I2 = LF("idea2/idea2_summary.json"), US = LF("usecases/usecases_summary.json");
+const LM = LF("machine.json");
+const lapLine = `Linux laptop: ${LM.cores_physical || "?"} cores / ${LM.cores_logical || "?"} threads, ${LM.ram_gb || "?"} GB, GDAL ${LM.gdal || "?"} · results/linux/flight`;
+const f7 = (m) => (I1.F7 || []).find((r) => r.mode === m) || {};
+const F10 = I1.F10 || {};
+const sens = (p, n) => (((I2.sensors || {})[p] || {})[n]) || {};
+const mcv = ((I2.mc || {}).valley || {}), mcc = ((I2.mc || {}).cruise || {});
+
+s = add("CONTENT", "Track 2: flight-route visibility");
+eyebrow(s, "Track 2 · Extension 1: cheaper computation (F7–F10)", HEX.accent2);
+s.addText(`Shared DEM: ${f2(f7("shared_threads").compute_s)} s instead of ${f2(f7("threads").compute_s)} s, same answer`, { placeholder: "title" });
+img(s, "linux/flight/fig_idea1_shared.png", 0.6, 1.75, 6.6, 2.4, "Compute time and memory: window copy vs shared zero-copy view");
+img(s, "linux/flight/fig_idea1_complexity.png", 7.5, 1.75, 5.2, 4.3, "Complexity model prediction against measured time");
+table(s, [["Idea", "Result"],
+  ["F7 shared view + threads", `${f2(f7("shared_threads").compute_s)} s, ${f0(f7("shared_threads").peak_mb)} MB; identical result`],
+  ["F8 30 m near, coarse far", "viewshed 2.3× faster, route ~10%; 86–97% overlap"],
+  ["F9 tiled accumulator", "12 km route, 16 M cells: 92 → 10 MB of rasters"],
+  ["F10 T = a·W·min(πr², N) + b·W", `a ${f1(F10.a_ns_per_cell)} ns/cell, b ${f2(F10.b_ms_per_position)} ms/pos, error ${f1(F10.mean_abs_err_pct)}%`]],
+  0.6, 4.25, 6.6, [2.4, 4.2], { fontSize: 10 });
+T(s, lapLine, { x: 7.5, y: 6.15, w: 5.2, h: 0.5, fontSize: 11, color: MUTED });
+s.addNotes("Copying a 40 km window per position cost more than the smaller search saved. The model says cost is positions × min(radius², map): linear in route length, quadratic in radius, independent of altitude.");
+
+s = add("CONTENT", "Track 2: flight-route visibility");
+eyebrow(s, "Track 2 · Extension 2: a real sensor", HEX.accent2);
+s.addText(`A forward camera observes ${f0(sens("valley", "forward").observed_km2)} of ${f0(sens("valley", "omni").observed_km2)} km² seen`, { placeholder: "title" });
+img(s, "linux/flight/idea2/fig_idea2_sensors.png", 0.6, 1.75, 7.6, 2.75, "Area observed and runtime per sensor and altitude");
+img(s, "linux/flight/idea2/fig_idea2_gsd.png", 8.4, 1.75, 4.3, 2.75, "Share of line-of-sight area observed against required resolution");
+table(s, [["Sensor (3 m per pixel)", "Valley 300 m", "Cruise 5,500 m"],
+  ["line of sight only", `${f0(sens("valley", "omni").observed_km2)} km²`, `${f0(sens("cruise", "omni").observed_km2)} km²`],
+  ["forward camera 90°", `${f0(sens("valley", "forward").observed_km2)} km², ${f0(sens("valley", "forward").dwell_s_median)} s`, `${f0(sens("cruise", "forward").observed_km2)} km², ${f0(sens("cruise", "forward").dwell_s_median)} s`],
+  ["side cameras 2 × 60°", `${f0(sens("valley", "side").observed_km2)} km², ${f0(sens("valley", "side").dwell_s_median)} s`, `${f0(sens("cruise", "side").observed_km2)} km², ${f0(sens("cruise", "side").dwell_s_median)} s`],
+  ["nadir ≥ 45° down", `${f0(sens("valley", "nadir").observed_km2)} km², ${f0(sens("valley", "nadir").dwell_s_median)} s`, `${f0(sens("cruise", "nadir").observed_km2)} km², ${f0(sens("cruise", "nadir").dwell_s_median)} s`]],
+  0.6, 4.65, 7.6, [2.6, 2.5, 2.5], { fontSize: 12 });
+T(s, "Field of view from the heading, depression limits, ground sample distance = slant × IFOV / cos(incidence), dwell = seconds observed at 60 m/s (median shown). Valley: forward is best (walls block the sides); cruise: side-looking.",
+  { x: 8.4, y: 4.65, w: 4.3, h: 1.7, fontSize: 13 });
+foot(s, lapLine);
+s.addNotes("6000-pixel, 60 degree camera. At 5,500 m nothing is resolved at 0.5 m: the closest slant range is about 3.5 km.");
+
+s = add("CONTENT", "Track 2: flight-route visibility");
+eyebrow(s, "Track 2 · Extension 2: uncertainty (Monte Carlo)", HEX.accent2);
+s.addText(`"Seen" is uncertain on ${pc(((mcv.both || {}).uncertain_km2 || 0) / ((mcv.both || {}).nominal_km2 || 1), 1)} (valley), ${pc(((mcc.both || {}).uncertain_km2 || 0) / ((mcc.both || {}).nominal_km2 || 1), 1)} (cruise)`, { placeholder: "title" });
+img(s, "linux/flight/idea2/fig_idea2_uncertainty.png", 0.6, 1.75, 12.1, 3.7, "P(seen) maps and uncertain area per error source");
+T(s, `20 runs per source: DEM error 4 m (correlated over 300 m), aircraft position error 10 m horizontal / 15 m vertical. The total area barely moves (valley ${f0((mcv.both || {}).seen_km2_mean)} ± ${f0((mcv.both || {}).seen_km2_std)} km²) but which cells are seen does, at the edges of visibility. Valley: DEM and position errors matter equally (${f0((mcv.dem || {}).uncertain_km2)} / ${f0((mcv.position || {}).uncertain_km2)} km²); cruise: almost only the DEM.`,
+  { x: 0.6, y: 5.55, w: 12.1, h: 1.0, fontSize: 14 });
+s.addNotes("Report a reliable-coverage map (seen in at least 95% of runs) rather than a single nominal answer.");
+
+s = add("CONTENT", "Track 2: flight-route visibility");
+eyebrow(s, "Track 2 · Extension 3: six applications", HEX.accent2);
+s.addText("Six applications of the same engine", { placeholder: "title" });
+img(s, "linux/flight/usecases/fig_usecases.png", 0.6, 1.65, 7.6, 4.75, "Radio link, river coverage, search and rescue, altitude, several aircraft, look-ahead");
+const ul = (US.link || {}), sr = (US.sar || []), fl = ((US.fleet || {}).aircraft || []), la = (US.lookahead || {});
+const sarRow = (agl, sp) => sr.find((r) => r.agl === agl && r.track_spacing_m === sp) || {};
+T(s, [
+  { text: "Radio link: ", options: { bold: true, color: HEX.dk1 } }, { text: `valley flight reaches a town station on ${pc((ul.valley || {}).link_frac)} of the route (longest gap ${f0((ul.valley || {}).longest_outage_km)} km); cruise ${pc((ul.cruise || {}).link_frac)}.\n` },
+  { text: "River / road: ", options: { bold: true, color: HEX.dk1 } }, { text: "following the valley sees all of it; a straight 5,500 m line only 65% with a 3 m camera.\n" },
+  { text: "Search & rescue: ", options: { bold: true, color: HEX.dk1 } }, { text: `0.5 m camera, 15 × 15 km: 1 km tracks cover ${pc(sarRow(300, 1000).covered_frac, 1)} in ${f0(sarRow(300, 1000).flight_min)} min, 4 km tracks ${pc(sarRow(300, 4000).covered_frac)} in ${f0(sarRow(300, 4000).flight_min)} min.\n` },
+  { text: "Height: ", options: { bold: true, color: HEX.dk1 } }, { text: "80% of the local view needs ~2 km above ground; per-position height gains only ~2%.\n" },
+  { text: "Several aircraft: ", options: { bold: true, color: HEX.dk1 } }, { text: `${fl.map((a) => f0(a.union_km2)).join(" → ")} km²; the 4th overlaps ${pc((last(fl) || {}).overlap_with_earlier_frac)}.\n` },
+  { text: "Look-ahead: ", options: { bold: true, color: HEX.dk1 } }, { text: `< 20 s to terrain on ${pc((la.valley || {}).warn_frac, 1)} of the valley route if heading is held.` }],
+  { x: 8.4, y: 1.7, w: 4.3, h: 4.8, fontSize: 12.5 });
+s.addNotes("All six reuse the same viewshed engine; each is one function in flight/usecases.py.");
+
+s = add("CONTENT", "Track 2: flight-route visibility");
+eyebrow(s, "Track 2 · Extension 4: flight playback in QGIS", HEX.accent2);
+const PB = LF("qgis/playback.json"), pbFps = Object.values(PB).map((v) => v.fps);
+s.addText(`QGIS playback at ${f0(Math.min(...pbFps))}–${f0(Math.max(...pbFps))} frames per second`, { placeholder: "title" });
+img(s, "linux/flight/qgis/playback_mid.png", 0.6, 1.7, 6.2, 4.65, "Mid-flight frame: ground seen so far and the aircraft trail");
+img(s, "linux/flight/qgis/fig_render_track2.png", 7.0, 1.7, 5.7, 1.8, "Draw time per Track 2 raster and playback frame rate");
+T(s, [{ text: "How: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "the first-seen raster stores the flight time at which each cell is first seen (raster temporal mode 'represents temporal values'); the aircraft layer has a time per position; a cumulative range makes seen ground accumulate.\n" },
+      { text: "Draw time: ", options: { bold: true, color: HEX.dk1 } },
+      { text: "Track 2 rasters (16 M cells) draw in 23–69 ms; overviews make full-extent ~1.6× faster and change nothing zoomed in.\n" },
+      { text: "Files: ", options: { bold: true, color: HEX.dk1 } }, { text: "qgis/track2_extensions.qgz, qgis/track2_layers.py" }],
+  { x: 7.0, y: 3.65, w: 5.7, h: 2.8, fontSize: 13 });
+s.addNotes("Open View > Panels > Temporal Controller and press play: 163 frames of 17 s cover the 46-minute flight.");
+
 // ================================================================ TRACK 3
 const r10 = (CS.routes || {}).alpha_10 || {}, rsh = (CS.routes || {}).shortest || {};
 const C1 = CB.C1 || {}, C7 = CB.C7 || {};
@@ -459,7 +537,7 @@ s.addNotes("Algorithm time and render time are measured separately; each render 
 s = add("CONTENT", "Conclusion");
 s.addText("What we learned", { placeholder: "title" });
 card(s, 0.6, 1.85, 3.85, 4.4, "Track 1", `Exact viewsheds cost N^1.5; R2 and GDAL stay linear at 99.8% agreement. Read only the range window, run many radars on threads (${f1(last(sp))}×), coarsen only with a kappa check.`, HEX.accent1, 17);
-card(s, 4.7, 1.85, 3.85, 4.4, "Track 2", `Cost = positions × area per viewshed, not DEM size. Threads give ${f1(f6("baseline").runtime_s / f6("threads").runtime_s)}×; spacing should follow altitude; adaptive sampling did not beat uniform.`, HEX.accent2, 17);
+card(s, 4.7, 1.85, 3.85, 4.4, "Track 2", `Cost = positions × min(radius², map), fitted within 5%. Sharing the DEM across threads is fastest (exact); spacing should follow altitude. A real camera sees 5–18% of line of sight in the valley; ~8% of a low-flight coverage map is uncertain.`, HEX.accent2, 17);
 card(s, 8.8, 1.85, 3.9, 4.4, "Track 3", "Precompute per goal and every start is a lookup; parallel C makes rebuilds sub-second; a certified risk budget; 4× less memory with direction codes; shipped as a QGIS plugin with Processing tools.", HEX.accent3, 17);
 foot(s, "Across tracks: one pipeline on one machine, detection consistent with coverage, and every route scored by all three tracks.");
 s.addNotes("Limitations: one region and one DEM source; radar model is line of sight with a distance-based detection probability; the plugin is Windows-only because the solver ships as a DLL.");

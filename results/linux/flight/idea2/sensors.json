@@ -12,7 +12,7 @@
     "min_dep": -90.0,
     "max_dep": 90.0,
     "ifov_mrad": 0.0,
-    "gsd_max_m": Infinity
+    "gsd_max_m": null
    },
    "observed_km2": 1600.0245,
    "dwell_s_mean": 89.7059555053711,
@@ -118,7 +118,7 @@
     "min_dep": -90.0,
     "max_dep": 90.0,
     "ifov_mrad": 0.0,
-    "gsd_max_m": Infinity
+    "gsd_max_m": null
    },
    "observed_km2": 4746.933,
    "dwell_s_mean": 408.8336486816406,

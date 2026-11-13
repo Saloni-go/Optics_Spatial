@@ -42,6 +42,11 @@ STEPS = [
     ("flight.benchmark", py("-m", "flight.benchmark"), "flight", True),
     ("flight.spacing_study", py("-m", "flight.spacing_study"), None, True),
     ("flight.analysis", py("-m", "flight.analysis"), None, False),
+    ("flight.idea1_bench", py("-m", "flight.idea1_bench", "--fresh"), None, True),          # F7-F9 (shared DEM, multi-res, memory)
+    ("flight.idea1_analysis", py("-m", "flight.idea1_analysis"), None, False),             # figures + F10 complexity model
+    ("flight.idea2", py("-m", "flight.idea2", "sensors", "gsd", "mc", "figs"), None, False),   # sensor model + Monte Carlo
+    ("flight.idea2_timing", py("-m", "flight.idea2", "timing", "figs", "--fresh"), None, True),
+    ("flight.usecases", py("-m", "flight.usecases"), None, False),                         # six applications
     ("corridor.run_corridor", py("-m", "corridor.run_corridor"), None, False),
     ("corridor.benchmark", py("-m", "corridor.benchmark"), "corridor", True),
     ("corridor.analysis", py("-m", "corridor.analysis"), None, False),

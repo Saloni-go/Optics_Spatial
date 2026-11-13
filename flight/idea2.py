@@ -85,7 +85,7 @@ def gsd():
             res[prof].append({"gsd_max_m": g, "observed_km2": float((acc.count > 0).sum() * dem.cell ** 2 / 1e6),
                               "compute_s": t["compute_s"]})
             print(prof, res[prof][-1], flush=True)
-    json.dump(res, open(OUT / "gsd.json", "w"), indent=1, default=str)
+    json.dump(_strict(res), open(OUT / "gsd.json", "w"), indent=1, allow_nan=False)   # unlimited = null
 
 
 def mc(runs):
@@ -103,6 +103,17 @@ def mc(runs):
     json.dump(res, open(OUT / "mc.json", "w"), indent=1)
 
 
+def _strict(o):
+    """Replace inf / nan by None so the JSON is readable outside Python (the deck builder is Node)."""
+    if isinstance(o, dict):
+        return {k: _strict(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_strict(v) for v in o]
+    if isinstance(o, float) and not math.isfinite(o):
+        return None
+    return o
+
+
 def figs():
     from common.analysis import load, medians
     S = {"sensors": json.load(open(OUT / "sensors.json")), "gsd": json.load(open(OUT / "gsd.json")),
@@ -111,7 +122,7 @@ def figs():
     for prof in PROFILES:
         m = medians(rows, f"F11_sensor_{prof}")
         S["timing"][prof] = {a: {"compute_s": p[0]["compute"], "peak_mb": p[0]["peak_mb"]} for a, p in m.items()}
-    names = list(SENSORS)
+    names = [n for n in SENSORS if n in S["sensors"]["valley"]]       # sensors measured in F11
     # 1. observed area and runtime per sensor
     fig, axs = plt.subplots(1, 2, figsize=(11, 3.8))
     w = 0.38
@@ -128,8 +139,8 @@ def figs():
     # 2. resolution requirement
     fig, ax = plt.subplots(figsize=(5.2, 3.6))
     for prof, c in (("valley", "#2a9d8f"), ("cruise", "#e76f51")):
-        d = [r for r in S["gsd"][prof] if r["gsd_max_m"] not in ("inf", math.inf)]
-        inf = [r for r in S["gsd"][prof] if r["gsd_max_m"] in ("inf", math.inf)][0]["observed_km2"]
+        d = [r for r in S["gsd"][prof] if r["gsd_max_m"] not in ("inf", math.inf, None)]
+        inf = [r for r in S["gsd"][prof] if r["gsd_max_m"] in ("inf", math.inf, None)][0]["observed_km2"]
         ax.semilogx([r["gsd_max_m"] for r in d], [100 * r["observed_km2"] / inf for r in d], "o-", c=c, label=PROFILES[prof]["label"])
     ax.set_xlabel("required ground resolution (m per pixel)"); ax.set_ylabel("% of line-of-sight area observed")
     ax.set_title("Seeing is not resolving (6000 px, 60 deg camera)", fontsize=9); ax.legend(fontsize=7.5, frameon=False)
@@ -168,7 +179,7 @@ def figs():
     axs[2].set_ylabel("uncertain area, % of nominal seen area"); axs[2].legend(fontsize=7.5, frameon=False)
     axs[2].set_title("Which error matters", fontsize=9)
     save(fig, OUT / "fig_idea2_uncertainty.png")
-    json.dump(S, open(OUT / "idea2_summary.json", "w"), indent=1, default=str)
+    json.dump(_strict(S), open(OUT / "idea2_summary.json", "w"), indent=1, default=str, allow_nan=False)
     print(json.dumps(S["timing"], indent=1))
 
 
@@ -177,8 +188,11 @@ if __name__ == "__main__":
     ap.add_argument("steps", nargs="*", default=["sensors", "timing", "gsd", "mc", "figs"])
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--runs", type=int, default=20)
+    ap.add_argument("--fresh", action="store_true", help="delete earlier timing rows first")
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
+    if a.fresh:
+        (OUT / "idea2_raw.csv").unlink(missing_ok=True)
     json.dump(machine_info(), open(OUT / "machine.json", "w"), indent=1)
     for st in a.steps:
         print("==", st, flush=True)

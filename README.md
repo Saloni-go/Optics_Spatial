@@ -71,7 +71,8 @@ python3 -m flight.run_flight                     # then flight.benchmark, flight
 
 ### Track 2 extensions (branch `track2-extensions`, results in `results/linux/flight/`)
 
-See `flight/TRACK2_EXTENSIONS.md` for what each experiment shows and the numbers.
+See `flight/TRACK2_EXTENSIONS.md` for what each experiment shows and the numbers; the final deck has five
+Track 2 extension slides (built from `results/linux/flight/`), and `integration.pipeline` runs these steps too.
 
 ```
 python3 -m flight.idea1_bench [F7 F8 F9] --repeats 5   # cheaper computation: shared DEM view, fine-near/coarse-far, tiled memory

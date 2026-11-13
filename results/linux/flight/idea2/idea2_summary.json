@@ -13,7 +13,7 @@
      "min_dep": -90.0,
      "max_dep": 90.0,
      "ifov_mrad": 0.0,
-     "gsd_max_m": Infinity
+     "gsd_max_m": null
     },
     "observed_km2": 1600.0245,
     "dwell_s_mean": 89.7059555053711,
@@ -119,7 +119,7 @@
      "min_dep": -90.0,
      "max_dep": 90.0,
      "ifov_mrad": 0.0,
-     "gsd_max_m": Infinity
+     "gsd_max_m": null
     },
     "observed_km2": 4746.933,
     "dwell_s_mean": 408.8336486816406,
@@ -251,7 +251,7 @@
     "compute_s": 1.8184820319984283
    },
    {
-    "gsd_max_m": Infinity,
+    "gsd_max_m": null,
     "observed_km2": 1600.0245,
     "compute_s": 1.462509785000293
    }
@@ -293,7 +293,7 @@
     "compute_s": 8.4045964859979
    },
    {
-    "gsd_max_m": Infinity,
+    "gsd_max_m": null,
     "observed_km2": 4746.933,
     "compute_s": 1.504804606000107
    }

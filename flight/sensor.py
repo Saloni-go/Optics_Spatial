@@ -36,7 +36,8 @@ class Sensor:
 
     def describe(self):
         return {"name": self.name, "sectors": self.sectors, "min_dep": self.min_dep, "max_dep": self.max_dep,
-                "ifov_mrad": self.ifov * 1e3, "gsd_max_m": self.gsd_max}
+                "ifov_mrad": self.ifov * 1e3,
+                "gsd_max_m": self.gsd_max if math.isfinite(self.gsd_max) else None}   # strict JSON: no Infinity
 
 
 # a 6000-pixel-wide camera with a 60 deg lens: 0.175 mrad per pixel
