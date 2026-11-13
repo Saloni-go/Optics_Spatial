@@ -177,7 +177,7 @@ img(s, "radar/fig_bench_size.png", 0.6, 1.75, 8.6, 4.5, "Compute time and memory
 stat(s, 9.6, 1.9, 3.1, nv.projected_16M_s ? secs(nv.projected_16M_s) : "–", "exact method, 16 M cells (projected)", HEX.accent1);
 stat(s, 9.6, 3.5, 3.1, secs(last(g1.compute_s)), "GDAL, same DEM", HEX.accent2);
 T(s, `Fitted slopes: naive ${f2(nv.exponent)}, R2 ${f2(r21.exponent)}, GDAL ${f2(g1.exponent)} (theory 1.5, 1, 1).`, { x: 9.6, y: 5.1, w: 3.1, h: 1.0, fontSize: 15 });
-foot(s, `R2 timings: original R2 on the team PC; the fixed R2 is 1.5–1.9× slower (laptop, results/linux64) · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
+foot(s, `R2 timings: original R2 on the team PC; the fixed R2 is 1.5–1.9× slower (laptop re-run) · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
 s.addNotes("Naive is measured on 0.25 M and 1 M cells and extrapolated with its slope. GDAL's slope is under 1 because fixed overheads dominate small DEMs.");
 
 const E4 = RB.E4 || {}, sp = (E4.speedup_threads || []), E2 = RB.E2 || {}, E6 = RB.E6 || [];

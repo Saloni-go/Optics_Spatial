@@ -16,7 +16,7 @@ OPTICS_RESULTS=results/linux PYTHONNOUSERSITE=1 PYTHONPATH="$PWD" python3 -m rad
 **Effect.**
 - Agreement with the exact reference (kappa): 0.959 → 0.984 on the 500 map, 0.954 → 0.985 on the 1000 map. GDAL is 0.965.
 - Visible area is now within 1% of the exact result.
-- R2 is 1.5–1.9× slower than before (laptop re-run in `results/linux64/radar`; the old timings are in `benchmark_raw_r2_old.csv`).
+- R2 is 1.5–1.9× slower than before (laptop re-run, 0.25–16M cells).
 
 ## 1. Lowest detectable altitude (`minalt`)
 
