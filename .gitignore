@@ -36,3 +36,4 @@ qgis_plugin/dist/
 presentation/render_final/
 presentation/*_send.pptx
 .cache/
+results/linux/flight/qgis/render/
