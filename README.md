@@ -53,7 +53,37 @@ node presentation\build_pptx.js          # presentation/Terrain_Visibility_Mid_E
 Each benchmark run executes in a fresh process (`common/bench.py`). Runs are repeated 5 times
 (fewer for the slowest configurations) and medians are reported, while every raw run is kept
 in the CSVs. `compute_s` is the algorithm only; `runtime_s` also includes reading the DEM.
-Peak memory is the process peak working set.
+Peak memory is the process peak working set (Windows `peak_wset`, Linux `VmHWM`).
+
+### Linux (Ubuntu 22.04, QGIS 3.44, GDAL 3.4)
+
+Use the system Python that ships with QGIS and keep the user site-packages out (a user-installed
+NumPy 2.x breaks Ubuntu's GDAL bindings). `OPTICS_RESULTS` sends every output of a run to its own
+folder, so results from different machines never overwrite each other:
+
+```
+export PYTHONPATH="$PWD" PYTHONNOUSERSITE=1 MPLCONFIGDIR="$PWD/.cache/mpl"
+export OPTICS_RESULTS="$PWD/results/linux"      # optional; default is results/
+python3 scripts/prepare_data.py                  # or copy data/dem_*.tif and hillshade_*.tif from another clone
+python3 -m radar.validate                        # checks the viewshed engine on this GDAL
+python3 -m flight.run_flight                     # then flight.benchmark, flight.spacing_study, flight.analysis
+```
+
+### Track 2 extensions (branch `track2-extensions`, results in `results/linux/flight/`)
+
+See `flight/TRACK2_EXTENSIONS.md` for what each experiment shows and the numbers.
+
+```
+python3 -m flight.idea1_bench [F7 F8 F9] --repeats 5   # cheaper computation: shared DEM view, fine-near/coarse-far, tiled memory
+python3 -m flight.idea1_analysis                       # figures + F10 complexity model
+python3 -m flight.idea2 [sensors timing gsd mc figs]   # sensor model (FOV, resolution, dwell) + Monte Carlo uncertainty
+python3 -m flight.usecases [link river sar altitude fleet lookahead figs]   # six applications
+QT_QPA_PLATFORM=offscreen python3 qgis/track2_layers.py "$PWD" qgis/track2_extensions.qgz   # QGIS project with playback
+QT_QPA_PLATFORM=offscreen python3 qgis/track2_render_bench.py "$PWD"                         # QGIS draw time + playback fps
+```
+
+In a running QGIS (Python console): `exec(open("qgis/track2_layers.py").read()); build(QgsProject.instance(), "<repo>")`,
+then View > Panels > Temporal Controller and press play.
 
 ## Layout
 
@@ -61,15 +91,19 @@ Peak memory is the process peak working set.
 common/    config, raster I/O, benchmark harness, plotting, shared radar sites
 radar/     viewshed.py (naive LOS, R2, GDAL), validate, run_radar, jobs, benchmark, analysis
 flight/    route.py, visibility.py (baseline/cached/window/parallel/adaptive), run_flight, ...
+           fast.py (shared DEM view, multi-resolution, tiled accumulator), sensor.py (FOV / resolution / dwell),
+           uncertainty.py (Monte Carlo), usecases.py (link, river, SAR, altitude, fleet, look-ahead),
+           idea1_bench.py, idea1_analysis.py, idea2.py, jobs_fast.py, TRACK2_EXTENSIONS.md
 corridor/  exposure.py, optimizer.py (Dijkstra, A*, SciPy, multi-resolution), run_corridor, ...
            c/gridsearch.c + dstar.inc (compiled searches, cost-to-go field, repair, D* Lite), cgrid.py,
            radarfield.py (per-radar threat updates, detection model), interactive_core.py (Planner),
            interactive.py (viewer), interactive_bench.py; riskcsp.py (certified risk budget), tiles.py
            (tile overlay), altitude.py (3-D routing), placement.py (radar placement game), uncertainty.py,
            alternatives.py, extensions_bench.py; c/: parallel.inc (delta-stepping), csp.inc, tiles.inc, layers.inc
-qgis/      build_project.py, render_bench.py, terrain_visibility.qgz
+qgis/      build_project.py, render_bench.py, terrain_visibility.qgz,
+           track2_layers.py, track2_render_bench.py, track2_extensions.qgz (Track 2 playback project)
 data/      DEMs, hillshades, synthetic terrains
-results/   radar/, flight/, corridor/, shared/
+results/   radar/, flight/, corridor/, shared/; linux/ (Track 2 runs on the Linux laptop)
 report/    mid-submission report
 presentation/  PowerPoint deck (15 mid-evaluation slides + backup section) and its generator
 ```

@@ -1,44 +1,248 @@
 == F7
-  F7_shared/window mode=0 dem=4000: median 5.829s, peak 308 MB (n=5)
-  F7_shared/cached mode=1 dem=4000: median 4.752s, peak 400 MB (n=5)
-  F7_shared/threads mode=2 dem=4000: median 2.700s, peak 918 MB (n=5)
-  F7_shared/shared mode=3 dem=4000: median 4.627s, peak 362 MB (n=5)
-  F7_shared/shared_threads mode=4 dem=4000: median 2.060s, peak 844 MB (n=5)
+  F7_shared/window mode=0 dem=4000: median 5.810s, peak 307 MB (n=5)
+  F7_shared/cached mode=1 dem=4000: median 4.650s, peak 400 MB (n=5)
+  F7_shared/threads mode=2 dem=4000: median 2.235s, peak 919 MB (n=5)
+  F7_shared/shared mode=3 dem=4000: median 4.632s, peak 362 MB (n=5)
+  F7_shared/shared_threads mode=4 dem=4000: median 1.690s, peak 841 MB (n=5)
 == F8
-  F8_multires_valley/shared_threads k=1 dem=4000: median 2.240s, peak 848 MB (n=3)
-  F8_multires_valley/multires_rn2 k=2 dem=4000: median 2.260s, peak 890 MB (n=3)
-  F8_multires_valley/multires_rn5 k=2 dem=4000: median 2.279s, peak 887 MB (n=3)
-  F8_multires_valley/multires_rn10 k=2 dem=4000: median 2.366s, peak 871 MB (n=3)
-  F8_multires_valley/multires_rn2 k=3 dem=4000: median 1.857s, peak 878 MB (n=3)
-  F8_multires_valley/multires_rn5 k=3 dem=4000: median 1.897s, peak 877 MB (n=3)
-  F8_multires_valley/multires_rn10 k=3 dem=4000: median 2.040s, peak 861 MB (n=3)
-  F8_multires_valley/multires_rn2 k=4 dem=4000: median 1.733s, peak 878 MB (n=3)
-  F8_multires_valley/multires_rn5 k=4 dem=4000: median 1.798s, peak 876 MB (n=3)
-  F8_multires_valley/multires_rn10 k=4 dem=4000: median 1.949s, peak 863 MB (n=3)
-  F8_multires_cruise/shared_threads k=1 dem=4000: median 2.187s, peak 839 MB (n=3)
-  F8_multires_cruise/multires_rn2 k=2 dem=4000: median 2.051s, peak 888 MB (n=3)
-  F8_multires_cruise/multires_rn5 k=2 dem=4000: median 2.128s, peak 883 MB (n=3)
-  F8_multires_cruise/multires_rn10 k=2 dem=4000: median 2.295s, peak 874 MB (n=3)
-  F8_multires_cruise/multires_rn2 k=3 dem=4000: median 1.898s, peak 880 MB (n=3)
-  F8_multires_cruise/multires_rn5 k=3 dem=4000: median 1.912s, peak 878 MB (n=3)
-  F8_multires_cruise/multires_rn10 k=3 dem=4000: median 2.032s, peak 869 MB (n=3)
-  F8_multires_cruise/multires_rn2 k=4 dem=4000: median 1.757s, peak 876 MB (n=3)
-  F8_multires_cruise/multires_rn5 k=4 dem=4000: median 1.795s, peak 876 MB (n=3)
-  F8_multires_cruise/multires_rn10 k=4 dem=4000: median 1.936s, peak 865 MB (n=3)
+  F8_multires_valley/shared_threads k=1 dem=4000: median 1.733s, peak 842 MB (n=3)
+  F8_multires_valley/multires_rn2 k=2 dem=4000: median 1.765s, peak 891 MB (n=3)
+  F8_multires_valley/multires_rn5 k=2 dem=4000: median 1.792s, peak 887 MB (n=3)
+  F8_multires_valley/multires_rn10 k=2 dem=4000: median 1.851s, peak 864 MB (n=3)
+  F8_multires_valley/multires_rn2 k=3 dem=4000: median 1.660s, peak 881 MB (n=3)
+  F8_multires_valley/multires_rn5 k=3 dem=4000: median 1.683s, peak 876 MB (n=3)
+  F8_multires_valley/multires_rn10 k=3 dem=4000: median 1.775s, peak 863 MB (n=3)
+  F8_multires_valley/multires_rn2 k=4 dem=4000: median 1.604s, peak 878 MB (n=3)
+  F8_multires_valley/multires_rn5 k=4 dem=4000: median 1.625s, peak 874 MB (n=3)
+  F8_multires_valley/multires_rn10 k=4 dem=4000: median 1.725s, peak 862 MB (n=3)
+  F8_multires_cruise/shared_threads k=1 dem=4000: median 1.755s, peak 851 MB (n=3)
+  F8_multires_cruise/multires_rn2 k=2 dem=4000: median 1.793s, peak 891 MB (n=3)
+  F8_multires_cruise/multires_rn5 k=2 dem=4000: median 1.881s, peak 890 MB (n=3)
+  F8_multires_cruise/multires_rn10 k=2 dem=4000: median 1.939s, peak 873 MB (n=3)
+  F8_multires_cruise/multires_rn2 k=3 dem=4000: median 1.839s, peak 880 MB (n=3)
+  F8_multires_cruise/multires_rn5 k=3 dem=4000: median 1.894s, peak 876 MB (n=3)
+  F8_multires_cruise/multires_rn10 k=3 dem=4000: median 1.784s, peak 868 MB (n=3)
+  F8_multires_cruise/multires_rn2 k=4 dem=4000: median 1.622s, peak 875 MB (n=3)
+  F8_multires_cruise/multires_rn5 k=4 dem=4000: median 1.648s, peak 876 MB (n=3)
+  F8_multires_cruise/multires_rn10 k=4 dem=4000: median 1.734s, peak 864 MB (n=3)
 == F9
-  F9_memory/full cells=250000 dem=500: median 0.042s, peak 92 MB (n=3)
-  F9_memory_fixed_route/full cells=250000 dem=500: median 0.040s, peak 92 MB (n=3)
-  F9_memory/tiled cells=250000 dem=500: median 0.040s, peak 91 MB (n=3)
-  F9_memory_fixed_route/tiled cells=250000 dem=500: median 0.041s, peak 91 MB (n=3)
-  F9_memory/full cells=1000000 dem=1000: median 0.132s, peak 143 MB (n=3)
-  F9_memory_fixed_route/full cells=1000000 dem=1000: median 0.084s, peak 133 MB (n=3)
-  F9_memory/tiled cells=1000000 dem=1000: median 0.126s, peak 136 MB (n=3)
-  F9_memory_fixed_route/tiled cells=1000000 dem=1000: median 0.085s, peak 127 MB (n=3)
-  F9_memory/full cells=4000000 dem=2000: median 0.746s, peak 393 MB (n=3)
-  F9_memory_fixed_route/full cells=4000000 dem=2000: median 0.181s, peak 214 MB (n=3)
-  F9_memory/tiled cells=4000000 dem=2000: median 0.667s, peak 370 MB (n=3)
-  F9_memory_fixed_route/tiled cells=4000000 dem=2000: median 0.173s, peak 192 MB (n=3)
-  F9_memory/full cells=16000000 dem=4000: median 5.612s, peak 1839 MB (n=3)
-  F9_memory_fixed_route/full cells=16000000 dem=4000: median 0.438s, peak 415 MB (n=3)
-  F9_memory/tiled cells=16000000 dem=4000: median 4.304s, peak 1666 MB (n=3)
-  F9_memory_fixed_route/tiled cells=16000000 dem=4000: median 0.408s, peak 343 MB (n=3)
+  F9_memory/full cells=250000 dem=500: median 0.042s, peak 91 MB (n=3)
+  F9_memory_fixed_route/full cells=250000 dem=500: median 0.043s, peak 92 MB (n=3)
+  F9_memory/tiled cells=250000 dem=500: median 0.039s, peak 91 MB (n=3)
+  F9_memory_fixed_route/tiled cells=250000 dem=500: median 0.040s, peak 91 MB (n=3)
+  F9_memory/full cells=1000000 dem=1000: median 0.116s, peak 140 MB (n=3)
+  F9_memory_fixed_route/full cells=1000000 dem=1000: median 0.090s, peak 133 MB (n=3)
+  F9_memory/tiled cells=1000000 dem=1000: median 0.113s, peak 136 MB (n=3)
+  F9_memory_fixed_route/tiled cells=1000000 dem=1000: median 0.084s, peak 128 MB (n=3)
+  F9_memory/full cells=4000000 dem=2000: median 0.619s, peak 401 MB (n=3)
+  F9_memory_fixed_route/full cells=4000000 dem=2000: median 0.178s, peak 214 MB (n=3)
+  F9_memory/tiled cells=4000000 dem=2000: median 0.492s, peak 354 MB (n=3)
+  F9_memory_fixed_route/tiled cells=4000000 dem=2000: median 0.166s, peak 192 MB (n=3)
+  F9_memory/full cells=16000000 dem=4000: median 4.112s, peak 1792 MB (n=3)
+  F9_memory_fixed_route/full cells=16000000 dem=4000: median 0.418s, peak 415 MB (n=3)
+  F9_memory/tiled cells=16000000 dem=4000: median 2.995s, peak 1728 MB (n=3)
+  F9_memory_fixed_route/tiled cells=16000000 dem=4000: median 0.394s, peak 343 MB (n=3)
+{
+ "F7": [
+  {
+   "mode": "window",
+   "compute_s": 5.492485459002637,
+   "peak_mb": 307.421875
+  },
+  {
+   "mode": "cached",
+   "compute_s": 4.334705157998542,
+   "peak_mb": 399.59765625
+  },
+  {
+   "mode": "threads",
+   "compute_s": 1.9160019820010348,
+   "peak_mb": 918.640625
+  },
+  {
+   "mode": "shared",
+   "compute_s": 4.329432031001488,
+   "peak_mb": 361.70703125
+  },
+  {
+   "mode": "shared_threads",
+   "compute_s": 1.38264072000311,
+   "peak_mb": 840.515625
+  }
+ ],
+ "F8": {
+  "valley": [
+   {
+    "k": 1,
+    "r_near_km": null,
+    "compute_s": 1.407737786998041,
+    "jaccard": 1.0
+   },
+   {
+    "k": 2,
+    "r_near_km": 2,
+    "compute_s": 1.4309590769989882,
+    "jaccard": 0.9344726870519235,
+    "missed_km2": 21.4938,
+    "extra_km2": 89.1963
+   },
+   {
+    "k": 3,
+    "r_near_km": 2,
+    "compute_s": 1.330110295999475,
+    "jaccard": 0.8958164768153317,
+    "missed_km2": 25.6446,
+    "extra_km2": 157.4559
+   },
+   {
+    "k": 4,
+    "r_near_km": 2,
+    "compute_s": 1.2736960039983387,
+    "jaccard": 0.8638765724572991,
+    "missed_km2": 28.008,
+    "extra_km2": 219.699
+   },
+   {
+    "k": 2,
+    "r_near_km": 5,
+    "compute_s": 1.4561903710018669,
+    "jaccard": 0.9473504801887799,
+    "missed_km2": 16.7364,
+    "extra_km2": 71.2557
+   },
+   {
+    "k": 3,
+    "r_near_km": 5,
+    "compute_s": 1.3633720719990379,
+    "jaccard": 0.9145073361064588,
+    "missed_km2": 20.0727,
+    "extra_km2": 127.629
+   },
+   {
+    "k": 4,
+    "r_near_km": 5,
+    "compute_s": 1.295108493999578,
+    "jaccard": 0.8863001016784786,
+    "missed_km2": 22.3902,
+    "extra_km2": 179.9982
+   },
+   {
+    "k": 2,
+    "r_near_km": 10,
+    "compute_s": 1.522608016999584,
+    "jaccard": 0.969603891438944,
+    "missed_km2": 8.7678,
+    "extra_km2": 41.1165
+   },
+   {
+    "k": 3,
+    "r_near_km": 10,
+    "compute_s": 1.4423009070014814,
+    "jaccard": 0.9487420125113819,
+    "missed_km2": 10.5453,
+    "extra_km2": 75.33
+   },
+   {
+    "k": 4,
+    "r_near_km": 10,
+    "compute_s": 1.3954086630001257,
+    "jaccard": 0.9301561982756621,
+    "missed_km2": 11.9052,
+    "extra_km2": 107.3439
+   }
+  ],
+  "cruise": [
+   {
+    "k": 1,
+    "r_near_km": null,
+    "compute_s": 1.4239700809994247,
+    "jaccard": 1.0
+   },
+   {
+    "k": 2,
+    "r_near_km": 2,
+    "compute_s": 1.4611590019994765,
+    "jaccard": 0.9719652633566169,
+    "missed_km2": 20.61,
+    "extra_km2": 115.713
+   },
+   {
+    "k": 3,
+    "r_near_km": 2,
+    "compute_s": 1.3631288030010182,
+    "jaccard": 0.9544025345948114,
+    "missed_km2": 23.5458,
+    "extra_km2": 202.1184
+   },
+   {
+    "k": 4,
+    "r_near_km": 2,
+    "compute_s": 1.2996252010016178,
+    "jaccard": 0.9403173512296299,
+    "missed_km2": 23.2722,
+    "extra_km2": 276.5421
+   },
+   {
+    "k": 2,
+    "r_near_km": 5,
+    "compute_s": 1.5102782070025569,
+    "jaccard": 0.9720523739415615,
+    "missed_km2": 20.5416,
+    "extra_km2": 115.3476
+   },
+   {
+    "k": 3,
+    "r_near_km": 5,
+    "compute_s": 1.3702512079980806,
+    "jaccard": 0.954519231888444,
+    "missed_km2": 23.4648,
+    "extra_km2": 201.5982
+   },
+   {
+    "k": 4,
+    "r_near_km": 5,
+    "compute_s": 1.3198466430003464,
+    "jaccard": 0.9404238621337165,
+    "missed_km2": 23.2272,
+    "extra_km2": 276.021
+   },
+   {
+    "k": 2,
+    "r_near_km": 10,
+    "compute_s": 1.5500528299999132,
+    "jaccard": 0.974146593791252,
+    "missed_km2": 18.1215,
+    "extra_km2": 107.379
+   },
+   {
+    "k": 3,
+    "r_near_km": 10,
+    "compute_s": 1.4613922300013655,
+    "jaccard": 0.9570359496714442,
+    "missed_km2": 21.1581,
+    "extra_km2": 190.9953
+   },
+   {
+    "k": 4,
+    "r_near_km": 10,
+    "compute_s": 1.4048977339989506,
+    "jaccard": 0.943038620313622,
+    "missed_km2": 21.0879,
+    "extra_km2": 264.3624
+   }
+  ]
+ },
+ "F9": {
+  "F9_memory": {
+   "full": [
+    {
+     "cells": 250000.0,
+     "peak_mb": 91.375,
+     "acc_mb": 1.430511474609375,
+     "compute_s": 0.024424433999229223
+    },
+    {
+     "cells": 1000000.0,
+     "peak_mb": 140.18359375,
+     "acc_mb": 5.7220458984375
+{'model': 'T = a*W*min(pi r^2/cell^2, N) + b*W', 'a_ns_per_cell': 11.440827605028748, 'b_ms_per_position': 0.10044196564768838, 'r2_log': 0.9982717081024844, 'mean_abs_err_pct': 4.905290269216696, 'max_abs_err_pct': 16.214557378341954}
