@@ -216,8 +216,8 @@ s = add("CONTENT", "Track 2: flight-route visibility");
 eyebrow(s, "Track 2 · Scenario", HEX.accent2);
 s.addText(`Valley flying sees ${pc(fa.seen_in_corridor_frac)} of the corridor`, { placeholder: "title" });
 img(s, fs.existsSync(R("shared/qgis_track2_agl300.png")) ? "shared/qgis_track2_agl300.png" : "flight/fig_cumulative_visibility.png", 0.6, 1.7, 8.8, 4.7, "Cumulative visibility along the route");
-stat(s, 9.8, 1.9, 2.9, `${f0(fa.seen_km2)} km²`, `seen at 300 m AGL (${pc(fa.seen_in_corridor_frac)} of the corridor)`, HEX.accent2);
-stat(s, 9.8, 3.5, 2.9, `${f0(fm.seen_km2)} km²`, `seen cruising at 5,500 m (${pc(fm.seen_in_corridor_frac)})`, HEX.accent1);
+stat(s, 9.8, 1.9, 2.9, f0(fa.seen_km2), `km² seen at 300 m AGL (${pc(fa.seen_in_corridor_frac)} of the corridor)`, HEX.accent2);
+stat(s, 9.8, 3.5, 2.9, f0(fm.seen_km2), `km² seen cruising at 5,500 m (${pc(fm.seen_in_corridor_frac)})`, HEX.accent1);
 T(s, `${FS.waypoints || "–"} viewsheds in ${f1(fa.compute_s)} s.`, { x: 9.8, y: 5.2, w: 2.9, h: 0.6, fontSize: 15 });
 foot(s, `Corridor = ${f0(FS.corridor_km2)} km² within 20 km of the route · blind spots = corridor cells never seen`);
 s.addNotes("The valley walls hide almost everything beyond the first ridge from a low aircraft: good for staying hidden, bad for surveillance. That trade-off is what Track 3 optimises.");
@@ -303,7 +303,7 @@ const sarRow = (agl, sp) => sr.find((r) => r.agl === agl && r.track_spacing_m ==
 T(s, [
   { text: "Radio link: ", options: { bold: true, color: HEX.dk1 } }, { text: `valley flight reaches a town station on ${pc((ul.valley || {}).link_frac)} of the route (longest gap ${f0((ul.valley || {}).longest_outage_km)} km); cruise ${pc((ul.cruise || {}).link_frac)}.\n` },
   { text: "River / road: ", options: { bold: true, color: HEX.dk1 } }, { text: "following the valley sees all of it; a straight 5,500 m line only 65% with a 3 m camera.\n" },
-  { text: "Search & rescue: ", options: { bold: true, color: HEX.dk1 } }, { text: `0.5 m camera, 15 × 15 km: 1 km tracks cover ${pc(sarRow(300, 1000).covered_frac, 1)} in ${f0(sarRow(300, 1000).flight_min)} min, 4 km tracks ${pc(sarRow(300, 4000).covered_frac)} in ${f0(sarRow(300, 4000).flight_min)} min.\n` },
+  { text: "Search & rescue: ", options: { bold: true, color: HEX.dk1 } }, { text: `0.5 m camera, 15 × 15 km: 1 km tracks cover ${pc(sarRow(300, 1000).covered_frac, 2)} in ${f0(sarRow(300, 1000).flight_min)} min, 4 km tracks ${pc(sarRow(300, 4000).covered_frac)} in ${f0(sarRow(300, 4000).flight_min)} min.\n` },
   { text: "Height: ", options: { bold: true, color: HEX.dk1 } }, { text: "80% of the local view needs ~2 km above ground; per-position height gains only ~2%.\n" },
   { text: "Several aircraft: ", options: { bold: true, color: HEX.dk1 } }, { text: `${fl.map((a) => f0(a.union_km2)).join(" → ")} km²; the 4th overlaps ${pc((last(fl) || {}).overlap_with_earlier_frac)}.\n` },
   { text: "Look-ahead: ", options: { bold: true, color: HEX.dk1 } }, { text: `< 20 s to terrain on ${pc((la.valley || {}).warn_frac, 1)} of the valley route if heading is held.` }],
