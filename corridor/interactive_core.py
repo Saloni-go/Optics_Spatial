@@ -248,11 +248,14 @@ class AlphaBank:
     nearest banked alpha is followed at once (exact when alpha is on the ladder), while the exact field
     for the new alpha is rebuilt in the background.  Built with one C search per alpha on parallel threads."""
 
-    def __init__(self, p, goal, alphas=(2.0, 5.0, 10.0, 20.0, 50.0), threads=None):
+    def __init__(self, p, goal, alphas=(2.0, 5.0, 10.0, 20.0, 50.0), threads=None, compact=False):
+        """compact: keep 1-byte direction codes instead of int32 next pointers (16 MB instead of 64 MB per
+        alpha on 16 M cells; the same routes, see corridor/memory_bench.py)."""
         self.p, self.goal_rc = p, goal
         self.goal = p.idx(goal)
         self.alphas = sorted(float(a) for a in alphas)
         self.threads = threads
+        self.compact = compact
         self.next, self.valid = {}, False
         self.build()
 
@@ -280,9 +283,11 @@ class AlphaBank:
         else:
             with ThreadPoolExecutor(max_workers=min(self.threads, len(self.alphas))) as ex:
                 nexts = dict(ex.map(one, self.alphas))
+        if getattr(self, "compact", False):
+            nexts = {a: cgrid.to_dirs(nx, p.W) for a, nx in nexts.items()}
         self.next, self.valid = nexts, True
         self.pre_s = time.perf_counter() - t
-        self.mem_mb = len(self.alphas) * N * 4 / 2 ** 20
+        self.mem_mb = sum(v.nbytes for v in nexts.values()) / 2 ** 20
         return self.pre_s
 
     def nearest(self, alpha):
@@ -294,32 +299,46 @@ class AlphaBank:
         """(path, cost at the requested alpha, banked alpha used)."""
         a = self.nearest(alpha)
         s = self.p.idx(start) if isinstance(start, tuple) else int(start)
-        cap = 40 * (self.p.H + self.p.W)
-        while True:
-            path = np.empty(cap, np.int32)
-            n = cgrid.lib().grid_follow(self.next[a], s, self.goal, path, cap)
-            if n >= 0:
-                break
-            cap = -n
-        path = path[:n].tolist() if n > 0 else None
+        path = cgrid.follow(self.next[a], s, self.goal, self.p.W)
         return path, cost_at(self.p, path, alpha), a
 
 
 # ------------------------------------------------------------------ the planner
 class Planner:
-    def __init__(self, size=4000, mode="exposure", alpha=10.0, beta=2.0, n_radars=6, landmarks=4, threads=cgrid.THREADS):
-        """threads: cores for field (re)builds (delta-stepping); None = serial Dijkstra."""
+    def __init__(self, size=4000, mode="exposure", alpha=10.0, beta=2.0, n_radars=6, landmarks=4, threads=cgrid.THREADS,
+                 dem=None, sites=None, ends=None):
+        """threads: cores for field (re)builds (delta-stepping); None = serial Dijkstra.
+        Any DEM (a DEM object or a path to a projected GeoTIFF) instead of the project's size-`size` DEM;
+        sites = radar positions [(x, y)] in its CRS (default: n_radars ridge-top sites);
+        ends = ((x, y), (x, y)) start and goal in its CRS (default: the project scenario / the DEM diagonal)."""
         t = time.perf_counter()
         self.threads = threads
-        self.size, self.mode = size, mode
-        self.dem = DEM(dem_path(size))
-        self.field = RadarField(self.dem, sites_for(self.dem, size, n_radars), mode)
+        self.mode = mode
+        self.dem = DEM(dem_path(size)) if dem is None else dem if isinstance(dem, DEM) else DEM(dem)
+        self.size = size if dem is None else max(self.dem.shape)
+        self.field = RadarField(self.dem, sites if sites is not None else sites_for(self.dem, self.size, n_radars), mode)
         self.p = Problem(self.dem.z, self.field.E.copy(), blocked_mask(self.dem), self.dem.cell, alpha, beta)
-        self.start, self.goal = scenario_endpoints(self.dem, size, self.p.blocked)
+        if ends is not None:
+            self.start, self.goal = (self.snap(*self.dem.to_pixel(x, y)[::-1]) for x, y in ends)
+        else:
+            self.start, self.goal = scenario_endpoints(self.dem, self.size, self.p.blocked)
         self.n_landmarks = landmarks
         self.ctg = self.lm = self.dstar = self.pyr = self.bank = None
         self.events = []
         self.log("load", time.perf_counter() - t, "DEM + radar threat surface")
+
+    def snap(self, r, c, radius=50):
+        """Nearest unblocked cell to the (fractional) cell r, c, clipped to the grid."""
+        H, W = self.p.H, self.p.W
+        r, c = int(min(max(round(r), 0), H - 1)), int(min(max(round(c), 0), W - 1))
+        if not self.p.blocked[r, c]:
+            return r, c
+        r0, c0 = max(r - radius, 0), max(c - radius, 0)
+        free = np.argwhere(~self.p.blocked[r0:r + radius + 1, c0:c + radius + 1])
+        if not len(free):
+            raise ValueError("no unblocked cell near the requested point")
+        k = int(np.argmin(np.hypot(free[:, 0] + r0 - r, free[:, 1] + c0 - c)))
+        return int(free[k, 0] + r0), int(free[k, 1] + c0)
 
     def log(self, action, seconds, how, **extra):
         e = {"action": action, "ms": 1000 * seconds, "how": how, **extra}
@@ -339,7 +358,7 @@ class Planner:
             self.pyr = Pyramid(self.p)
             self.log("precompute", self.pyr.pre_s, "Level 3 pyramid (coarse grids x2..x32)", mem_mb=self.pyr.mem_mb)
         if bank:
-            self.bank = AlphaBank(self.p, self.goal, bank)
+            self.bank = AlphaBank(self.p, self.goal, bank, compact=True)   # 1-byte directions: same routes, 4x less memory
             self.log("precompute", self.bank.pre_s, f"alpha bank {self.bank.alphas} (parallel C)", mem_mb=self.bank.mem_mb)
 
     def _bank_ok(self):
@@ -357,7 +376,8 @@ class Planner:
         def work():
             nb = AlphaBank.__new__(AlphaBank)
             nb.__dict__.update({"p": self.p, "goal_rc": self.goal, "goal": self.p.idx(self.goal),
-                                "alphas": alphas, "threads": threads, "next": {}, "valid": False})
+                                "alphas": alphas, "threads": threads, "next": {}, "valid": False,
+                                "compact": getattr(self.bank, "compact", False)})
             nb.build()
             if gen == self._bgen:
                 self.bank = nb
@@ -558,4 +578,5 @@ class Planner:
                 "status": r["status"], "exact_status": r.get("exact_status")}
 
     def detection_probability(self, path=None):
-        return self.field.detection_probability(path or self.path, self.p.W, self.p.cell) if self.mode == "detection" else None
+        path = path if path is not None else getattr(self, "path", None)
+        return self.field.detection_probability(path, self.p.W, self.p.cell) if self.mode == "detection" else None

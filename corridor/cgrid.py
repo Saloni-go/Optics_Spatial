@@ -24,6 +24,8 @@ INCS = [HERE / "dstar.inc", HERE / "parallel.inc", HERE / "csp.inc", HERE / "til
 
 
 def build(force=False):
+    if DLL.exists() and not force and not SRC.exists():
+        return DLL                         # binary-only copy (the QGIS plugin ships the DLL without the C sources)
     if DLL.exists() and not force and DLL.stat().st_mtime >= max(f.stat().st_mtime for f in [SRC] + INCS):
         return DLL
     import os
@@ -43,13 +45,32 @@ PAR_LOCK = __import__("threading").Lock()     # one parallel search at a time: i
 THREADS = min(12, __import__("os").cpu_count() or 1)
 
 
+def _shadow(dll):
+    """Binary-only copy (QGIS plugin): load a copy in the temp folder, so Windows does not lock the
+    plugin's own DLL and the plugin can be upgraded or uninstalled while QGIS runs."""
+    if SRC.exists():
+        return dll
+    import tempfile
+    st = dll.stat()
+    copy = Path(tempfile.gettempdir()) / f"visibility_corridor_{st.st_size}_{int(st.st_mtime)}.dll"
+    if not copy.exists():
+        import os
+        tmp = copy.with_suffix(f".{os.getpid()}.tmp")
+        shutil.copy2(dll, tmp)
+        try:
+            os.replace(tmp, copy)             # atomic: two QGIS sessions may start at once
+        except OSError:
+            tmp.unlink(missing_ok=True)
+    return copy
+
+
 def lib():
     """Load the DLL once; fully configured before it becomes visible to other threads."""
     global _lib
     if _lib is None:
         with _lock:
             if _lib is None:
-                L = ct.CDLL(str(build()))
+                L = ct.CDLL(str(_shadow(build())))
                 P = np.ctypeslib.ndpointer
                 f64, f32, u8, i32 = (P(dtype=t, flags="C_CONTIGUOUS") for t in (np.float64, np.float32, np.uint8, np.int32))
                 L.grid_search.restype = ct.c_int64
@@ -67,6 +88,10 @@ def lib():
                                           ct.c_int32, u8, f64, i32, ct.POINTER(ct.c_int64)]
                 L.grid_follow.restype = ct.c_int64
                 L.grid_follow.argtypes = [i32, ct.c_int32, ct.c_int32, i32, ct.c_int64]
+                L.grid_next_to_dir.restype = None
+                L.grid_next_to_dir.argtypes = [ct.c_int64, ct.c_int32, i32, u8]
+                L.grid_follow_dir.restype = ct.c_int64
+                L.grid_follow_dir.argtypes = [u8, ct.c_int32, ct.c_int32, ct.c_int32, i32, ct.c_int64]
                 L.dstar_new.restype = ct.c_void_p
                 L.dstar_new.argtypes = [ct.c_int32, ct.c_int32, f64, f64, u8, ct.c_double, ct.c_double, ct.c_double,
                                         ct.c_int32, ct.c_int32]
@@ -121,6 +146,27 @@ def set_exposure(p, E):
     if hasattr(p, "_c_arrays"):
         z, _, blk = p._c_arrays
         p._c_arrays = (z, p.E.ravel(), blk)
+
+
+def to_dirs(next_arr, W):
+    """int32 next pointers -> 1-byte direction codes (exact, 4x less memory)."""
+    d = np.empty(next_arr.size, np.uint8)
+    lib().grid_next_to_dir(next_arr.size, W, np.ascontiguousarray(next_arr, np.int32), d)
+    return d
+
+
+def follow(field, start, goal, W=None):
+    """Route start..goal from a next-pointer field (int32) or a direction field (uint8, needs W)."""
+    cap = 1 << 16
+    while True:
+        path = np.empty(cap, np.int32)
+        if field.dtype == np.uint8:
+            n = lib().grid_follow_dir(field, W, start, goal, path, cap)
+        else:
+            n = lib().grid_follow(field, start, goal, path, cap)
+        if n >= 0:
+            return path[:n].tolist() if n > 0 else None
+        cap = -n
 
 
 class CostToGo:

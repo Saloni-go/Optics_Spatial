@@ -27,3 +27,11 @@ presentation/render/
 results/*/*_log.txt
 results/corridor/interactive/*_log.txt
 results/corridor/extensions/*_log.txt
+
+# QGIS plugin build output (rebuild with run.bat qgis_plugin\build_plugin.py)
+qgis_plugin/build/
+qgis_plugin/dist/
+
+# rendered slide previews and the downscaled copy made for sending
+presentation/render_final/
+presentation/*_send.pptx

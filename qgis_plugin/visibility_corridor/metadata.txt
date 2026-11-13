@@ -1,0 +1,25 @@
+[general]
+name=Visibility Corridor
+qgisMinimumVersion=3.28
+qgisMaximumVersion=3.99
+description=Interactive low-level flight corridor planner that keeps aircraft hidden from ground radars.
+about=Plans the least-exposed route across a DEM while radar threat surfaces change. Click a start and a goal on
+    the map, drag / add / remove radars, change the exposure weight or ask for the shortest route under a detection
+    budget; every answer comes from precomputed structures (cost-to-go field, alpha bank, multi-resolution pyramid)
+    or a parallel C solver, and the panel says which one answered and how long it took.
+    Bundled scenario: Copernicus GLO-30 DEM of the Garhwal Himalaya (Uttarakhand). Any projected DEM raster
+    layer can be used instead. Windows 64-bit (the C solver is shipped as a DLL).
+    Processing Toolbox (also usable in the Model Designer): radar coverage (Track 1), route visibility (Track 2),
+    threat surface, least-exposure route and shortest route under a detection budget (Track 3), and a
+    route detection check (no detection outside the cumulative viewshed).
+    Not open source: distributed as a ZIP for course evaluation only (see LICENSE.txt).
+version=0.1.0
+author=Optics_Spatial team (Track 3)
+email=akshatsrivastava6951@gmail.com
+tags=routing, viewshed, radar, terrain, DEM, least-cost path, visibility
+category=Raster
+icon=icon.svg
+experimental=True
+deprecated=False
+server=False
+hasProcessingProvider=yes

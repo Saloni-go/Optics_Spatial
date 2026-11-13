@@ -23,11 +23,12 @@ def sites_for(dem, size, n=6):
         return [(x, y) for x, y, _ in load_sites()]
     out = []
     k = int(1500 / dem.cell)
+    H, W = dem.shape                                     # = size x size for the project DEMs; any shape works
     for i in range(n):
         fx, fy = REL_SITES[i % len(REL_SITES)]
         if i >= len(REL_SITES):                          # extra radars for the scaling test
             fx, fy = ((i * 0.37) % 0.8) + 0.1, ((i * 0.61) % 0.8) + 0.1
-        c, r = int(fx * size), int(fy * size)
+        c, r = int(fx * W), int(fy * H)
         r0, c0 = max(r - k, 0), max(c - k, 0)
         win = np.nan_to_num(dem.z[r0:r + k, c0:c + k], nan=-1)
         rr, cc = np.unravel_index(np.argmax(win), win.shape)

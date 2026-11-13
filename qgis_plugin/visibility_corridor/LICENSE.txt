@@ -1,0 +1,8 @@
+Visibility Corridor QGIS plugin
+Copyright (c) 2026 Optics_Spatial team. All rights reserved.
+
+This plugin is not open source. It is shared with course staff and team members for evaluation only.
+You may install and run it; you may not redistribute, publish or modify it without the authors' permission.
+
+Bundled data: Copernicus DEM GLO-30, (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018,
+provided under COPERNICUS by the European Union and ESA; all rights reserved.

@@ -301,6 +301,34 @@ EXPORT int64_t grid_follow(const int32_t *next, int32_t start, int32_t goal, int
     return len <= path_cap ? len : -len;
 }
 
+/* ------------------------------------------------------------------ compact next-step fields (1 byte per cell)
+ * A next pointer always names one of the 8 neighbours, so it fits in a direction code
+ * k = (dr + 1) * 3 + (dc + 1) in 0..8 (4 = none); 255 = no route.  4x smaller than int32 pointers. */
+EXPORT void grid_next_to_dir(int64_t N, int32_t W, const int32_t *next, uint8_t *dir) {
+    for (int64_t v = 0; v < N; v++) {
+        int32_t u = next[v];
+        if (u < 0) { dir[v] = 255; continue; }
+        int32_t dr = (int32_t)(u / W - v / W), dc = (int32_t)(u % W - v % W);
+        dir[v] = (uint8_t)((dr + 1) * 3 + (dc + 1));
+    }
+}
+
+EXPORT int64_t grid_follow_dir(const uint8_t *dir, int32_t W, int32_t start, int32_t goal, int32_t *path_out, int64_t path_cap) {
+    int64_t len = 0;
+    int32_t v = start;
+    while (v != goal) {
+        uint8_t k = dir[v];
+        if (k == 255 || k == 4) return 0;
+        if (len < path_cap) path_out[len] = v;
+        len++;
+        v += (k / 3 - 1) * W + (k % 3 - 1);
+        if (len > 100000000) return 0;
+    }
+    if (len < path_cap) path_out[len] = goal;
+    len++;
+    return len <= path_cap ? len : -len;
+}
+
 /* ------------------------------------------------------------------ one-to-all (landmark preprocessing)
  * reverse = 0: dist_out[v] = d(source, v);  reverse = 1: dist_out[v] = d(v, source).
  * Returns the number of nodes settled, or -1 on allocation failure. */
