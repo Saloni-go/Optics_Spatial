@@ -1,0 +1,3 @@
+ERROR 1: blocked.tif, band 1: Failed to compute statistics, no valid pixels found in sampling.
+project written: E:\sem 7\SI\CW\Main Project\qgis\terrain_visibility.qgz
+renders written

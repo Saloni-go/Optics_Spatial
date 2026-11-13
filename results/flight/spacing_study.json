@@ -7,84 +7,84 @@
     "param": 500,
     "positions": 333,
     "jaccard": 0.9831089362145783,
-    "seconds": 2.350889499999539
+    "seconds": 1.964967500000057
    },
    {
     "method": "fixed",
     "param": 1000,
     "positions": 167,
     "jaccard": 0.9468262568475412,
-    "seconds": 1.2390283999993699
+    "seconds": 0.9987926999999672
    },
    {
     "method": "fixed",
     "param": 2000,
     "positions": 84,
     "jaccard": 0.8625744647576922,
-    "seconds": 0.6092948999994405
+    "seconds": 0.5465272999999797
    },
    {
     "method": "fixed",
     "param": 4000,
     "positions": 43,
     "jaccard": 0.7234885498130548,
-    "seconds": 0.3629806999997527
+    "seconds": 0.30217160000006515
    },
    {
     "method": "fixed",
     "param": 8000,
     "positions": 22,
     "jaccard": 0.5527677986160175,
-    "seconds": 0.2238507000001846
+    "seconds": 0.1839833000001363
    },
    {
     "method": "adaptive_similarity",
     "param": 0.5,
     "positions": 167,
     "jaccard": 0.9145603621691559,
-    "seconds": 5.253701800000272
+    "seconds": 3.6392534999999953
    },
    {
     "method": "adaptive_similarity",
     "param": 0.7,
     "positions": 339,
     "jaccard": 0.9541264005419628,
-    "seconds": 10.418158399999811
+    "seconds": 7.063826199999994
    },
    {
     "method": "adaptive_similarity",
     "param": 0.85,
     "positions": 621,
     "jaccard": 0.9615832764792911,
-    "seconds": 18.978001200001017
+    "seconds": 12.012894899999992
    },
    {
     "method": "adaptive_gain",
     "param": 0.02,
     "positions": 395,
     "jaccard": 0.9565455884877817,
-    "seconds": 11.381610599999476
+    "seconds": 7.507749699999977
    },
    {
     "method": "adaptive_gain",
     "param": 0.05,
     "positions": 251,
     "jaccard": 0.9436222513827265,
-    "seconds": 7.159236999999848
+    "seconds": 4.745197800000142
    },
    {
     "method": "adaptive_gain",
     "param": 0.1,
     "positions": 157,
     "jaccard": 0.9128871424719658,
-    "seconds": 4.405873799998517
+    "seconds": 2.9306558000000678
    },
    {
     "method": "adaptive_gain",
     "param": 0.2,
     "positions": 99,
     "jaccard": 0.8756766180719291,
-    "seconds": 2.7811996000000363
+    "seconds": 1.8227484000001368
    }
   ]
  },
@@ -96,84 +96,84 @@
     "param": 500,
     "positions": 333,
     "jaccard": 0.9976976351082827,
-    "seconds": 2.4709744000010687
+    "seconds": 1.96471049999991
    },
    {
     "method": "fixed",
     "param": 1000,
     "positions": 167,
     "jaccard": 0.9949946367728891,
-    "seconds": 1.1891188999998121
+    "seconds": 1.0295720999999958
    },
    {
     "method": "fixed",
     "param": 2000,
     "positions": 84,
     "jaccard": 0.9892894424287659,
-    "seconds": 0.6360874999991211
+    "seconds": 0.5490985999999793
    },
    {
     "method": "fixed",
     "param": 4000,
     "positions": 43,
     "jaccard": 0.974872694323306,
-    "seconds": 0.36744220000036876
+    "seconds": 0.3169052999999167
    },
    {
     "method": "fixed",
     "param": 8000,
     "positions": 22,
     "jaccard": 0.946978046725555,
-    "seconds": 0.2282928999993601
+    "seconds": 0.19349570000008498
    },
    {
     "method": "adaptive_similarity",
     "param": 0.5,
     "positions": 43,
     "jaccard": 0.974872694323306,
-    "seconds": 1.3130144999995537
+    "seconds": 0.8882189999999355
    },
    {
     "method": "adaptive_similarity",
     "param": 0.7,
     "positions": 51,
     "jaccard": 0.9759994913558885,
-    "seconds": 1.5770850000008068
+    "seconds": 1.0589754000000084
    },
    {
     "method": "adaptive_similarity",
     "param": 0.85,
     "positions": 119,
     "jaccard": 0.9794582925185598,
-    "seconds": 3.7887570000002597
+    "seconds": 2.557450900000049
    },
    {
     "method": "adaptive_gain",
     "param": 0.02,
     "positions": 85,
     "jaccard": 0.9786818464546612,
-    "seconds": 2.403969299999517
+    "seconds": 1.5840954000000238
    },
    {
     "method": "adaptive_gain",
     "param": 0.05,
     "positions": 85,
     "jaccard": 0.9786818464546612,
-    "seconds": 2.4532990000006976
+    "seconds": 1.5763507000001482
    },
    {
     "method": "adaptive_gain",
     "param": 0.1,
     "positions": 85,
     "jaccard": 0.9786818464546612,
-    "seconds": 2.414940300001035
+    "seconds": 1.5847011999999268
    },
    {
     "method": "adaptive_gain",
     "param": 0.2,
     "positions": 85,
     "jaccard": 0.9786818464546612,
-    "seconds": 2.4149889000000258
+    "seconds": 1.580864899999824
    }
   ]
  }

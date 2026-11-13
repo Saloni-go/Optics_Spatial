@@ -1,0 +1,10 @@
+cells {'covered_by_track1': 5689180, 'hazard_track3': 5689180, 'both': 5689180, 'covered_not_hazard': 0, 'hazard_not_covered': 0, 'agreement': 1.0, 'covered_frac_of_dem': 0.35557375}
+Track 2 valley route                         191.0 km  covered   48.8 km  P(detect) 100.00%  outside-coverage 0.00e+00  sees 1,204 km2 (3 s)
+Track 3 shortest                             130.6 km  covered   50.5 km  P(detect) 100.00%  outside-coverage 0.00e+00  sees 2,169 km2 (2 s)
+Track 3 alpha = 1                            132.5 km  covered   27.4 km  P(detect)  99.93%  outside-coverage 0.00e+00  sees 1,984 km2 (2 s)
+Track 3 alpha = 10                           170.0 km  covered    4.2 km  P(detect)  72.71%  outside-coverage 0.00e+00  sees 2,456 km2 (3 s)
+Track 3 alpha = 100                          215.7 km  covered    1.5 km  P(detect)  26.67%  outside-coverage 0.00e+00  sees 2,320 km2 (3 s)
+Track 3 risk budget 50 %                     187.9 km  covered    3.4 km  P(detect)  49.78%  outside-coverage 0.00e+00  sees 2,303 km2 (3 s)
+Least covered length                         214.6 km  covered    0.8 km  P(detect)  34.64%  outside-coverage 0.00e+00  sees 2,945 km2 (3 s)
+random {'n': 5000, 'fully_outside_coverage': 195, 'max_p_detect_fully_outside': 0.0, 'paths_with_hazard_outside_coverage': 0, 'p_detect_median_by_covered_frac': {'0.0-0.2': 0.31851271423100486, '0.2-0.4': 0.994715504835505, '0.4-0.6': 0.9999999186207854, '0.6-0.8': 0.9999999992299196, '0.8-1.0': 0.9999999678390253}}
+done 32.8 s

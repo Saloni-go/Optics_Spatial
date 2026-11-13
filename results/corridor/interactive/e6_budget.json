@@ -2,85 +2,85 @@
  {
   "interaction": "click new start",
   "strategy": "Level 2 lookup",
-  "ms": 0.08829999569570646,
+  "ms": 0.09009999985210015,
   "class": "frame (<16 ms)"
  },
  {
   "interaction": "click new start",
   "strategy": "D* Lite replan",
-  "ms": 61.929900002724025,
+  "ms": 62.15729999985342,
   "class": "interactive (<100 ms)"
  },
  {
   "interaction": "click new start",
   "strategy": "no precompute (C Dijkstra)",
-  "ms": 2698.2298999937484,
+  "ms": 2562.130100000104,
   "class": "background (>1 s)"
  },
  {
   "interaction": "drag a radar",
   "strategy": "threat surface update (one viewshed)",
-  "ms": 190.97920000058366,
+  "ms": 167.4569000001611,
   "class": "responsive (<1 s)"
  },
  {
   "interaction": "drag a radar",
   "strategy": "+ Level 2 field repair",
-  "ms": 671.7799999969429,
+  "ms": 632.3499999998603,
   "class": "responsive (<1 s)"
  },
  {
   "interaction": "drag a radar",
   "strategy": "+ full field recompute",
-  "ms": 2967.406800002209,
+  "ms": 2832.538399999976,
   "class": "background (>1 s)"
  },
  {
   "interaction": "change alpha",
   "strategy": "first route (coarse x16)",
-  "ms": 10.2622499998688,
+  "ms": 8.817150000140828,
   "class": "frame (<16 ms)"
  },
  {
   "interaction": "change alpha",
   "strategy": "within ~0.3% (full-res corridor)",
-  "ms": 518.2002999998758,
+  "ms": 454.11345000002257,
   "class": "responsive (<1 s)"
  },
  {
   "interaction": "change alpha",
   "strategy": "exact + field rebuilt",
-  "ms": 3088.333749999947,
+  "ms": 2840.608599999996,
   "class": "background (>1 s)"
  },
  {
   "interaction": "pan / zoom",
   "strategy": "draw known route, view 4000 cells",
-  "ms": 0.0584499999831678,
+  "ms": 0.05595000016000995,
   "class": "frame (<16 ms)"
  },
  {
   "interaction": "pan / zoom",
   "strategy": "(rejected) re-solve view on pyramid, 4000 cells",
-  "ms": 152.16190000012375,
+  "ms": 148.58514999991712,
   "class": "responsive (<1 s)"
  },
  {
   "interaction": "pan / zoom",
   "strategy": "draw known route, view 250 cells",
-  "ms": 0.026599999955578824,
+  "ms": 0.022700000045006163,
   "class": "frame (<16 ms)"
  },
  {
   "interaction": "pan / zoom",
   "strategy": "(rejected) re-solve view on pyramid, 250 cells",
-  "ms": 31.809800000019095,
+  "ms": 30.448450000221783,
   "class": "interactive (<100 ms)"
  },
  {
   "interaction": "new goal",
   "strategy": "ALT 4 landmarks (any pair)",
-  "ms": 273.6098800014588,
+  "ms": 264.00383999996393,
   "class": "responsive (<1 s)"
  }
 ]

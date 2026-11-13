@@ -1,0 +1,134 @@
+{
+ "commit": "3074fca",
+ "dirty": true,
+ "machine": {
+  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "cores_logical": 24,
+  "cores_physical": 12,
+  "ram_gb": 31.1,
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.13",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "gdal": "3.13.1"
+ },
+ "quick": false,
+ "steps": {
+  "data.check": {
+   "exit": 0,
+   "seconds": 0.1,
+   "finished": "2026-11-13 14:04:23",
+   "benchmark": false
+  },
+  "radar.validate": {
+   "exit": 0,
+   "seconds": 29.4,
+   "finished": "2026-11-13 14:04:53",
+   "benchmark": false
+  },
+  "radar.run_radar": {
+   "exit": 0,
+   "seconds": 14.7,
+   "finished": "2026-11-13 14:05:07",
+   "benchmark": false
+  },
+  "radar.benchmark": {
+   "exit": 0,
+   "seconds": 387.2,
+   "finished": "2026-11-13 14:11:35",
+   "benchmark": true
+  },
+  "radar.analysis": {
+   "exit": 0,
+   "seconds": 5.6,
+   "finished": "2026-11-13 14:11:40",
+   "benchmark": false
+  },
+  "flight.run_flight": {
+   "exit": 0,
+   "seconds": 23.7,
+   "finished": "2026-11-13 14:12:04",
+   "benchmark": false
+  },
+  "flight.benchmark": {
+   "exit": 0,
+   "seconds": 666.6,
+   "finished": "2026-11-13 14:23:11",
+   "benchmark": true
+  },
+  "flight.spacing_study": {
+   "exit": 0,
+   "seconds": 68.1,
+   "finished": "2026-11-13 14:24:19",
+   "benchmark": true
+  },
+  "flight.analysis": {
+   "exit": 0,
+   "seconds": 2.6,
+   "finished": "2026-11-13 14:24:21",
+   "benchmark": false
+  },
+  "corridor.run_corridor": {
+   "exit": 0,
+   "seconds": 142.7,
+   "finished": "2026-11-13 14:26:44",
+   "benchmark": false
+  },
+  "corridor.benchmark": {
+   "exit": 0,
+   "seconds": 1640.3,
+   "finished": "2026-11-13 14:54:04",
+   "benchmark": true
+  },
+  "corridor.analysis": {
+   "exit": 0,
+   "seconds": 3.0,
+   "finished": "2026-11-13 14:54:07",
+   "benchmark": false
+  },
+  "corridor.interactive_bench": {
+   "exit": 0,
+   "seconds": 534.0,
+   "finished": "2026-11-13 15:03:01",
+   "benchmark": true
+  },
+  "corridor.extensions_bench": {
+   "exit": 0,
+   "seconds": 522.6,
+   "finished": "2026-11-13 15:11:44",
+   "benchmark": true
+  },
+  "integration.cross_track": {
+   "exit": 0,
+   "seconds": 37.8,
+   "finished": "2026-11-13 15:14:07",
+   "benchmark": false
+  },
+  "qgis.build_project": {
+   "exit": 0,
+   "seconds": 7.5,
+   "finished": "2026-11-13 15:12:29",
+   "benchmark": false
+  },
+  "qgis.render_bench": {
+   "exit": 3221225477,
+   "seconds": 17.0,
+   "finished": "2026-11-13 15:12:46",
+   "benchmark": true,
+   "note": "QGIS crashed on exit (0xC0000005) after writing results/shared/render_benchmark.csv and fig_render_benchmark.png (15:12); all measurements present"
+  },
+  "corridor.efficiency_bench": {
+   "exit": 0,
+   "seconds": 16.0,
+   "finished": "2026-11-13 15:14:36",
+   "benchmark": true
+  },
+  "corridor.panzoom_bench": {
+   "exit": 0,
+   "seconds": 20.6,
+   "finished": "2026-11-13 19:16:08",
+   "benchmark": true
+  }
+ },
+ "total_minutes": 69.0
+}

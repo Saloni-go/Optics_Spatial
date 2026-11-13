@@ -8,8 +8,8 @@
    "level": 0,
    "pre_s": 0.0,
    "mem_mb": 0.0,
-   "query_fixed_goal_ms": 1487.7651700011484,
-   "query_any_pair_ms": 1811.6696900000534,
+   "query_fixed_goal_ms": 1403.910230000065,
+   "query_any_pair_ms": 1677.6433949999955,
    "expanded_fixed_goal": 7563250.25,
    "expanded_any_pair": 8998195.75,
    "max_gap_pct": 0.0
@@ -19,8 +19,8 @@
    "level": 0,
    "pre_s": 0.0,
    "mem_mb": 0.0,
-   "query_fixed_goal_ms": 772.1108599991567,
-   "query_any_pair_ms": 992.8585150009894,
+   "query_fixed_goal_ms": 739.0360099999953,
+   "query_any_pair_ms": 951.1274749999984,
    "expanded_fixed_goal": 3216632.15,
    "expanded_any_pair": 4200341.55,
    "max_gap_pct": 0.0
@@ -28,10 +28,10 @@
   {
    "strategy": "ALT, 1 landmark (C)",
    "level": 1,
-   "pre_s": 3.5456143999981578,
+   "pre_s": 2.682887800000117,
    "mem_mb": 122.0703125,
-   "query_fixed_goal_ms": 508.8596200013853,
-   "query_any_pair_ms": 803.1521400007477,
+   "query_fixed_goal_ms": 485.0680650000413,
+   "query_any_pair_ms": 765.4067049999412,
    "expanded_fixed_goal": 2083173.05,
    "expanded_any_pair": 3187984.4,
    "max_gap_pct": 4.155541910577654e-06
@@ -39,10 +39,10 @@
   {
    "strategy": "ALT, 2 landmarks (C)",
    "level": 1,
-   "pre_s": 3.4761876999982633,
+   "pre_s": 2.8666818000001513,
    "mem_mb": 244.140625,
-   "query_fixed_goal_ms": 460.43934499866737,
-   "query_any_pair_ms": 648.1709400002728,
+   "query_fixed_goal_ms": 441.9676149999759,
+   "query_any_pair_ms": 618.957834999992,
    "expanded_fixed_goal": 1837297.15,
    "expanded_any_pair": 2370416.45,
    "max_gap_pct": 1.3713635182988071e-05
@@ -50,10 +50,10 @@
   {
    "strategy": "ALT, 4 landmarks (C)",
    "level": 1,
-   "pre_s": 3.724342899993644,
+   "pre_s": 3.139195899999777,
    "mem_mb": 488.28125,
-   "query_fixed_goal_ms": 211.9248899995,
-   "query_any_pair_ms": 273.6098800014588,
+   "query_fixed_goal_ms": 203.48022499995295,
+   "query_any_pair_ms": 264.00383999996393,
    "expanded_fixed_goal": 667673.85,
    "expanded_any_pair": 943188.05,
    "max_gap_pct": 2.220446049250313e-14
@@ -61,10 +61,10 @@
   {
    "strategy": "ALT, 8 landmarks (C)",
    "level": 1,
-   "pre_s": 7.595085700006166,
+   "pre_s": 6.296046200000092,
    "mem_mb": 976.5625,
-   "query_fixed_goal_ms": 211.52476000024762,
-   "query_any_pair_ms": 243.11389500035148,
+   "query_fixed_goal_ms": 197.92844500002502,
+   "query_any_pair_ms": 234.04265499993926,
    "expanded_fixed_goal": 551420.9,
    "expanded_any_pair": 652416.8,
    "max_gap_pct": 2.220446049250313e-14
@@ -72,9 +72,9 @@
   {
    "strategy": "Level 2 cost-to-go field (C)",
    "level": 2,
-   "pre_s": 3.004514400003245,
+   "pre_s": 2.858530200000132,
    "mem_mb": 183.10546875,
-   "query_fixed_goal_ms": 0.059210000836174004,
+   "query_fixed_goal_ms": 0.055729999985487666,
    "query_any_pair_ms": null,
    "expanded_fixed_goal": 0.0,
    "expanded_any_pair": null,

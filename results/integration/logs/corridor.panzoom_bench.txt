@@ -1,0 +1,17 @@
+full recompute 102.5 ms; matches Track 1: 1.0
+view  4000 cells  level  4     9.1 ms  agree 0.9328 / 0.9608
+view  2828 cells  level  2    21.3 ms  agree 0.9809 / 0.9885
+view  2000 cells  level  2    15.8 ms  agree 0.9851 / 0.9890
+view  1414 cells  level  1    36.6 ms  agree 1.0000 / 1.0000
+view  1000 cells  level  1    28.8 ms  agree 1.0000 / 1.0000
+view   707 cells  level  1    26.8 ms  agree 1.0000 / 1.0000
+view   500 cells  level  1    23.3 ms  agree 1.0000 / 1.0000
+view   354 cells  level  1    10.5 ms  agree 1.0000 / 1.0000
+view   250 cells  level  1    14.3 ms  agree 1.0000 / 1.0000
+view   125 cells  level  1    14.4 ms  agree 1.0000 / 1.0000
+P1 {'views': 73, 'ms_median': 20.4, 'ms_p95': 37.0, 'ms_max': 40.4, 'exact_views': 56, 'level1_views': 56}
+P2 {'radars': 6, 'full_recompute_ms': 95.8, 'live_full_extent_ms': 9.4, 'live_full_extent_level': 4, 'live_zoom500_ms': 25.3, 'live_zoom500_radars_used': 5}
+P2 {'radars': 12, 'full_recompute_ms': 139.2, 'live_full_extent_ms': 15.1, 'live_full_extent_level': 4, 'live_zoom500_ms': 38.7, 'live_zoom500_radars_used': 9}
+P2 {'radars': 24, 'full_recompute_ms': 288.1, 'live_full_extent_ms': 28.6, 'live_full_extent_level': 4, 'live_zoom500_ms': 55.5, 'live_zoom500_radars_used': 21}
+P2 {'radars': 48, 'full_recompute_ms': 541.3, 'live_full_extent_ms': 50.6, 'live_full_extent_level': 4, 'live_zoom500_ms': 121.3, 'live_zoom500_radars_used': 40}
+P3 {'view_4000': 9.8, 'view_1000': 38.9, 'view_250': 20.6, 'full_recompute_ms': 98.0}

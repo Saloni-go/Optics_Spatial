@@ -1,0 +1,386 @@
+{
+ "dataset": {
+  "dem": "Copernicus GLO-30, 4000 x 4000, 30 m, EPSG:32644",
+  "radars": 6,
+  "aircraft_agl_m": 150,
+  "radar_mast_m": 30,
+  "range_km": 40
+ },
+ "cells": {
+  "covered_by_track1": 5689180,
+  "hazard_track3": 5689180,
+  "both": 5689180,
+  "covered_not_hazard": 0,
+  "hazard_not_covered": 0,
+  "agreement": 1.0,
+  "covered_frac_of_dem": 0.35557375
+ },
+ "risk_budget_s": 6.5,
+ "hidden_route": {
+  "start_covered": false,
+  "goal_covered": false,
+  "exists": false
+ },
+ "routes": {
+  "Track 2 valley route": {
+   "length_km": 191.0,
+   "covered_km": 48.77,
+   "covered_frac": 0.2553,
+   "p_detect": 0.9999999991919318,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    1.0,
+    0.0,
+    0.0,
+    0.0708,
+    0.9999,
+    0.0
+   ],
+   "worst_radar": "R1",
+   "km_to_p10": 58.2,
+   "km_to_p50": 67.0,
+   "aircraft_sees": {
+    "seen_km2": 1204.5,
+    "waypoints": 167,
+    "track2_compute_s": 2.98
+   }
+  },
+  "Track 3 shortest": {
+   "length_km": 130.57,
+   "covered_km": 50.49,
+   "covered_frac": 0.3867,
+   "p_detect": 0.9999999996397733,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    1.0,
+    0.0606,
+    0.0,
+    0.9935,
+    0.9974,
+    0.0
+   ],
+   "worst_radar": "R1",
+   "km_to_p10": 34.7,
+   "km_to_p50": 41.6,
+   "aircraft_sees": {
+    "seen_km2": 2168.6,
+    "waypoints": 132,
+    "track2_compute_s": 2.35
+   }
+  },
+  "Track 3 alpha = 1": {
+   "length_km": 132.54,
+   "covered_km": 27.42,
+   "covered_frac": 0.2069,
+   "p_detect": 0.9993361856611503,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    0.8991,
+    0.6864,
+    0.0,
+    0.1372,
+    0.9757,
+    0.0
+   ],
+   "worst_radar": "R5",
+   "km_to_p10": 33.7,
+   "km_to_p50": 42.8,
+   "aircraft_sees": {
+    "seen_km2": 1983.5,
+    "waypoints": 134,
+    "track2_compute_s": 2.39
+   }
+  },
+  "Track 3 alpha = 10": {
+   "length_km": 169.99,
+   "covered_km": 4.22,
+   "covered_frac": 0.0248,
+   "p_detect": 0.7270729810767689,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    0.1119,
+    0.4935,
+    0.0,
+    0.0,
+    0.0,
+    0.3932
+   ],
+   "worst_radar": "R2",
+   "km_to_p10": 89.2,
+   "km_to_p50": 106.1,
+   "aircraft_sees": {
+    "seen_km2": 2456.4,
+    "waypoints": 171,
+    "track2_compute_s": 3.0
+   }
+  },
+  "Track 3 alpha = 100": {
+   "length_km": 215.67,
+   "covered_km": 1.52,
+   "covered_frac": 0.0071,
+   "p_detect": 0.2666904897852147,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    0.254,
+    0.0,
+    0.0,
+    0.017,
+    0.0,
+    0.0
+   ],
+   "worst_radar": "R1",
+   "km_to_p10": 186.7,
+   "km_to_p50": null,
+   "aircraft_sees": {
+    "seen_km2": 2320.0,
+    "waypoints": 217,
+    "track2_compute_s": 3.27
+   }
+  },
+  "Track 3 risk budget 50 %": {
+   "length_km": 187.9,
+   "covered_km": 3.4,
+   "covered_frac": 0.0181,
+   "p_detect": 0.497800907196716,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    0.3543,
+    0.0,
+    0.0,
+    0.2222,
+    0.0,
+    0.0
+   ],
+   "worst_radar": "R1",
+   "km_to_p10": 103.3,
+   "km_to_p50": null,
+   "aircraft_sees": {
+    "seen_km2": 2302.6,
+    "waypoints": 189,
+    "track2_compute_s": 3.05
+   }
+  },
+  "Least covered length": {
+   "length_km": 214.56,
+   "covered_km": 0.75,
+   "covered_frac": 0.0035,
+   "p_detect": 0.3464339599087425,
+   "p_detect_outside_coverage": 0.0,
+   "p_per_radar": [
+    0.3464,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "worst_radar": "R1",
+   "km_to_p10": 184.9,
+   "km_to_p50": null,
+   "aircraft_sees": {
+    "seen_km2": 2944.7,
+    "waypoints": 216,
+    "track2_compute_s": 3.39
+   }
+  }
+ },
+ "random_paths": {
+  "n": 5000,
+  "fully_outside_coverage": 195,
+  "max_p_detect_fully_outside": 0.0,
+  "paths_with_hazard_outside_coverage": 0,
+  "p_detect_median_by_covered_frac": {
+   "0.0-0.2": 0.31851271423100486,
+   "0.2-0.4": 0.994715504835505,
+   "0.4-0.6": 0.9999999186207854,
+   "0.6-0.8": 0.9999999992299196,
+   "0.8-1.0": 0.9999999678390253
+  }
+ },
+ "benchmarks": {
+  "radar": {
+   "experiment": "E1_size",
+   "machine_cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+   "cores": 24,
+   "algorithms": {
+    "gdal": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.0185,
+      0.036,
+      0.1046,
+      0.3691
+     ],
+     "peak_mb": [
+      67.6,
+      71.6,
+      102.1,
+      241.9
+     ],
+     "exponent": 0.7244810690724761
+    },
+    "r2": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.0406,
+      0.1025,
+      0.3311,
+      1.5494
+     ],
+     "peak_mb": [
+      67.2,
+      77.6,
+      121.2,
+      293.5
+     ],
+     "exponent": 0.8727195915520137
+    },
+    "naive": {
+     "cells": [
+      250000.0,
+      1000000.0
+     ],
+     "runtime_s": [
+      6.0383,
+      48.2745
+     ],
+     "peak_mb": [
+      427.8,
+      483.8
+     ],
+     "exponent": 1.4995218021846015
+    }
+   }
+  },
+  "flight": {
+   "experiment": "F1_size",
+   "machine_cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+   "cores": 24,
+   "algorithms": {
+    "window": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.0609,
+      0.3538,
+      2.1716,
+      15.2395
+     ],
+     "peak_mb": [
+      71.2,
+      86.4,
+      139.0,
+      355.8
+     ],
+     "exponent": 1.3260110278330175
+    }
+   }
+  },
+  "corridor": {
+   "experiment": "C1_size",
+   "machine_cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+   "cores": 24,
+   "algorithms": {
+    "dijkstra_csgraph": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.1025,
+      0.4182,
+      1.736,
+      6.8697
+     ],
+     "peak_mb": [
+      195.6,
+      482.8,
+      1631.5,
+      6024.7
+     ],
+     "exponent": 1.0126765878790733
+    },
+    "astar_py": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.5559,
+      1.7963,
+      8.2991,
+      28.5103
+     ],
+     "peak_mb": [
+      114.1,
+      159.4,
+      332.4,
+      1030.8
+     ],
+     "exponent": 0.9624657768506413
+    },
+    "multires": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.0928,
+      0.248,
+      0.7663,
+      2.4166
+     ],
+     "peak_mb": [
+      118.0,
+      170.4,
+      380.3,
+      1217.4
+     ],
+     "exponent": 0.7867647501206156
+    },
+    "dijkstra_py": {
+     "cells": [
+      250000.0,
+      1000000.0,
+      4000000.0,
+      16000000.0
+     ],
+     "runtime_s": [
+      0.539,
+      1.8968,
+      9.2268,
+      38.0172
+     ],
+     "peak_mb": [
+      108.3,
+      137.4,
+      246.1,
+      682.2
+     ],
+     "exponent": 1.0351337608309656
+    }
+   }
+  }
+ },
+ "seconds": 32.8
+}

@@ -2,19 +2,19 @@
  "synthetic": {
   "flat": {
    "naive": {
-    "seconds": 8.815410100040026,
+    "seconds": 3.0894802000000254,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
    },
    "r2": {
-    "seconds": 0.045537899946793914,
+    "seconds": 0.0173659000000157,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
    },
    "gdal": {
-    "seconds": 0.009103800053708255,
+    "seconds": 0.007564599999966504,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
@@ -22,19 +22,19 @@
   },
   "valley": {
    "naive": {
-    "seconds": 8.652742699952796,
+    "seconds": 3.1527361999999926,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
    },
    "r2": {
-    "seconds": 0.046428399975411594,
+    "seconds": 0.017481000000032054,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
    },
    "gdal": {
-    "seconds": 0.008862400078214705,
+    "seconds": 0.001833400000009533,
     "visible_frac": 1.0,
     "expected": "all visible",
     "correct_frac": 1.0
@@ -42,19 +42,19 @@
   },
   "ridge": {
    "naive": {
-    "seconds": 8.600808499963023,
+    "seconds": 3.1349298999999746,
     "visible_frac": 0.6483790523690773,
     "expected": "west of wall visible, east of wall hidden",
     "correct_frac": 1.0
    },
    "r2": {
-    "seconds": 0.0488677000394091,
+    "seconds": 0.01717919999998685,
     "visible_frac": 0.648702433442578,
     "expected": "west of wall visible, east of wall hidden",
     "correct_frac": 1.0
    },
    "gdal": {
-    "seconds": 0.01000690006185323,
+    "seconds": 0.0016475999999556734,
     "visible_frac": 0.6483790523690773,
     "expected": "west of wall visible, east of wall hidden",
     "correct_frac": 1.0
@@ -62,11 +62,11 @@
   },
   "cone": {
    "naive": {
-    "seconds": 9.356606299988925,
+    "seconds": 3.3384341999999947,
     "visible_frac": 0.3964714149787626
    },
    "r2": {
-    "seconds": 0.06819939997512847,
+    "seconds": 0.024659900000017387,
     "visible_frac": 0.39753473583344223,
     "vs_naive": {
      "cells": 160713,
@@ -79,7 +79,7 @@
     }
    },
    "gdal": {
-    "seconds": 0.007665200042538345,
+    "seconds": 0.001944299999991017,
     "visible_frac": 0.396297286708416,
     "vs_naive": {
      "cells": 160801,

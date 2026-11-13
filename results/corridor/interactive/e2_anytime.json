@@ -1,33 +1,33 @@
 {
  "size": 4000,
- "pyramid_pre_s": 0.5313547999999173,
+ "pyramid_pre_s": 0.4561837999999625,
  "runs": [
   {
    "alpha": 2.0,
-   "dijkstra_s": 2.7747543000000405,
-   "field_s": 3.02645050000001,
+   "dijkstra_s": 2.509936899999957,
+   "field_s": 2.7281871000000137,
    "progressive": [
     {
      "stage": "coarse x16",
-     "t_s": 0.01138889999992898,
+     "t_s": 0.009096900000258756,
      "gap_pct": 12.459318303323874,
      "corridor_frac": null
     },
     {
      "stage": "coarse x4",
-     "t_s": 0.14365049999992152,
+     "t_s": 0.1327438000002985,
      "gap_pct": 3.580587542950253,
      "corridor_frac": null
     },
     {
      "stage": "full-res corridor (+/-0.5 km of 2 x4 routes)",
-     "t_s": 0.5432690000000093,
+     "t_s": 0.45799950000036915,
      "gap_pct": 0.04328314137793665,
      "corridor_frac": 0.009988
     },
     {
      "stage": "exact",
-     "t_s": 3.460776800000076,
+     "t_s": 2.937635600000249,
      "gap_pct": 0.0,
      "corridor_frac": null
     }
@@ -35,19 +35,19 @@
    "weighted_astar": [
     {
      "stage": "weighted A* w=3",
-     "t_s": 0.047093799999856856,
+     "t_s": 0.03794269999980315,
      "gap_pct": 35.18759463185008,
      "expanded": 61215
     },
     {
      "stage": "weighted A* w=1.5",
-     "t_s": 0.50243660000001,
+     "t_s": 0.40833410000004733,
      "gap_pct": 9.405786418778806,
      "expanded": 1659851
     },
     {
      "stage": "weighted A* w=1",
-     "t_s": 2.8259937999998783,
+     "t_s": 2.2830386000000544,
      "gap_pct": 0.0,
      "expanded": 8260426
     }
@@ -55,30 +55,30 @@
   },
   {
    "alpha": 5.0,
-   "dijkstra_s": 3.27597209999999,
-   "field_s": 3.0295638000000054,
+   "dijkstra_s": 2.505172599999696,
+   "field_s": 2.770987200000036,
    "progressive": [
     {
      "stage": "coarse x16",
-     "t_s": 0.009135599999808619,
+     "t_s": 0.008537400000022899,
      "gap_pct": 13.11692408287728,
      "corridor_frac": null
     },
     {
      "stage": "coarse x4",
-     "t_s": 0.1405993999999282,
+     "t_s": 0.13182969999979832,
      "gap_pct": 3.7551644494330905,
      "corridor_frac": null
     },
     {
      "stage": "full-res corridor (+/-0.5 km of 2 x4 routes)",
-     "t_s": 0.522714699999824,
+     "t_s": 0.450227399999676,
      "gap_pct": 0.030357508729750293,
      "corridor_frac": 0.011813
     },
     {
      "stage": "exact",
-     "t_s": 3.2337867999999617,
+     "t_s": 2.971160399999917,
      "gap_pct": 0.0,
      "corridor_frac": null
     }
@@ -86,19 +86,19 @@
    "weighted_astar": [
     {
      "stage": "weighted A* w=3",
-     "t_s": 0.07617959999993218,
+     "t_s": 0.06910800000014206,
      "gap_pct": 33.72588977959814,
      "expanded": 230192
     },
     {
      "stage": "weighted A* w=1.5",
-     "t_s": 0.713334199999963,
+     "t_s": 0.6415240999999696,
      "gap_pct": 8.35303273986825,
      "expanded": 2563406
     },
     {
      "stage": "weighted A* w=1",
-     "t_s": 2.807271700000001,
+     "t_s": 2.6140369999998256,
      "gap_pct": 0.0,
      "expanded": 8570093
     }
@@ -106,30 +106,30 @@
   },
   {
    "alpha": 20.0,
-   "dijkstra_s": 2.4237322000001313,
-   "field_s": 3.1471036999998887,
+   "dijkstra_s": 2.246346700000231,
+   "field_s": 2.910229999999956,
    "progressive": [
     {
      "stage": "coarse x16",
-     "t_s": 0.019904300000007424,
+     "t_s": 0.014913400000295951,
      "gap_pct": 9.539874603899644,
      "corridor_frac": null
     },
     {
      "stage": "coarse x4",
-     "t_s": 0.13199620000000323,
+     "t_s": 0.12134510000032606,
      "gap_pct": 3.798730144449647,
      "corridor_frac": null
     },
     {
      "stage": "full-res corridor (+/-0.5 km of 2 x4 routes)",
-     "t_s": 0.5136858999999276,
+     "t_s": 0.4657194999999774,
      "gap_pct": 0.14145040163353606,
      "corridor_frac": 0.016978
     },
     {
      "stage": "exact",
-     "t_s": 2.920507400000133,
+     "t_s": 2.694916000000376,
      "gap_pct": 0.0,
      "corridor_frac": null
     }
@@ -137,19 +137,19 @@
    "weighted_astar": [
     {
      "stage": "weighted A* w=3",
-     "t_s": 0.16125599999986662,
+     "t_s": 0.1533291000000645,
      "gap_pct": 31.509951551920313,
      "expanded": 619373
     },
     {
      "stage": "weighted A* w=1.5",
-     "t_s": 1.4061240999999427,
+     "t_s": 1.2773641000003408,
      "gap_pct": 8.03242109611222,
      "expanded": 4688844
     },
     {
      "stage": "weighted A* w=1",
-     "t_s": 3.743834399999969,
+     "t_s": 3.3458518000002186,
      "gap_pct": 0.0,
      "expanded": 8813462
     }
@@ -157,30 +157,30 @@
   },
   {
    "alpha": 50.0,
-   "dijkstra_s": 2.2446793999999954,
-   "field_s": 3.3145951000001332,
+   "dijkstra_s": 1.9649067000000286,
+   "field_s": 2.980351300000166,
    "progressive": [
     {
      "stage": "coarse x16",
-     "t_s": 0.008368799999971088,
+     "t_s": 0.007279899999957706,
      "gap_pct": 11.110194152177932,
      "corridor_frac": null
     },
     {
      "stage": "coarse x4",
-     "t_s": 0.11243130000002566,
+     "t_s": 0.10522319999972751,
      "gap_pct": 3.8350960652370647,
      "corridor_frac": null
     },
     {
      "stage": "full-res corridor (+/-0.5 km of 2 x4 routes)",
-     "t_s": 0.45425040000009176,
+     "t_s": 0.4217750999996497,
      "gap_pct": 0.17080145064967134,
      "corridor_frac": 0.017547
     },
     {
      "stage": "exact",
-     "t_s": 2.606806499999948,
+     "t_s": 2.400536899999679,
      "gap_pct": 0.0,
      "corridor_frac": null
     }
@@ -188,19 +188,19 @@
    "weighted_astar": [
     {
      "stage": "weighted A* w=3",
-     "t_s": 0.2566477999998824,
+     "t_s": 0.24550810000027923,
      "gap_pct": 42.127760059347395,
      "expanded": 1038994
     },
     {
      "stage": "weighted A* w=1.5",
-     "t_s": 1.6171644999999444,
+     "t_s": 1.4518339000001106,
      "gap_pct": 5.785063458197848,
      "expanded": 4895421
     },
     {
      "stage": "weighted A* w=1",
-     "t_s": 3.916135499999882,
+     "t_s": 3.5136169000002155,
      "gap_pct": 0.0,
      "expanded": 8618247
     }

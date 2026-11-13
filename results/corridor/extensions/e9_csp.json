@@ -3,7 +3,7 @@
   {
    "p_max": 0.9,
    "status": "ok",
-   "larac_s": 3.6988217999996778,
+   "larac_s": 2.6510536999999204,
    "solves": 8,
    "LB": 197888.96894394894,
    "larac_L": 200495.76098133094,
@@ -12,21 +12,21 @@
    "L": 200088.44515498882,
    "p_detect": 0.8999502133146362,
    "exact_status": "ok",
-   "exact_s": 0.5579231000001528,
+   "exact_s": 0.47101629999997385,
    "bounds_s": 0.0,
    "labels": 2322814,
    "corridor_frac": 0.0353939375,
    "gap_pct": 1.1114698422946878,
    "length_km": 158.35632021601512,
-   "bisection_length_km": 158.71933536791678,
-   "bisection_p": 0.8662818855339237,
+   "bisection_length_km": 158.35632021601512,
+   "bisection_p": 0.8999502133146362,
    "bisection_solves": 8,
-   "bisection_s": 22.765475800000104
+   "bisection_s": 5.773886299999958
   },
   {
    "p_max": 0.75,
    "status": "ok",
-   "larac_s": 4.8692403999993985,
+   "larac_s": 3.800349399999959,
    "solves": 11,
    "LB": 210975.24412796478,
    "larac_L": 212259.6916862587,
@@ -35,21 +35,21 @@
    "L": 212259.6916862587,
    "p_detect": 0.7345773567300928,
    "exact_status": "no better route in corridor",
-   "exact_s": 0.39774080000006506,
+   "exact_s": 0.30054789999985587,
    "bounds_s": 0.0,
    "labels": 1755962,
    "corridor_frac": 0.068306,
    "gap_pct": 0.6088143486232322,
    "length_km": 170.0225994621376,
-   "bisection_length_km": 170.04745227588003,
-   "bisection_p": 0.7335721485059,
-   "bisection_solves": 9,
-   "bisection_s": 26.08596640000019
+   "bisection_length_km": 170.0225994621376,
+   "bisection_p": 0.7345773567300928,
+   "bisection_solves": 11,
+   "bisection_s": 6.669789999999921
   },
   {
    "p_max": 0.5,
    "status": "ok",
-   "larac_s": 4.381045299999641,
+   "larac_s": 3.4269303999999465,
    "solves": 10,
    "LB": 227406.41982573175,
    "larac_L": 228235.0140140897,
@@ -58,21 +58,21 @@
    "L": 228085.02164336614,
    "p_detect": 0.497800907196716,
    "exact_status": "ok",
-   "exact_s": 0.2356099999997241,
+   "exact_s": 0.2151414999998451,
    "bounds_s": 0.0,
    "labels": 1139741,
    "corridor_frac": 0.065681125,
    "gap_pct": 0.2984092613367739,
    "length_km": 187.8955345217721,
-   "bisection_length_km": 188.04465140422644,
-   "bisection_p": 0.4825007498191438,
-   "bisection_solves": 9,
-   "bisection_s": 25.87486480000007
+   "bisection_length_km": 187.8955345217721,
+   "bisection_p": 0.497800907196716,
+   "bisection_solves": 10,
+   "bisection_s": 6.829075599999669
   },
   {
    "p_max": 0.35,
    "status": "ok",
-   "larac_s": 5.3171422000004895,
+   "larac_s": 4.21407390000013,
    "solves": 10,
    "LB": 238707.09551305854,
    "larac_L": 261962.08697222537,
@@ -81,21 +81,21 @@
    "L": 260492.8672912262,
    "p_detect": 0.3484282425015921,
    "exact_status": "splice: ok",
-   "exact_s": 8.012354699999378,
+   "exact_s": 5.837667099999635,
    "bounds_s": 0.0,
    "labels": 956212,
    "corridor_frac": 0.0101239375,
    "gap_pct": 9.126570674970091,
    "length_km": 216.0463829772467,
-   "bisection_length_km": 216.39733752154177,
-   "bisection_p": 0.2539987688146059,
+   "bisection_length_km": 216.0463829772467,
+   "bisection_p": 0.3484282425015921,
    "bisection_solves": 10,
-   "bisection_s": 26.78902909999988
+   "bisection_s": 8.772789799999828
   },
   {
    "p_max": 0.25,
    "status": "ok",
-   "larac_s": 5.8398809999998775,
+   "larac_s": 4.71444399999973,
    "solves": 11,
    "LB": 263033.59392282786,
    "larac_L": 311046.2113528488,
@@ -104,16 +104,16 @@
    "L": 286285.6079844724,
    "p_detect": 0.24759691523468963,
    "exact_status": "splice: ok",
-   "exact_s": 5.465315399999781,
+   "exact_s": 3.9912202000000434,
    "bounds_s": 0.0,
    "labels": 1806919,
    "corridor_frac": 0.0101244375,
    "gap_pct": 8.839940828420012,
    "length_km": 242.0338764781084,
-   "bisection_length_km": 261.31252147247767,
-   "bisection_p": 0.04699755932188954,
-   "bisection_solves": 10,
-   "bisection_s": 26.90342080000005
+   "bisection_length_km": 242.0338764781084,
+   "bisection_p": 0.24759691523468963,
+   "bisection_solves": 11,
+   "bisection_s": 9.80348959999992
   }
  ],
  "validation": [
@@ -128,8 +128,8 @@
    "corridor_labels": 58371,
    "larac_gap_pct": 0.16368981295074025,
    "gap_pct": 0.15919855013748485,
-   "larac_s": 0.4073548000005758,
-   "exact_s": 0.014816199999586388
+   "larac_s": 0.3496367000002465,
+   "exact_s": 0.012955800000327145
   },
   {
    "budget_x_Rmin": 1.5,
@@ -142,8 +142,8 @@
    "corridor_labels": 2459359,
    "larac_gap_pct": 1.2895925069214664,
    "gap_pct": 0.478290334318765,
-   "larac_s": 0.29660790000070847,
-   "exact_s": 2.2965767000005144
+   "larac_s": 0.26652070000000094,
+   "exact_s": 1.3063329000001431
   },
   {
    "budget_x_Rmin": 1.2,
@@ -156,8 +156,8 @@
    "corridor_labels": 5627722,
    "larac_gap_pct": 3.112325087026191,
    "gap_pct": 1.6084295293995465,
-   "larac_s": 0.3108468999998877,
-   "exact_s": 9.541071499999816
+   "larac_s": 0.27318220000006477,
+   "exact_s": 5.332174699999996
   },
   {
    "budget_x_Rmin": 1.05,
@@ -170,9 +170,9 @@
    "corridor_labels": 32996,
    "larac_gap_pct": 0.6931543777415117,
    "gap_pct": 0.6931543777415117,
-   "larac_s": 0.31172309999965364,
-   "exact_s": 0.009932300000400573
+   "larac_s": 0.28174200000012206,
+   "exact_s": 0.009407500000179425
   }
  ],
- "bounds_s": 3.549925600000279
+ "bounds_s": 2.671570399999837
 }

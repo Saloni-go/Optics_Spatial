@@ -1,0 +1,54 @@
+{
+ "grid": [
+  4000,
+  4000
+ ],
+ "cells": 16000000,
+ "M1_bank": {
+  "alphas": [
+   2.5,
+   5,
+   10,
+   20,
+   40,
+   80
+  ],
+  "int32_mb": 366.2,
+  "dir8_mb": 91.6,
+  "ratio": 4.0,
+  "build_s_int32": 2.13,
+  "build_s_dir8": 2.35,
+  "route_ms_median_int32": 0.718,
+  "route_ms_median_dir8": 0.689,
+  "identical_routes": "500/500"
+ },
+ "M2_field": {
+  "float64_int32_mb": 183.1,
+  "float32_dir8_mb": 76.3,
+  "ratio": 2.4,
+  "identical_routes": "500/500",
+  "cost_rel_error_max": 5.6299669325867516e-08,
+  "cost_rel_error_median": 2.1341248660278245e-08
+ },
+ "M3_snapshot": {
+  "dir8_mb_per_alpha": 15.3,
+  "zlib_mb_per_alpha": 2.24,
+  "ratio_vs_dir8": 6.8,
+  "ratio_vs_int32": 27.2,
+  "compress_ms": 645.6,
+  "restore_ms": 21.8
+ },
+ "O1_hover": {
+  "n": 2000,
+  "route_ms_median": 0.059,
+  "route_ms_p99": 0.106,
+  "route_plus_pdetect_ms_median": 0.61,
+  "route_plus_pdetect_ms_p99": 1.13
+ },
+ "O2_slider": {
+  "positions": 200,
+  "bank_lookup_ms_median": 0.938,
+  "bank_lookup_ms_max": 2.003,
+  "exact_on_release_s": 0.358
+ }
+}
