@@ -42,5 +42,18 @@ def job_fast(j):
     return res
 
 
+def job_sensor(j):
+    """Route coverage with a sensor model (flight/sensor.py)."""
+    from flight.sensor import SENSORS, run_sensor, headings
+    dem = DEM(dem_path(int(j["dem_id"])))
+    verts = _route(dem, j)
+    am = AltitudeModel(dem, verts, j.get("alt_mode", "agl"), float(j.get("agl", FLIGHT_AGL)), j.get("msl"))
+    pts = resample(verts, float(j.get("spacing_m", 500)))
+    acc, t = run_sensor(dem, pts[:, 0], pts[:, 1], am(pts[:, 2]), headings(pts), float(j.get("radius_m", 20000)),
+                        SENSORS[j["algorithm"]], int(j.get("workers", 12)))
+    return {"compute_s": t["compute_s"], "waypoints": len(pts),
+            "seen_km2": float((acc.count > 0).sum() * dem.cell ** 2 / 1e6)}
+
+
 if __name__ == "__main__":
-    child_main({"fast": job_fast})
+    child_main({"fast": job_fast, "sensor": job_sensor})

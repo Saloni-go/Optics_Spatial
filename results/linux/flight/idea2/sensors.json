@@ -1,0 +1,214 @@
+{
+ "valley": {
+  "omni": {
+   "sensor": {
+    "name": "omni",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": -90.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.0,
+    "gsd_max_m": Infinity
+   },
+   "observed_km2": 1600.0245,
+   "dwell_s_mean": 89.7059555053711,
+   "dwell_s_median": 66.66666412353516,
+   "observed_ge_30s_km2": 1230.1028999999999,
+   "compute_s_inprocess": 1.915452250999806
+  },
+  "omni_gsd3": {
+   "sensor": {
+    "name": "omni_gsd3",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": -90.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 968.5034999999999,
+   "dwell_s_mean": 64.44047546386719,
+   "dwell_s_median": 58.33333206176758,
+   "observed_ge_30s_km2": 758.4372,
+   "compute_s_inprocess": 16.388379484000325
+  },
+  "forward": {
+   "sensor": {
+    "name": "forward",
+    "sectors": [
+     [
+      0.0,
+      90.0
+     ]
+    ],
+    "min_dep": 5.0,
+    "max_dep": 60.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 219.933,
+   "dwell_s_mean": 24.064977645874023,
+   "dwell_s_median": 25.0,
+   "observed_ge_30s_km2": 71.8668,
+   "compute_s_inprocess": 2.0094601710006827
+  },
+  "side": {
+   "sensor": {
+    "name": "side",
+    "sectors": [
+     [
+      90.0,
+      60.0
+     ],
+     [
+      -90.0,
+      60.0
+     ]
+    ],
+    "min_dep": 10.0,
+    "max_dep": 70.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 175.1094,
+   "dwell_s_mean": 11.5733642578125,
+   "dwell_s_median": 8.333333015441895,
+   "observed_ge_30s_km2": 3.5972999999999997,
+   "compute_s_inprocess": 2.029250363000756
+  },
+  "nadir": {
+   "sensor": {
+    "name": "nadir",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": 45.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 87.1164,
+   "dwell_s_mean": 11.381756782531738,
+   "dwell_s_median": 8.333333015441895,
+   "observed_ge_30s_km2": 0.0,
+   "compute_s_inprocess": 2.0027432019996922
+  }
+ },
+ "cruise": {
+  "omni": {
+   "sensor": {
+    "name": "omni",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": -90.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.0,
+    "gsd_max_m": Infinity
+   },
+   "observed_km2": 4746.933,
+   "dwell_s_mean": 408.8336486816406,
+   "dwell_s_median": 408.33331298828125,
+   "observed_ge_30s_km2": 4651.6131,
+   "compute_s_inprocess": 1.8799774789986259
+  },
+  "omni_gsd3": {
+   "sensor": {
+    "name": "omni_gsd3",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": -90.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 2498.4972,
+   "dwell_s_mean": 221.44932556152344,
+   "dwell_s_median": 241.66665649414062,
+   "observed_ge_30s_km2": 2408.6502,
+   "compute_s_inprocess": 8.637681747997703
+  },
+  "forward": {
+   "sensor": {
+    "name": "forward",
+    "sectors": [
+     [
+      0.0,
+      90.0
+     ]
+    ],
+    "min_dep": 5.0,
+    "max_dep": 60.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 1962.6984,
+   "dwell_s_mean": 64.86817169189453,
+   "dwell_s_median": 50.0,
+   "observed_ge_30s_km2": 1413.4581,
+   "compute_s_inprocess": 6.905215519997
+  },
+  "side": {
+   "sensor": {
+    "name": "side",
+    "sectors": [
+     [
+      90.0,
+      60.0
+     ],
+     [
+      -90.0,
+      60.0
+     ]
+    ],
+    "min_dep": 10.0,
+    "max_dep": 70.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 2272.1004,
+   "dwell_s_mean": 75.2909164428711,
+   "dwell_s_median": 66.66666412353516,
+   "observed_ge_30s_km2": 1793.5254,
+   "compute_s_inprocess": 7.505354905999411
+  },
+  "nadir": {
+   "sensor": {
+    "name": "nadir",
+    "sectors": [
+     [
+      0.0,
+      360.0
+     ]
+    ],
+    "min_dep": 45.0,
+    "max_dep": 90.0,
+    "ifov_mrad": 0.17453292519943295,
+    "gsd_max_m": 3.0
+   },
+   "observed_km2": 1248.5592,
+   "dwell_s_mean": 117.52816009521484,
+   "dwell_s_median": 124.99999237060547,
+   "observed_ge_30s_km2": 1154.9304,
+   "compute_s_inprocess": 6.045886531999713
+  }
+ }
+}

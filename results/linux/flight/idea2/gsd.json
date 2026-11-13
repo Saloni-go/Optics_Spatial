@@ -1,0 +1,86 @@
+{
+ "valley": [
+  {
+   "gsd_max_m": 0.5,
+   "observed_km2": 343.962,
+   "compute_s": 12.108034492001025
+  },
+  {
+   "gsd_max_m": 1.0,
+   "observed_km2": 524.9349,
+   "compute_s": 1.8608961280006042
+  },
+  {
+   "gsd_max_m": 2.0,
+   "observed_km2": 785.9412,
+   "compute_s": 1.8418093299987959
+  },
+  {
+   "gsd_max_m": 3.0,
+   "observed_km2": 968.5035,
+   "compute_s": 1.7856211219987017
+  },
+  {
+   "gsd_max_m": 5.0,
+   "observed_km2": 1200.2769,
+   "compute_s": 1.8105834069974662
+  },
+  {
+   "gsd_max_m": 10.0,
+   "observed_km2": 1413.5085,
+   "compute_s": 1.7767627109969908
+  },
+  {
+   "gsd_max_m": 30.0,
+   "observed_km2": 1524.4515,
+   "compute_s": 1.8184820319984283
+  },
+  {
+   "gsd_max_m": Infinity,
+   "observed_km2": 1600.0245,
+   "compute_s": 1.462509785000293
+  }
+ ],
+ "cruise": [
+  {
+   "gsd_max_m": 0.5,
+   "observed_km2": 0.0,
+   "compute_s": 7.433745730999362
+  },
+  {
+   "gsd_max_m": 1.0,
+   "observed_km2": 798.6312,
+   "compute_s": 7.472573787003057
+  },
+  {
+   "gsd_max_m": 2.0,
+   "observed_km2": 1868.5566,
+   "compute_s": 7.564902319001703
+  },
+  {
+   "gsd_max_m": 3.0,
+   "observed_km2": 2498.4972,
+   "compute_s": 7.695575830999587
+  },
+  {
+   "gsd_max_m": 5.0,
+   "observed_km2": 3417.4332,
+   "compute_s": 7.938897616000759
+  },
+  {
+   "gsd_max_m": 10.0,
+   "observed_km2": 4240.2744,
+   "compute_s": 8.301605365999421
+  },
+  {
+   "gsd_max_m": 30.0,
+   "observed_km2": 4604.976,
+   "compute_s": 8.4045964859979
+  },
+  {
+   "gsd_max_m": Infinity,
+   "observed_km2": 4746.933,
+   "compute_s": 1.504804606000107
+  }
+ ]
+}

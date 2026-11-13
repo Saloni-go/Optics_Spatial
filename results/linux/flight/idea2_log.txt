@@ -1,0 +1,92 @@
+== sensors
+valley omni {'observed_km2': 1600.02, 'dwell_s_mean': 89.71, 'dwell_s_median': 66.67, 'observed_ge_30s_km2': 1230.1, 'compute_s_inprocess': 1.92}
+valley omni_gsd3 {'observed_km2': 968.5, 'dwell_s_mean': 64.44, 'dwell_s_median': 58.33, 'observed_ge_30s_km2': 758.44, 'compute_s_inprocess': 16.39}
+valley forward {'observed_km2': 219.93, 'dwell_s_mean': 24.06, 'dwell_s_median': 25.0, 'observed_ge_30s_km2': 71.87, 'compute_s_inprocess': 2.01}
+valley side {'observed_km2': 175.11, 'dwell_s_mean': 11.57, 'dwell_s_median': 8.33, 'observed_ge_30s_km2': 3.6, 'compute_s_inprocess': 2.03}
+valley nadir {'observed_km2': 87.12, 'dwell_s_mean': 11.38, 'dwell_s_median': 8.33, 'observed_ge_30s_km2': 0.0, 'compute_s_inprocess': 2.0}
+cruise omni {'observed_km2': 4746.93, 'dwell_s_mean': 408.83, 'dwell_s_median': 408.33, 'observed_ge_30s_km2': 4651.61, 'compute_s_inprocess': 1.88}
+cruise omni_gsd3 {'observed_km2': 2498.5, 'dwell_s_mean': 221.45, 'dwell_s_median': 241.67, 'observed_ge_30s_km2': 2408.65, 'compute_s_inprocess': 8.64}
+cruise forward {'observed_km2': 1962.7, 'dwell_s_mean': 64.87, 'dwell_s_median': 50.0, 'observed_ge_30s_km2': 1413.46, 'compute_s_inprocess': 6.91}
+cruise side {'observed_km2': 2272.1, 'dwell_s_mean': 75.29, 'dwell_s_median': 66.67, 'observed_ge_30s_km2': 1793.53, 'compute_s_inprocess': 7.51}
+cruise nadir {'observed_km2': 1248.56, 'dwell_s_mean': 117.53, 'dwell_s_median': 125.0, 'observed_ge_30s_km2': 1154.93, 'compute_s_inprocess': 6.05}
+  F11_sensor_valley/omni sensor=0 dem=4000: median 2.450s, peak 3388 MB (n=3)
+  F11_sensor_valley/omni_gsd3 sensor=0 dem=4000: median 16.596s, peak 3388 MB (n=3)
+  F11_sensor_valley/forward sensor=0 dem=4000: median 11.223s, peak 3388 MB (n=3)
+  F11_sensor_valley/side sensor=0 dem=4000: median 11.255s, peak 3388 MB (n=3)
+  F11_sensor_valley/nadir sensor=0 dem=4000: median 14.665s, peak 3388 MB (n=3)
+  F11_sensor_cruise/omni sensor=0 dem=4000: median 2.042s, peak 3388 MB (n=3)
+  F11_sensor_cruise/omni_gsd3 sensor=0 dem=4000: median 10.128s, peak 3388 MB (n=3)
+  F11_sensor_cruise/forward sensor=0 dem=4000: median 25.379s, peak 3480 MB (n=3)
+  F11_sensor_cruise/side sensor=0 dem=4000: median 9.474s, peak 3477 MB (n=3)
+  F11_sensor_cruise/nadir sensor=0 dem=4000: median 26.067s, peak 3574 MB (n=3)
+== gsd
+valley {'gsd_max_m': 0.5, 'observed_km2': 343.962, 'compute_s': 12.108034492001025}
+valley {'gsd_max_m': 1.0, 'observed_km2': 524.9349, 'compute_s': 1.8608961280006042}
+valley {'gsd_max_m': 2.0, 'observed_km2': 785.9412, 'compute_s': 1.8418093299987959}
+valley {'gsd_max_m': 3.0, 'observed_km2': 968.5035, 'compute_s': 1.7856211219987017}
+valley {'gsd_max_m': 5.0, 'observed_km2': 1200.2769, 'compute_s': 1.8105834069974662}
+valley {'gsd_max_m': 10.0, 'observed_km2': 1413.5085, 'compute_s': 1.7767627109969908}
+valley {'gsd_max_m': 30.0, 'observed_km2': 1524.4515, 'compute_s': 1.8184820319984283}
+valley {'gsd_max_m': inf, 'observed_km2': 1600.0245, 'compute_s': 1.462509785000293}
+cruise {'gsd_max_m': 0.5, 'observed_km2': 0.0, 'compute_s': 7.433745730999362}
+cruise {'gsd_max_m': 1.0, 'observed_km2': 798.6312, 'compute_s': 7.472573787003057}
+cruise {'gsd_max_m': 2.0, 'observed_km2': 1868.5566, 'compute_s': 7.564902319001703}
+cruise {'gsd_max_m': 3.0, 'observed_km2': 2498.4972, 'compute_s': 7.695575830999587}
+cruise {'gsd_max_m': 5.0, 'observed_km2': 3417.4332, 'compute_s': 7.938897616000759}
+cruise {'gsd_max_m': 10.0, 'observed_km2': 4240.2744, 'compute_s': 8.301605365999421}
+cruise {'gsd_max_m': 30.0, 'observed_km2': 4604.976, 'compute_s': 8.4045964859979}
+cruise {'gsd_max_m': inf, 'observed_km2': 4746.933, 'compute_s': 1.504804606000107}
+== mc
+valley dem {'source': 'dem', 'runs': 20, 'seconds': 51.11, 'nominal_km2': 1600.024, 'seen_km2_mean': 1599.5, 'seen_km2_std': 0.743, 'seen_km2_p5': 1598.252, 'seen_km2_p95': 1600.508, 'jaccard_mean': 0.985, 'jaccard_min': 0.984, 'reliable_km2': 1557.094, 'uncertain_km2': 84.662, 'nominal_seen_but_unreliable_km2': 42.931}
+valley position {'source': 'position', 'runs': 20, 'seconds': 31.077, 'nominal_km2': 1600.024, 'seen_km2_mean': 1605.065, 'seen_km2_std': 2.463, 'seen_km2_p5': 1601.457, 'seen_km2_p95': 1608.333, 'jaccard_mean': 0.985, 'jaccard_min': 0.983, 'reliable_km2': 1564.853, 'uncertain_km2': 80.816, 'nominal_seen_but_unreliable_km2': 35.222}
+valley both {'source': 'both', 'runs': 20, 'seconds': 47.691, 'nominal_km2': 1600.024, 'seen_km2_mean': 1603.602, 'seen_km2_std': 2.662, 'seen_km2_p5': 1599.545, 'seen_km2_p95': 1607.693, 'jaccard_mean': 0.977, 'jaccard_min': 0.976, 'reliable_km2': 1540.882, 'uncertain_km2': 125.834, 'nominal_seen_but_unreliable_km2': 59.165}
+cruise dem {'source': 'dem', 'runs': 20, 'seconds': 47.621, 'nominal_km2': 4746.933, 'seen_km2_mean': 4746.841, 'seen_km2_std': 0.427, 'seen_km2_p5': 4746.233, 'seen_km2_p95': 4747.508, 'jaccard_mean': 0.996, 'jaccard_min': 0.995, 'reliable_km2': 4709.37, 'uncertain_km2': 74.702, 'nominal_seen_but_unreliable_km2': 37.563}
+cruise position {'source': 'position', 'runs': 20, 'seconds': 28.816, 'nominal_km2': 4746.933, 'seen_km2_mean': 4748.292, 'seen_km2_std': 0.73, 'seen_km2_p5': 4747.213, 'seen_km2_p95': 4749.182, 'jaccard_mean': 0.999, 'jaccard_min': 0.999, 'reliable_km2': 4739.887, 'uncertain_km2': 16.943, 'nominal_seen_but_unreliable_km2': 7.058}
+cruise both {'source': 'both', 'runs': 20, 'seconds': 47.725, 'nominal_km2': 4746.933, 'seen_km2_mean': 4747.607, 'seen_km2_std': 0.822, 'seen_km2_p5': 4746.664, 'seen_km2_p95': 4749.25, 'jaccard_mean': 0.995, 'jaccard_min': 0.995, 'reliable_km2': 4707.42, 'uncertain_km2': 80.248, 'nominal_seen_but_unreliable_km2': 39.518}
+== figs
+{
+ "valley": {
+  "omni": {
+   "compute_s": 2.1135830219973286,
+   "peak_mb": 3388.45703125
+  },
+  "omni_gsd3": {
+   "compute_s": 16.267907921999722,
+   "peak_mb": 3388.45703125
+  },
+  "forward": {
+   "compute_s": 10.90420161399743,
+   "peak_mb": 3388.45703125
+  },
+  "side": {
+   "compute_s": 10.935131977003039,
+   "peak_mb": 3388.45703125
+  },
+  "nadir": {
+   "compute_s": 14.34460214399951,
+   "peak_mb": 3388.45703125
+  }
+ },
+ "cruise": {
+  "omni": {
+   "compute_s": 1.7337182900009793,
+   "peak_mb": 3388.45703125
+  },
+  "omni_gsd3": {
+   "compute_s": 9.808632107000449,
+   "peak_mb": 3388.45703125
+  },
+  "forward": {
+   "compute_s": 25.055433049001294,
+   "peak_mb": 3480.37890625
+  },
+  "side": {
+   "compute_s": 9.15977706600097,
+   "peak_mb": 3476.859375
+  },
+  "nadir": {
+   "compute_s": 25.745322676000796,
+   "peak_mb": 3573.7265625
+  }
+ }
+}
