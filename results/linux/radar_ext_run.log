@@ -1,0 +1,34 @@
+minalt {'0': 2413, '10': 2767, '25': 3122, '50': 3601, '75': 4021, '100': 4409, '150': 5122, '200': 5768, '300': 6904, '400': 7839, '500': 8601, '750': 9894, '1000': 10635, '1500': 11230, '2000': 11355} 7.6 s
+== minalt 8.7 s
+siting 193 candidates; greedy6 6624 km2 vs shared6 5122 | match with 5 radars
+== siting 25.8 s
+detect {'los_km2': 5122, 'p1km_ge_0.5_km2': 576, 'p1km_ge_0.1_km2': 4040, 'p5km_ge_0.9_km2': 2127, 'p5km_ge_0.5_km2': 3760}
+== detect 1.7 s
+  mc run 1/20
+  mc run 2/20
+  mc run 3/20
+  mc run 4/20
+  mc run 5/20
+  mc run 6/20
+  mc run 7/20
+  mc run 8/20
+  mc run 9/20
+  mc run 10/20
+  mc run 11/20
+  mc run 12/20
+  mc run 13/20
+  mc run 14/20
+  mc run 15/20
+  mc run 16/20
+  mc run 17/20
+  mc run 18/20
+  mc run 19/20
+  mc run 20/20
+mc {'ground': {'nominal_km2': 2413, 'mean_km2': 2412, 'std_km2': 5, 'reliable_km2': 2313, 'uncertain_km2': 200, 'nominal_seen_but_unreliable_km2': 101}, 'air150': {'nominal_km2': 5122, 'mean_km2': 5120, 'std_km2': 11, 'reliable_km2': 4995, 'uncertain_km2': 252, 'nominal_seen_but_unreliable_km2': 127}}
+== mc 39.7 s
+mast {'mast_m': 10, 'ground_km2': 2301.1443, 'air150_km2': 4964.7087, 'seconds': 0.8958576059958432}
+mast {'mast_m': 30, 'ground_km2': 2413.4103, 'air150_km2': 5121.766799999999, 'seconds': 0.8939353819951066}
+mast {'mast_m': 60, 'ground_km2': 2518.9146, 'air150_km2': 5294.0628, 'seconds': 0.8947924489984871}
+mast {'mast_m': 100, 'ground_km2': 2639.0726999999997, 'air150_km2': 5479.8174, 'seconds': 0.8847861260001082}
+== mast 3.6 s
+== figs 4.3 s

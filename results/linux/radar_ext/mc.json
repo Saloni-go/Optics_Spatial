@@ -1,0 +1,22 @@
+{
+ "runs": 20,
+ "sigma_z_m": 4.0,
+ "corr_m": 300.0,
+ "seconds": 38.26115829099581,
+ "ground": {
+  "nominal_km2": 2413.4103,
+  "mean_km2": 2412.0163350000003,
+  "std_km2": 5.3901523803390665,
+  "reliable_km2": 2312.604,
+  "uncertain_km2": 200.1276,
+  "nominal_seen_but_unreliable_km2": 100.8063
+ },
+ "air150": {
+  "nominal_km2": 5121.766799999999,
+  "mean_km2": 5119.9662149999995,
+  "std_km2": 10.691836401305219,
+  "reliable_km2": 4994.8938,
+  "uncertain_km2": 252.3366,
+  "nominal_seen_but_unreliable_km2": 126.87299999999999
+ }
+}

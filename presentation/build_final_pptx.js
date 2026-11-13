@@ -156,7 +156,7 @@ table(s, [["Algorithm", "Idea", "Cost"], ["Naive line of sight", "sample the pro
 const v500 = (RV.real || {}).dem_500_range_0 || {};
 table(s, [["Real DEM vs exact", "R2", "GDAL"], ["agreement", pc((v500.r2 || {}).agreement, 1), pc((v500.gdal || {}).agreement, 1)],
           ["kappa", f2((v500.r2 || {}).kappa), f2((v500.gdal || {}).kappa)]], 7.9, 1.85, 4.8, [2.2, 1.3, 1.3], { fontSize: 14 });
-T(s, "Synthetic flat, valley, wall and cone terrains: all three 100% correct. A valley test caught an R2 bug (84.7% → 100%).", { x: 7.9, y: 3.4, w: 4.8, h: 1.2, fontSize: 15 });
+T(s, "Synthetic flat, valley, wall and cone terrains: all three 100% correct. R2 now takes each cell from the ray closest to its centre: removes a +8% visible-area bias, at ~1.6× the time.", { x: 7.9, y: 3.15, w: 4.8, h: 1.0, fontSize: 13 });
 img(s, "radar/fig_algorithm_comparison.png", 0.6, 4.2, 12.1, 2.2, "Viewsheds by the three algorithms and their differences");
 s.addNotes("All three share one interface so the benchmark swaps them. Mismatches sit on grazing ridge edges. Kappa corrects agreement for chance; most cells are hidden.");
 
@@ -177,7 +177,7 @@ img(s, "radar/fig_bench_size.png", 0.6, 1.75, 8.6, 4.5, "Compute time and memory
 stat(s, 9.6, 1.9, 3.1, nv.projected_16M_s ? secs(nv.projected_16M_s) : "–", "exact method, 16 M cells (projected)", HEX.accent1);
 stat(s, 9.6, 3.5, 3.1, secs(last(g1.compute_s)), "GDAL, same DEM", HEX.accent2);
 T(s, `Fitted slopes: naive ${f2(nv.exponent)}, R2 ${f2(r21.exponent)}, GDAL ${f2(g1.exponent)} (theory 1.5, 1, 1).`, { x: 9.6, y: 5.1, w: 3.1, h: 1.0, fontSize: 15 });
-foot(s, `Radar at the DEM centre, unlimited range · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
+foot(s, `R2 timings: original R2 on the team PC; the fixed R2 is 1.5–1.9× slower (laptop, results/linux64) · GDAL peak memory ${f0(g1.peak_mb && g1.peak_mb[0])} → ${f0(last(g1.peak_mb))} MB`);
 s.addNotes("Naive is measured on 0.25 M and 1 M cells and extrapolated with its slope. GDAL's slope is under 1 because fixed overheads dominate small DEMs.");
 
 const E4 = RB.E4 || {}, sp = (E4.speedup_threads || []), E2 = RB.E2 || {}, E6 = RB.E6 || [];
@@ -195,6 +195,47 @@ table(s, [["Study (16 M cells)", "Result"],
   ["E6 coarser DEM 60 / 90 / 120 m", `kappa ${f2(e6(60).kappa)} / ${f2(e6(90).kappa)} / ${f2(e6(120).kappa)} vs 30 m`]],
   0.6, 4.4, 12.1, [3.6, 8.5], { fontSize: 13 });
 s.addNotes("GDAL releases Python's lock inside the viewshed, so threads run in parallel without process start-up (about 0.8 s on Windows) or copying results back.");
+
+// ---------------------------------------------------------------- Track 1 extensions (Linux laptop, results/linux/radar_ext)
+const RX = (n) => J(`linux/radar_ext/${n}.json`) || {};
+const XA = RX("minalt"), XS = RX("siting"), XD = RX("detect"), XM = RX("mc"), XH = RX("mast");
+const xaAt = (h) => ((XA.area_seen_at_or_below_km2 || {})[String(h)]);
+const xaTot = XA.area_total_km2 || 14400;
+const radLine = "Linux laptop · 4000 × 4000 DEM (16 M cells), GDAL viewshed, 40 km range · results/linux/radar_ext";
+
+s = add("CONTENT", "Track 1: radar visibility");
+eyebrow(s, "Track 1 · Extension: lowest detectable altitude", HEX.accent1);
+s.addText(`Fly 25 m above ground and the radars see you over ${pc(xaAt(25) / xaTot, 0)} of the area`, { placeholder: "title" });
+img(s, "linux/radar_ext/fig_minalt.png", 0.6, 1.75, 8.9, 4.3, "Map of the lowest altitude at which the six radars see an aircraft, and coverage against height");
+stat(s, 9.8, 1.9, 2.9, pc(xaAt(150) / xaTot, 0), "seen at 150 m (Track 3's threat height)", HEX.accent1);
+stat(s, 9.8, 3.5, 2.9, pc(xaAt(2000) / xaTot, 0), "seen at 2,000 m: the rest is out of range", HEX.dk1);
+T(s, `${(XA.levels_m || []).length} target heights × 6 radars = ${(XA.levels_m || []).length * 6} viewsheds in ${f1(XA.seconds_total)} s. A 5-level sweep over-estimates by ${f0(((XA.sweep_resolution || {})["5 levels"] || {}).mean_overestimate_m)} m on average.`,
+  { x: 9.8, y: 5.0, w: 2.9, h: 1.3, fontSize: 12 });
+foot(s, radLine);
+s.addNotes("GDAL 3.4 has no direct minimum-height output, so the map is a sweep over target heights; the answer is exact at each level. Dark red valleys are the ones Track 3's corridors should use.");
+
+s = add("CONTENT", "Track 1: radar visibility");
+eyebrow(s, "Track 1 · Extension: where to put the radars", HEX.accent1);
+s.addText(`Greedy placement: ${f0(XS.greedy6_exact_km2)} km² instead of ${f0(XS.shared6_exact_km2)} km² with the same six radars`, { placeholder: "title" });
+img(s, "linux/radar_ext/fig_siting.png", 0.6, 1.75, 8.9, 4.3, "Coverage of the shared six sites against the greedy six, and coverage against number of radars");
+stat(s, 9.8, 1.9, 2.9, `+${pc(XS.greedy6_exact_km2 / XS.shared6_exact_km2 - 1, 0)}`, "area where an aircraft at 150 m is seen", HEX.accent1);
+stat(s, 9.8, 3.5, 2.9, `${XS.radars_needed_to_match_shared6 || "–"}`, "greedy radars to match the shared six", HEX.dk1);
+T(s, `${XS.candidates} ridge-top candidates, one viewshed each (${f0(XS.seconds_coverage)} s), greedy pick on a 120 m grid (${f1(XS.seconds_greedy)} s). Highest-first picks peaks that look at each other; greedy spreads them (≥ ${f0(XS.greedy6_min_separation_km)} km apart).`,
+  { x: 9.8, y: 5.0, w: 2.9, h: 1.4, fontSize: 11 });
+foot(s, radLine);
+s.addNotes("Greedy max-coverage is within 63% of the optimum by theory and usually much closer. The six shared sites stay as the team's common input; this shows what placement is worth.");
+
+s = add("CONTENT", "Track 1: radar visibility");
+eyebrow(s, "Track 1 · Extension: detection, DEM error, mast height", HEX.accent1);
+s.addText("Seen is not detected; a few metres of DEM error matter little", { placeholder: "title" });
+img(s, "linux/radar_ext/fig_detect_mc_mast.png", 0.6, 1.75, 12.1, 3.6, "DEM-error Monte Carlo map, detection probability bars, mast-height curves");
+const xm = XM.air150 || {}, xg = XM.ground || {}, xmast = XH.rows || [];
+table(s, [["Study (aircraft at 150 m unless stated)", "Result"],
+  ["Detection model of Track 3", `line of sight ${f0(XD.los_km2)} km² → P(detect per km) ≥ 0.5 on only ${f0(XD["p1km_ge_0.5_km2"])} km²; ≥ 0.9 over 5 km on ${f0(XD["p5km_ge_0.9_km2"])} km²`],
+  [`DEM error ±${f0(XM.sigma_z_m)} m, ${XM.runs} runs`, `reliable ${f0(xm.reliable_km2)} km², uncertain ${f0(xm.uncertain_km2)} km² (${pc(xm.uncertain_km2 / xm.nominal_km2, 0)}); ground ${pc(xg.uncertain_km2 / xg.nominal_km2, 0)}`],
+  ["Mast 10 → 100 m", xmast.length ? `ground ${f0(xmast[0].ground_km2)} → ${f0(last(xmast).ground_km2)} km², aircraft ${f0(xmast[0].air150_km2)} → ${f0(last(xmast).air150_km2)} km²: placement matters more` : "–"]],
+  0.6, 5.4, 12.1, [3.6, 8.5], { fontSize: 11 });
+s.addNotes("Track 3's detection model: p(d) = 0.5 / (1 + (d / 20 km)^4) per km flown, combined over radars. DEM noise is spatially correlated over 300 m, as in Track 2. Uncertain cells sit on ridge edges.");
 
 // ================================================================ TRACK 2
 const fa = (FS.cases || {}).agl300 || {}, fm = (FS.cases || {}).msl5500 || {}, F1 = FB.F1_size || {}, F6 = FB.F6 || [];
