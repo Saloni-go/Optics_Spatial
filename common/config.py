@@ -2,11 +2,13 @@
 
 Every track imports from here so the DEMs, units and visibility assumptions are identical.
 """
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
-RESULTS = ROOT / "results"
+# OPTICS_RESULTS lets a run on another machine write to its own folder (e.g. results/linux)
+RESULTS = Path(os.environ["OPTICS_RESULTS"]).resolve() if os.environ.get("OPTICS_RESULTS") else ROOT / "results"
 
 # ---- DEM -----------------------------------------------------------------
 # Copernicus GLO-30 DSM (30 m), Garhwal Himalaya, Uttarakhand.

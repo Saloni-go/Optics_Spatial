@@ -156,7 +156,7 @@ class RadarCoverage(Base):
                 break
             c, r = (int(round(v)) for v in dem.to_pixel(x, y))
             cx, cy = dem.to_world(c, r)
-            ds = gdal.ViewshedGenerate(band, "MEM", "", [], cx, cy, mast, target, VISIBLE, INVISIBLE, OUT_OF_RANGE,
+            ds = gdal.ViewshedGenerate(band, "MEM", "", None, cx, cy, mast, target, VISIBLE, INVISIBLE, OUT_OF_RANGE,
                                        OUT_OF_RANGE, CURV_COEFF, gdal.GVM_Edge, rng)
             vis = ds.GetRasterBand(1).ReadAsArray() == VISIBLE
             g = ds.GetGeoTransform()

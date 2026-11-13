@@ -87,7 +87,7 @@ class LiveCoverage:
         ds.SetProjection(self.dem.proj)            # GDAL takes the earth radius for curvature from the SRS
         ds.GetRasterBand(1).SetNoDataValue(ND)
         ox, oy = gt[0] + (ck + 0.5) * ck_, gt[3] - (rk + 0.5) * ck_
-        out = gdal.ViewshedGenerate(ds.GetRasterBand(1), "MEM", "", [], ox, oy, self.radar_h, self.target_h,
+        out = gdal.ViewshedGenerate(ds.GetRasterBand(1), "MEM", "", None, ox, oy, self.radar_h, self.target_h,
                                     VISIBLE, INVISIBLE, OUT_OF_RANGE, OUT_OF_RANGE, CURV_COEFF, gdal.GVM_Edge, self.rng)
         vis = out.GetRasterBand(1).ReadAsArray() == VISIBLE
         g = out.GetGeoTransform()

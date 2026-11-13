@@ -1,0 +1,39 @@
+== F1
+  F1_size/window cells=250000 dem=500: median 0.064s, peak 82 MB (n=5)
+  F1_size/window cells=1000000 dem=1000: median 0.318s, peak 102 MB (n=5)
+  F1_size/window cells=4000000 dem=2000: median 2.379s, peak 177 MB (n=5)
+  F1_size/window cells=16000000 dem=4000: median 18.351s, peak 477 MB (n=3)
+== F1b
+  F1b_size_fixed_route/window cells=250000 dem=500: median 0.053s, peak 82 MB (n=5)
+  F1b_size_fixed_route/window cells=1000000 dem=1000: median 0.162s, peak 103 MB (n=5)
+  F1b_size_fixed_route/window cells=4000000 dem=2000: median 0.311s, peak 151 MB (n=5)
+  F1b_size_fixed_route/window cells=16000000 dem=4000: median 0.532s, peak 294 MB (n=5)
+== F2
+  F2_spacing/window spacing_m=250 dem=4000: median 10.806s, peak 308 MB (n=5)
+  F2_spacing/window spacing_m=500 dem=4000: median 5.824s, peak 308 MB (n=5)
+  F2_spacing/window spacing_m=1000 dem=4000: median 3.155s, peak 307 MB (n=5)
+  F2_spacing/window spacing_m=2000 dem=4000: median 2.005s, peak 308 MB (n=5)
+  F2_spacing/window spacing_m=4000 dem=4000: median 1.124s, peak 306 MB (n=5)
+== F3
+  F3_altitude/window agl_m=100 dem=4000: median 3.086s, peak 307 MB (n=5)
+  F3_altitude/window agl_m=300 dem=4000: median 3.001s, peak 307 MB (n=5)
+  F3_altitude/window agl_m=1000 dem=4000: median 3.069s, peak 307 MB (n=5)
+  F3_altitude/window agl_m=3000 dem=4000: median 3.164s, peak 307 MB (n=5)
+== F4
+  F4_radius/window radius_km=5 dem=4000: median 0.497s, peak 291 MB (n=5)
+  F4_radius/window radius_km=10 dem=4000: median 1.029s, peak 295 MB (n=5)
+  F4_radius/window radius_km=20 dem=4000: median 2.984s, peak 307 MB (n=5)
+  F4_radius/window radius_km=40 dem=4000: median 9.747s, peak 382 MB (n=5)
+== F5
+  F5_length/window route_km=25 dem=4000: median 0.680s, peak 295 MB (n=5)
+  F5_length/window route_km=50 dem=4000: median 1.102s, peak 299 MB (n=5)
+  F5_length/window route_km=100 dem=4000: median 1.939s, peak 301 MB (n=5)
+  F5_length/window route_km=150 dem=4000: median 2.761s, peak 306 MB (n=5)
+== F6
+  F6_optimise/baseline mode=baseline dem=4000: median 15.612s, peak 303 MB (n=3)
+  F6_optimise/cached mode=cached dem=4000: median 4.531s, peak 400 MB (n=5)
+  F6_optimise/window mode=window dem=4000: median 5.587s, peak 308 MB (n=5)
+  F6_optimise/parallel mode=parallel dem=4000: median 3.633s, peak 835 MB (n=5)
+  F6_optimise/threads mode=threads dem=4000: median 2.577s, peak 910 MB (n=5)
+  F6_optimise/adaptive mode=adaptive dem=4000: median 11.516s, peak 1295 MB (n=5)
+  F6_optimise/adaptive_gain mode=adaptive_gain dem=4000: median 4.700s, peak 688 MB (n=5)

@@ -32,7 +32,7 @@ def exposure(dem, sites, radar_h=RADAR_HEIGHT, target_h=TARGET_AIRCRAFT, rng=RAD
         c, r = dem.to_pixel(x, y)
         if not (0 <= c < dem.shape[1] and 0 <= r < dem.shape[0]):
             continue
-        ds = gdal.ViewshedGenerate(src.GetRasterBand(1), "MEM", "", [], *dem.to_world(round(c), round(r)), radar_h, target_h,
+        ds = gdal.ViewshedGenerate(src.GetRasterBand(1), "MEM", "", None, *dem.to_world(round(c), round(r)), radar_h, target_h,
                                    VISIBLE, INVISIBLE, OUT_OF_RANGE, OUT_OF_RANGE, CURV_COEFF, gdal.GVM_Edge, rng)
         a = ds.GetRasterBand(1).ReadAsArray(); g = ds.GetGeoTransform()
         c0 = int(round((g[0] - dem.gt[0]) / dem.gt[1])); r0 = int(round((g[3] - dem.gt[3]) / dem.gt[5]))

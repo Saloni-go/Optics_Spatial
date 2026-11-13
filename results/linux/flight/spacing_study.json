@@ -1,0 +1,180 @@
+{
+ "valley": {
+  "label": "Terrain following, 300 m AGL",
+  "rows": [
+   {
+    "method": "fixed",
+    "param": 500,
+    "positions": 333,
+    "jaccard": 0.9832926993847386,
+    "seconds": 2.2234617399990384
+   },
+   {
+    "method": "fixed",
+    "param": 1000,
+    "positions": 167,
+    "jaccard": 0.9471380720924418,
+    "seconds": 1.1217575869995926
+   },
+   {
+    "method": "fixed",
+    "param": 2000,
+    "positions": 84,
+    "jaccard": 0.863739289341,
+    "seconds": 0.5953610200012918
+   },
+   {
+    "method": "fixed",
+    "param": 4000,
+    "positions": 43,
+    "jaccard": 0.726267303535596,
+    "seconds": 0.3410910469974624
+   },
+   {
+    "method": "fixed",
+    "param": 8000,
+    "positions": 22,
+    "jaccard": 0.5525483237943111,
+    "seconds": 0.20183727699986775
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.5,
+    "positions": 170,
+    "jaccard": 0.9153343866234356,
+    "seconds": 3.3207464589977462
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.7,
+    "positions": 337,
+    "jaccard": 0.9537681549986087,
+    "seconds": 6.550703954999335
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.85,
+    "positions": 622,
+    "jaccard": 0.9615893200558642,
+    "seconds": 11.188047451996681
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.02,
+    "positions": 393,
+    "jaccard": 0.9570196795036628,
+    "seconds": 6.966149432999373
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.05,
+    "positions": 245,
+    "jaccard": 0.9427987966646157,
+    "seconds": 4.249315997996746
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.1,
+    "positions": 153,
+    "jaccard": 0.9138484697543408,
+    "seconds": 2.607771667000634
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.2,
+    "positions": 99,
+    "jaccard": 0.8774979315567444,
+    "seconds": 1.6907509849988855
+   }
+  ]
+ },
+ "cruise": {
+  "label": "Cruise, 5500 m MSL",
+  "rows": [
+   {
+    "method": "fixed",
+    "param": 500,
+    "positions": 333,
+    "jaccard": 0.9978030576337457,
+    "seconds": 2.2588429669995094
+   },
+   {
+    "method": "fixed",
+    "param": 1000,
+    "positions": 167,
+    "jaccard": 0.9953111843151974,
+    "seconds": 1.16393354200045
+   },
+   {
+    "method": "fixed",
+    "param": 2000,
+    "positions": 84,
+    "jaccard": 0.9897197928937721,
+    "seconds": 0.6654171080008382
+   },
+   {
+    "method": "fixed",
+    "param": 4000,
+    "positions": 43,
+    "jaccard": 0.9751015090286896,
+    "seconds": 0.3638401480020548
+   },
+   {
+    "method": "fixed",
+    "param": 8000,
+    "positions": 22,
+    "jaccard": 0.9468587015887111,
+    "seconds": 0.21462537000115844
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.5,
+    "positions": 43,
+    "jaccard": 0.9751015090286896,
+    "seconds": 0.8032237609986623
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.7,
+    "positions": 50,
+    "jaccard": 0.9761603319257813,
+    "seconds": 0.903864854000858
+   },
+   {
+    "method": "adaptive_similarity",
+    "param": 0.85,
+    "positions": 119,
+    "jaccard": 0.9797008732848351,
+    "seconds": 2.2689784609974595
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.02,
+    "positions": 85,
+    "jaccard": 0.9788983783708142,
+    "seconds": 1.3985306310023589
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.05,
+    "positions": 85,
+    "jaccard": 0.9788983783708142,
+    "seconds": 1.3869934739996097
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.1,
+    "positions": 85,
+    "jaccard": 0.9788983783708142,
+    "seconds": 1.3869258260019706
+   },
+   {
+    "method": "adaptive_gain",
+    "param": 0.2,
+    "positions": 85,
+    "jaccard": 0.9788983783708142,
+    "seconds": 1.3949182750002365
+   }
+  ]
+ }
+}

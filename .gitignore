@@ -35,3 +35,4 @@ qgis_plugin/dist/
 # rendered slide previews and the downscaled copy made for sending
 presentation/render_final/
 presentation/*_send.pptx
+.cache/

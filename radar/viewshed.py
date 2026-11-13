@@ -139,7 +139,7 @@ def gdal_viewshed(dem, x, y, observer_h, target_h=0.0, max_dist=0.0, curvature=T
     cx, cy = dem.to_world(oc, orow)                              # same observer cell as the others
     src = dem.gdal_dataset()          # zero-copy view of the in-memory DEM
     band = src.GetRasterBand(1)
-    ds = gdal.ViewshedGenerate(band, "MEM", "", [], cx, cy, observer_h, target_h,
+    ds = gdal.ViewshedGenerate(band, "MEM", "", None, cx, cy, observer_h, target_h,
                                VISIBLE, INVISIBLE, OUT_OF_RANGE, OUT_OF_RANGE,
                                CURV_COEFF if curvature else 0.0, gdal.GVM_Edge, max(max_dist, 0.0))
     arr = ds.GetRasterBand(1).ReadAsArray()

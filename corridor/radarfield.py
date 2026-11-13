@@ -47,7 +47,7 @@ class RadarField:
         c, r = dem.to_pixel(x, y)
         c, r = int(round(c)), int(round(r))
         cx, cy = dem.to_world(c, r)
-        out = gdal.ViewshedGenerate(self.ds.GetRasterBand(1), "MEM", "", [], cx, cy, self.radar_h, self.target_h,
+        out = gdal.ViewshedGenerate(self.ds.GetRasterBand(1), "MEM", "", None, cx, cy, self.radar_h, self.target_h,
                                     VISIBLE, INVISIBLE, OUT_OF_RANGE, OUT_OF_RANGE, CURV_COEFF, gdal.GVM_Edge, self.rng)
         vis = out.GetRasterBand(1).ReadAsArray() == VISIBLE
         g = out.GetGeoTransform()

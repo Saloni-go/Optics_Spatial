@@ -1,0 +1,138 @@
+{
+ "synthetic": {
+  "flat": {
+   "naive": {
+    "seconds": 2.969330997002544,
+    "visible_frac": 1.0,
+    "expected": "all visible",
+    "correct_frac": 1.0
+   },
+   "r2": {
+    "seconds": 0.02013013900068472,
+    "visible_frac": 1.0,
+    "expected": "all visible",
+    "correct_frac": 1.0
+   },
+   "gdal": {
+    "seconds": 0.0020237339995219372,
+    "visible_frac": 0.9999626867992114,
+    "expected": "all visible",
+    "correct_frac": 0.9999626867992114
+   }
+  },
+  "valley": {
+   "naive": {
+    "seconds": 2.863930523999443,
+    "visible_frac": 1.0,
+    "expected": "all visible",
+    "correct_frac": 1.0
+   },
+   "r2": {
+    "seconds": 0.021895123998547206,
+    "visible_frac": 1.0,
+    "expected": "all visible",
+    "correct_frac": 1.0
+   },
+   "gdal": {
+    "seconds": 0.0009149539982900023,
+    "visible_frac": 0.9999875622664038,
+    "expected": "all visible",
+    "correct_frac": 0.9999875622664038
+   }
+  },
+  "ridge": {
+   "naive": {
+    "seconds": 2.8617015370000445,
+    "visible_frac": 0.6483790523690773,
+    "expected": "west of wall visible, east of wall hidden",
+    "correct_frac": 1.0
+   },
+   "r2": {
+    "seconds": 0.019391340003494406,
+    "visible_frac": 0.648702433442578,
+    "expected": "west of wall visible, east of wall hidden",
+    "correct_frac": 1.0
+   },
+   "gdal": {
+    "seconds": 0.0011537120008142665,
+    "visible_frac": 0.6483417391682887,
+    "expected": "west of wall visible, east of wall hidden",
+    "correct_frac": 0.9999624055439291
+   }
+  },
+  "cone": {
+   "naive": {
+    "seconds": 3.0166241690021707,
+    "visible_frac": 0.3964714149787626
+   },
+   "r2": {
+    "seconds": 0.02644239000073867,
+    "visible_frac": 0.39753473583344223,
+    "vs_naive": {
+     "cells": 160713,
+     "agreement": 0.9989671028479339,
+     "kappa": 0.9978427160049915,
+     "false_visible": 0.0010204526080653089,
+     "false_hidden": 1.2444544000796451e-05,
+     "visible_frac_ref": 0.3965267277693777,
+     "visible_frac_test": 0.39753473583344223
+    }
+   },
+   "gdal": {
+    "seconds": 0.0014045380012248643,
+    "visible_frac": 0.39627241124122364,
+    "vs_naive": {
+     "cells": 160801,
+     "agreement": 0.9995771170577298,
+     "kappa": 0.9991162735744116,
+     "false_visible": 0.00011193960236565693,
+     "false_hidden": 0.00031094333990460256,
+     "visible_frac_ref": 0.3964714149787626,
+     "visible_frac_test": 0.39627241124122364
+    }
+   }
+  }
+ },
+ "real": {
+  "dem_500_range_0": {
+   "r2": {
+    "cells": 250000,
+    "agreement": 0.997008,
+    "kappa": 0.9587068984062969,
+    "false_visible": 0.002868,
+    "false_hidden": 0.000124,
+    "visible_frac_ref": 0.036272,
+    "visible_frac_test": 0.039016
+   },
+   "gdal": {
+    "cells": 250000,
+    "agreement": 0.997532,
+    "kappa": 0.9646143272560131,
+    "false_visible": 0.001144,
+    "false_hidden": 0.001324,
+    "visible_frac_ref": 0.036272,
+    "visible_frac_test": 0.036092
+   }
+  },
+  "dem_1000_range_10000": {
+   "r2": {
+    "cells": 349113,
+    "agreement": 0.9977113427457586,
+    "kappa": 0.9564453619013159,
+    "false_visible": 0.002234233614904057,
+    "false_hidden": 5.442363933740651e-05,
+    "visible_frac_ref": 0.025911381128746278,
+    "visible_frac_test": 0.02809119110431293
+   },
+   "gdal": {
+    "cells": 349113,
+    "agreement": 0.9982011554997952,
+    "kappa": 0.964249770215748,
+    "false_visible": 0.0008134901879907079,
+    "false_hidden": 0.000985354312214097,
+    "visible_frac_ref": 0.025911381128746278,
+    "visible_frac_test": 0.025739517004522892
+   }
+  }
+ }
+}

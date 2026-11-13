@@ -68,7 +68,7 @@ def viewshed_at(dem, x, y, alt_msl, radius, target_h=0.0, mode="window", src=Non
         c0, r0, c1, r1 = _window(dem, x, y, radius if radius > 0 else 1e12)
         gt = (dem.gt[0] + c0 * dem.gt[1], dem.gt[1], 0, dem.gt[3] + r0 * dem.gt[5], 0, dem.gt[5])
         ds = _mem_ds(dem.z[r0:r1, c0:c1], gt, dem.proj)
-    out = gdal.ViewshedGenerate(ds.GetRasterBand(1), "MEM", "", [], *dem.to_world(round(c), round(r)), h, target_h,
+    out = gdal.ViewshedGenerate(ds.GetRasterBand(1), "MEM", "", None, *dem.to_world(round(c), round(r)), h, target_h,
                                 VISIBLE, INVISIBLE, OUT_OF_RANGE, OUT_OF_RANGE, CURV_COEFF, gdal.GVM_Edge,
                                 max(radius, 0.0))
     a = out.GetRasterBand(1).ReadAsArray()

@@ -27,8 +27,14 @@ FIELDS = ["track", "experiment", "algorithm", "dem_id", "width", "height", "cell
 
 
 def peak_kb():
+    """Peak resident memory of this process in KB: peak_wset on Windows, ru_maxrss on Linux/macOS
+    (psutil has no peak there; falling back to rss would report the memory in use at the END)."""
     mi = psutil.Process().memory_info()
-    return int(getattr(mi, "peak_wset", mi.rss) / 1024)
+    if hasattr(mi, "peak_wset"):
+        return int(mi.peak_wset / 1024)
+    import resource, sys
+    m = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    return int(m / 1024) if sys.platform == "darwin" else int(m)     # bytes on macOS, KB on Linux
 
 
 def current_kb():
