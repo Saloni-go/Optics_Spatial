@@ -10,6 +10,7 @@ Output: uint8 array, VISIBLE=1, INVISIBLE=0, OUT_OF_RANGE=255 (no-data cells -> 
   naive_los   exact line of sight to every cell, sampling the profile every half cell with
               bilinear interpolation.  O(N * R) for N cells and R cells of radius.  Reference.
   r2          R2 ray casting (Franklin & Ray 1994): rays from the observer to every cell on the
+              (each cell takes the answer of the ray passing closest to its centre)
               boundary, one horizon per ray.  O(R^2) = O(N).  Vectorised over rays with numpy.
   gdal        GDAL ViewshedGenerate (C++, Wang et al. 2000 reference-plane algorithm), O(N).
 """
@@ -93,7 +94,11 @@ def r2(dem, x, y, observer_h, target_h=0.0, max_dist=0.0, curvature=True):
     horizon = np.full(dx.size, -np.inf)
     alive = np.ones(dx.size, bool)
     vis = np.zeros((nr, nc), bool)
-    seen = np.zeros((nr, nc), bool)
+    # Several rays cross most cells.  The cell takes the answer of the ray that passes closest to its
+    # centre (best = that ray's offset in cells; inf = no ray yet).  "Visible if any ray sees it" was
+    # biased: about 20x more false-visible than false-hidden cells, visible area ~8% too high.
+    best = np.full((nr, nc), np.inf, np.float32)
+    vflat, bflat = vis.ravel(), best.ravel()
     z = dem.z
     for i in range(1, R + 1):
         c = oc + dx * (i / R)
@@ -108,11 +113,15 @@ def r2(dem, x, y, observer_h, target_h=0.0, max_dist=0.0, curvature=True):
         # the ray point lies inside cell (ir, ic): test the interpolated surface at that point,
         # which is consistent with the horizon built from the same interpolation
         ok = (zs + target_h - zo) / d >= horizon[alive]
-        vis[ir[ok], ic[ok]] = True                               # visible from any ray -> visible
-        seen[ir, ic] = True
+        off = np.hypot(ca - ic, ra - ir).astype(np.float32)
+        idx = ir * nc + ic
+        sel = np.nonzero(off < bflat[idx])[0]
+        sel = sel[np.argsort(off[sel])[::-1]]                    # closest written last, so it wins ties
+        bflat[idx[sel]] = off[sel]
+        vflat[idx[sel]] = ok[sel]
         horizon[alive] = np.maximum(horizon[alive], (zs - zo) / d)
     out = np.where(vis, VISIBLE, INVISIBLE).astype(np.uint8)
-    out[~seen] = OUT_OF_RANGE
+    out[~np.isfinite(best)] = OUT_OF_RANGE
     out[orow, oc] = VISIBLE
     _apply_range(out, dem, oc, orow, max_dist)
     return out
