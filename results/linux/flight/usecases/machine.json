@@ -1,0 +1,11 @@
+{
+ "cpu": "x86_64",
+ "cores_logical": 12,
+ "cores_physical": 10,
+ "ram_gb": 15.3,
+ "os": "Linux-6.12.10-76061203-generic-x86_64-with-glibc2.35",
+ "python": "3.10.12",
+ "numpy": "1.21.5",
+ "scipy": "1.8.0",
+ "gdal": "3.4.1"
+}

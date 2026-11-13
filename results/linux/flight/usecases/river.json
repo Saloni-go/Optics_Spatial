@@ -1,0 +1,66 @@
+{
+ "valley 300 m AGL | omni": {
+  "flight_km": 165.77444187171733,
+  "line_km": 165.77444187171733,
+  "seen_frac": 1.0,
+  "gaps": 0,
+  "longest_gap_km": 0.0,
+  "compute_s": 1.471525874996587
+ },
+ "valley 300 m AGL | omni_gsd3": {
+  "flight_km": 165.77444187171733,
+  "line_km": 165.77444187171733,
+  "seen_frac": 1.0,
+  "gaps": 0,
+  "longest_gap_km": 0.0,
+  "compute_s": 2.285076134998235
+ },
+ "straight 5500 m MSL | omni": {
+  "flight_km": 120.68636057206392,
+  "line_km": 165.77444187171733,
+  "seen_frac": 0.9225619685181835,
+  "gaps": 33,
+  "longest_gap_km": 4.83,
+  "compute_s": 1.3402054500002123
+ },
+ "straight 5500 m MSL | omni_gsd3": {
+  "flight_km": 120.68636057206392,
+  "line_km": 165.77444187171733,
+  "seen_frac": 0.6549665279536819,
+  "gaps": 88,
+  "longest_gap_km": 17.64,
+  "compute_s": 5.329623052999523
+ },
+ "straight 7500 m MSL | omni": {
+  "flight_km": 120.68636057206392,
+  "line_km": 165.77444187171733,
+  "seen_frac": 0.9676135335625113,
+  "gaps": 21,
+  "longest_gap_km": 2.04,
+  "compute_s": 1.0709721120001632
+ },
+ "straight 7500 m MSL | omni_gsd3": {
+  "flight_km": 120.68636057206392,
+  "line_km": 165.77444187171733,
+  "seen_frac": 0.6888004342319523,
+  "gaps": 87,
+  "longest_gap_km": 17.61,
+  "compute_s": 6.922808210001676
+ },
+ "valley 5500 m MSL | omni": {
+  "flight_km": 165.77444187171733,
+  "line_km": 165.77444187171733,
+  "seen_frac": 1.0,
+  "gaps": 0,
+  "longest_gap_km": 0.0,
+  "compute_s": 1.549802442001237
+ },
+ "valley 5500 m MSL | omni_gsd3": {
+  "flight_km": 165.77444187171733,
+  "line_km": 165.77444187171733,
+  "seen_frac": 1.0,
+  "gaps": 0,
+  "longest_gap_km": 0.0,
+  "compute_s": 7.606768084999203
+ }
+}

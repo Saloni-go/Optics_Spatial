@@ -1,0 +1,37 @@
+{
+ "agl": 300.0,
+ "aircraft": [
+  {
+   "offset_km": 0.0,
+   "own_km2": 1600.0245,
+   "added_km2": 1600.0245,
+   "overlap_with_earlier_frac": 0.0,
+   "union_km2": 1600.0245,
+   "compute_s": 1.3591191390005406
+  },
+  {
+   "offset_km": -8.0,
+   "own_km2": 3104.7219,
+   "added_km2": 1898.8209,
+   "overlap_with_earlier_frac": 0.38840870095321584,
+   "union_km2": 3498.8453999999997,
+   "compute_s": 1.3915048969975032
+  },
+  {
+   "offset_km": 8.0,
+   "own_km2": 2973.0024,
+   "added_km2": 1202.9472,
+   "overlap_with_earlier_frac": 0.5953763104933921,
+   "union_km2": 4701.7926,
+   "compute_s": 1.4108099789991684
+  },
+  {
+   "offset_km": -16.0,
+   "own_km2": 2510.7237,
+   "added_km2": 942.3351,
+   "overlap_with_earlier_frac": 0.6246759051981705,
+   "union_km2": 5644.1277,
+   "compute_s": 1.382416706001095
+  }
+ ]
+}

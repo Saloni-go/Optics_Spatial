@@ -1,0 +1,26 @@
+== river
+river valley 300 m AGL omni {'flight_km': 165.77444187171733, 'line_km': 165.77444187171733, 'seen_frac': 1.0, 'gaps': 0, 'longest_gap_km': 0.0, 'compute_s': 1.471525874996587}
+river valley 300 m AGL omni_gsd3 {'flight_km': 165.77444187171733, 'line_km': 165.77444187171733, 'seen_frac': 1.0, 'gaps': 0, 'longest_gap_km': 0.0, 'compute_s': 2.285076134998235}
+river straight 5500 m MSL omni {'flight_km': 120.68636057206392, 'line_km': 165.77444187171733, 'seen_frac': 0.9225619685181835, 'gaps': 33, 'longest_gap_km': 4.83, 'compute_s': 1.3402054500002123}
+river straight 5500 m MSL omni_gsd3 {'flight_km': 120.68636057206392, 'line_km': 165.77444187171733, 'seen_frac': 0.6549665279536819, 'gaps': 88, 'longest_gap_km': 17.64, 'compute_s': 5.329623052999523}
+river straight 7500 m MSL omni {'flight_km': 120.68636057206392, 'line_km': 165.77444187171733, 'seen_frac': 0.9676135335625113, 'gaps': 21, 'longest_gap_km': 2.04, 'compute_s': 1.0709721120001632}
+river straight 7500 m MSL omni_gsd3 {'flight_km': 120.68636057206392, 'line_km': 165.77444187171733, 'seen_frac': 0.6888004342319523, 'gaps': 87, 'longest_gap_km': 17.61, 'compute_s': 6.922808210001676}
+river valley 5500 m MSL omni {'flight_km': 165.77444187171733, 'line_km': 165.77444187171733, 'seen_frac': 1.0, 'gaps': 0, 'longest_gap_km': 0.0, 'compute_s': 1.549802442001237}
+river valley 5500 m MSL omni_gsd3 {'flight_km': 165.77444187171733, 'line_km': 165.77444187171733, 'seen_frac': 1.0, 'gaps': 0, 'longest_gap_km': 0.0, 'compute_s': 7.606768084999203}
+== sar
+sar {'agl': 300.0, 'track_spacing_m': 500.0, 'flight_km': 464.5, 'flight_min': 129.02777777777777, 'covered_frac': 1.0, 'covered_km2': 225.0, 'compute_s': 3.8650387509987922}
+sar {'agl': 300.0, 'track_spacing_m': 1000.0, 'flight_km': 239.0, 'flight_min': 66.38888888888889, 'covered_frac': 0.999988, 'covered_km2': 224.9973, 'compute_s': 1.9264450520022365}
+sar {'agl': 300.0, 'track_spacing_m': 2000.0, 'flight_km': 117.0, 'flight_min': 32.5, 'covered_frac': 0.993068, 'covered_km2': 223.4403, 'compute_s': 1.0407612519993563}
+sar {'agl': 300.0, 'track_spacing_m': 4000.0, 'flight_km': 72.0, 'flight_min': 20.0, 'covered_frac': 0.981172, 'covered_km2': 220.7637, 'compute_s': 0.5969728999989456}
+sar {'agl': 1000.0, 'track_spacing_m': 500.0, 'flight_km': 464.5, 'flight_min': 129.02777777777777, 'covered_frac': 1.0, 'covered_km2': 225.0, 'compute_s': 5.8593324329995085}
+sar {'agl': 1000.0, 'track_spacing_m': 1000.0, 'flight_km': 239.0, 'flight_min': 66.38888888888889, 'covered_frac': 1.0, 'covered_km2': 225.0, 'compute_s': 3.047684193999885}
+sar {'agl': 1000.0, 'track_spacing_m': 2000.0, 'flight_km': 117.0, 'flight_min': 32.5, 'covered_frac': 0.99958, 'covered_km2': 224.9055, 'compute_s': 1.5188508379978884}
+sar {'agl': 1000.0, 'track_spacing_m': 4000.0, 'flight_km': 72.0, 'flight_min': 20.0, 'covered_frac': 0.995392, 'covered_km2': 223.9632, 'compute_s': 0.9413645289969281}
+== altitude
+altitude {'levels': [150.0, 300.0, 600.0, 1000.0, 2000.0], 'target': 0.8, 'seconds': 8.637648470998101, 'constant': {'150': {'seen_km2': 1284.6636, 'mean_agl': 150.0, 'climb_m': 2833.1524450442703}, '300': {'seen_km2': 1600.0245, 'mean_agl': 300.0, 'climb_m': 2833.1524450442703}, '600': {'seen_km2': 2096.8101, 'mean_agl': 600.0, 'climb_m': 2833.15244504427}, '1000': {'seen_km2': 2636.0352, 'mean_agl': 1000.0, 'climb_m': 2833.15244504427}, '2000': {'seen_km2': 3560.5116, 'mean_agl': 2000.0, 'climb_m': 2833.1524450442676}}, 'optimised': {'seen_km2': 3560.5116, 'mean_agl': 2000.0, 'share_per_level': {'150': 0.0, '300': 0.0, '600': 0.0, '1000': 0.0, '2000': 1.0}, 'climb_m': 2833.1524450442676}}
+== fleet
+fleet {'offset_km': 0.0, 'own_km2': 1600.0245, 'added_km2': 1600.0245, 'overlap_with_earlier_frac': 0.0, 'union_km2': 1600.0245, 'compute_s': 1.3591191390005406}
+fleet {'offset_km': -8.0, 'own_km2': 3104.7219, 'added_km2': 1898.8209, 'overlap_with_earlier_frac': 0.38840870095321584, 'union_km2': 3498.8453999999997, 'compute_s': 1.3915048969975032}
+fleet {'offset_km': 8.0, 'own_km2': 2973.0024, 'added_km2': 1202.9472, 'overlap_with_earlier_frac': 0.5953763104933921, 'union_km2': 4701.7926, 'compute_s': 1.4108099789991684}
+fleet {'offset_km': -16.0, 'own_km2': 2510.7237, 'added_km2': 942.3351, 'overlap_with_earlier_frac': 0.6246759051981705, 'union_km2': 5644.1277, 'compute_s': 1.382416706001095}
+== figs

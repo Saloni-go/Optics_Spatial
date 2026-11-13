@@ -1,0 +1,454 @@
+{
+ "link": {
+  "valley": {
+   "seconds": 0.16983407199950307,
+   "positions": 333,
+   "link_frac": 0.3303303303303303,
+   "outage_km": 111.5,
+   "longest_outage_km": 30.0,
+   "outages": [
+    [
+     30.0,
+     2.0
+    ],
+    [
+     18.0,
+     36.5
+    ],
+    [
+     1.5,
+     70.5
+    ],
+    [
+     8.5,
+     73.0
+    ],
+    [
+     23.5,
+     86.0
+    ],
+    [
+     9.0,
+     114.5
+    ],
+    [
+     21.0,
+     142.0
+    ]
+   ],
+   "per_station_frac": {
+    "near Devprayag (start)": 0.012012012012012012,
+    "Devprayag": 0.02702702702702703,
+    "Srinagar": 0.1021021021021021,
+    "Rudraprayag": 0.02702702702702703,
+    "Karnaprayag": 0.03003003003003003,
+    "Chamoli": 0.1111111111111111,
+    "Joshimath (end)": 0.021021021021021023
+   },
+   "greedy_stations": [
+    "Chamoli",
+    "Srinagar",
+    "Karnaprayag",
+    "Rudraprayag",
+    "Devprayag",
+    "Joshimath (end)",
+    "near Devprayag (start)"
+   ]
+  },
+  "cruise": {
+   "seconds": 0.16814061100012623,
+   "positions": 333,
+   "link_frac": 1.0,
+   "outage_km": 0.0,
+   "longest_outage_km": 0.0,
+   "outages": [],
+   "per_station_frac": {
+    "near Devprayag (start)": 0.36936936936936937,
+    "Devprayag": 0.21621621621621623,
+    "Srinagar": 0.8228228228228228,
+    "Rudraprayag": 0.35435435435435436,
+    "Karnaprayag": 0.32432432432432434,
+    "Chamoli": 0.34534534534534533,
+    "Joshimath (end)": 0.07207207207207207
+   },
+   "greedy_stations": [
+    "Srinagar",
+    "Chamoli",
+    "Joshimath (end)"
+   ]
+  }
+ },
+ "river": {
+  "valley 300 m AGL | omni": {
+   "flight_km": 165.77444187171733,
+   "line_km": 165.77444187171733,
+   "seen_frac": 1.0,
+   "gaps": 0,
+   "longest_gap_km": 0.0,
+   "compute_s": 1.471525874996587
+  },
+  "valley 300 m AGL | omni_gsd3": {
+   "flight_km": 165.77444187171733,
+   "line_km": 165.77444187171733,
+   "seen_frac": 1.0,
+   "gaps": 0,
+   "longest_gap_km": 0.0,
+   "compute_s": 2.285076134998235
+  },
+  "straight 5500 m MSL | omni": {
+   "flight_km": 120.68636057206392,
+   "line_km": 165.77444187171733,
+   "seen_frac": 0.9225619685181835,
+   "gaps": 33,
+   "longest_gap_km": 4.83,
+   "compute_s": 1.3402054500002123
+  },
+  "straight 5500 m MSL | omni_gsd3": {
+   "flight_km": 120.68636057206392,
+   "line_km": 165.77444187171733,
+   "seen_frac": 0.6549665279536819,
+   "gaps": 88,
+   "longest_gap_km": 17.64,
+   "compute_s": 5.329623052999523
+  },
+  "straight 7500 m MSL | omni": {
+   "flight_km": 120.68636057206392,
+   "line_km": 165.77444187171733,
+   "seen_frac": 0.9676135335625113,
+   "gaps": 21,
+   "longest_gap_km": 2.04,
+   "compute_s": 1.0709721120001632
+  },
+  "straight 7500 m MSL | omni_gsd3": {
+   "flight_km": 120.68636057206392,
+   "line_km": 165.77444187171733,
+   "seen_frac": 0.6888004342319523,
+   "gaps": 87,
+   "longest_gap_km": 17.61,
+   "compute_s": 6.922808210001676
+  },
+  "valley 5500 m MSL | omni": {
+   "flight_km": 165.77444187171733,
+   "line_km": 165.77444187171733,
+   "seen_frac": 1.0,
+   "gaps": 0,
+   "longest_gap_km": 0.0,
+   "compute_s": 1.549802442001237
+  },
+  "valley 5500 m MSL | omni_gsd3": {
+   "flight_km": 165.77444187171733,
+   "line_km": 165.77444187171733,
+   "seen_frac": 1.0,
+   "gaps": 0,
+   "longest_gap_km": 0.0,
+   "compute_s": 7.606768084999203
+  }
+ },
+ "sar": [
+  {
+   "agl": 150.0,
+   "track_spacing_m": 500.0,
+   "flight_km": 464.5,
+   "flight_min": 129.02777777777777,
+   "covered_frac": 0.999988,
+   "covered_km2": 224.9973,
+   "compute_s": 3.226814891997492
+  },
+  {
+   "agl": 150.0,
+   "track_spacing_m": 1000.0,
+   "flight_km": 239.0,
+   "flight_min": 66.38888888888889,
+   "covered_frac": 0.998924,
+   "covered_km2": 224.7579,
+   "compute_s": 1.6257222860003822
+  },
+  {
+   "agl": 150.0,
+   "track_spacing_m": 2000.0,
+   "flight_km": 117.0,
+   "flight_min": 32.5,
+   "covered_frac": 0.922396,
+   "covered_km2": 207.5391,
+   "compute_s": 0.7950877250004851
+  },
+  {
+   "agl": 150.0,
+   "track_spacing_m": 4000.0,
+   "flight_km": 72.0,
+   "flight_min": 20.0,
+   "covered_frac": 0.60752,
+   "covered_km2": 136.692,
+   "compute_s": 0.4935339160001604
+  },
+  {
+   "agl": 300.0,
+   "track_spacing_m": 500.0,
+   "flight_km": 464.5,
+   "flight_min": 129.02777777777777,
+   "covered_frac": 1.0,
+   "covered_km2": 225.0,
+   "compute_s": 3.535588648999692
+  },
+  {
+   "agl": 300.0,
+   "track_spacing_m": 1000.0,
+   "flight_km": 239.0,
+   "flight_min": 66.38888888888889,
+   "covered_frac": 0.99978,
+   "covered_km2": 224.9505,
+   "compute_s": 1.836169449998124
+  },
+  {
+   "agl": 300.0,
+   "track_spacing_m": 2000.0,
+   "flight_km": 117.0,
+   "flight_min": 32.5,
+   "covered_frac": 0.941672,
+   "covered_km2": 211.8762,
+   "compute_s": 0.9465219260018785
+  },
+  {
+   "agl": 300.0,
+   "track_spacing_m": 4000.0,
+   "flight_km": 72.0,
+   "flight_min": 20.0,
+   "covered_frac": 0.657904,
+   "covered_km2": 148.0284,
+   "compute_s": 0.5715949359982915
+  },
+  {
+   "agl": 600.0,
+   "track_spacing_m": 500.0,
+   "flight_km": 464.5,
+   "flight_min": 129.02777777777777,
+   "covered_frac": 1.0,
+   "covered_km2": 225.0,
+   "compute_s": 4.434078356996906
+  },
+  {
+   "agl": 600.0,
+   "track_spacing_m": 1000.0,
+   "flight_km": 239.0,
+   "flight_min": 66.38888888888889,
+   "covered_frac": 0.99998,
+   "covered_km2": 224.9955,
+   "compute_s": 2.356873472002917
+  },
+  {
+   "agl": 600.0,
+   "track_spacing_m": 2000.0,
+   "flight_km": 117.0,
+   "flight_min": 32.5,
+   "covered_frac": 0.953412,
+   "covered_km2": 214.5177,
+   "compute_s": 1.1796118050006044
+  },
+  {
+   "agl": 600.0,
+   "track_spacing_m": 4000.0,
+   "flight_km": 72.0,
+   "flight_min": 20.0,
+   "covered_frac": 0.7186,
+   "covered_km2": 161.685,
+   "compute_s": 0.7036369630004629
+  }
+ ],
+ "altitude": {
+  "levels": [
+   150.0,
+   300.0,
+   600.0,
+   1000.0,
+   2000.0
+  ],
+  "near_m": 5000.0,
+  "seconds": 2.1510231159991235,
+  "constant": {
+   "150": {
+    "seen_km2": 886.7115,
+    "mean_agl": 150.0,
+    "climb_m": 2833.1524450442703
+   },
+   "300": {
+    "seen_km2": 1008.0036,
+    "mean_agl": 300.0,
+    "climb_m": 2833.1524450442703
+   },
+   "600": {
+    "seen_km2": 1157.6583,
+    "mean_agl": 600.0,
+    "climb_m": 2833.15244504427
+   },
+   "1000": {
+    "seen_km2": 1286.9946,
+    "mean_agl": 1000.0,
+    "climb_m": 2833.15244504427
+   },
+   "2000": {
+    "seen_km2": 1470.8358,
+    "mean_agl": 2000.0,
+    "climb_m": 2833.1524450442676
+   }
+  },
+  "sweep": [
+   {
+    "target": 0.3,
+    "seen_km2": 1057.2183,
+    "mean_agl": 372.07207207207205,
+    "share_per_level": {
+     "150": 0.21021021021021022,
+     "300": 0.4444444444444444,
+     "600": 0.34534534534534533,
+     "1000": 0.0,
+     "2000": 0.0
+    },
+    "climb_m": 8129.43219779832
+   },
+   {
+    "target": 0.4,
+    "seen_km2": 1149.9336,
+    "mean_agl": 563.063063063063,
+    "share_per_level": {
+     "150": 0.006006006006006006,
+     "300": 0.24624624624624625,
+     "600": 0.6486486486486487,
+     "1000": 0.0990990990990991,
+     "2000": 0.0
+    },
+    "climb_m": 8570.59911440069
+   },
+   {
+    "target": 0.5,
+    "seen_km2": 1223.9523,
+    "mean_agl": 744.1441441441441,
+    "share_per_level": {
+     "150": 0.0,
+     "300": 0.012012012012012012,
+     "600": 0.6186186186186187,
+     "1000": 0.36936936936936937,
+     "2000": 0.0
+    },
+    "climb_m": 8605.429527362077
+   },
+   {
+    "target": 0.6,
+    "seen_km2": 1301.4693,
+    "mean_agl": 1023.4234234234234,
+    "share_per_level": {
+     "150": 0.0,
+     "300": 0.0,
+     "600": 0.11411411411411411,
+     "1000": 0.8168168168168168,
+     "2000": 0.06906906906906907
+    },
+    "climb_m": 10523.062597734695
+   },
+   {
+    "target": 0.7,
+    "seen_km2": 1409.0625,
+    "mean_agl": 1471.4714714714714,
+    "share_per_level": {
+     "150": 0.0,
+     "300": 0.0,
+     "600": 0.0,
+     "1000": 0.5285285285285285,
+     "2000": 0.47147147147147145
+    },
+    "climb_m": 20452.13015015508
+   },
+   {
+    "target": 0.8,
+    "seen_km2": 1470.2733,
+    "mean_agl": 1984.984984984985,
+    "share_per_level": {
+     "150": 0.0,
+     "300": 0.0,
+     "600": 0.0,
+     "1000": 0.015015015015015015,
+     "2000": 0.984984984984985
+    },
+    "climb_m": 4833.152445044268
+   },
+   {
+    "target": 0.9,
+    "seen_km2": 1470.8358,
+    "mean_agl": 2000.0,
+    "share_per_level": {
+     "150": 0.0,
+     "300": 0.0,
+     "600": 0.0,
+     "1000": 0.0,
+     "2000": 1.0
+    },
+    "climb_m": 2833.1524450442676
+   }
+  ],
+  "optimised": {
+   "target": 0.6,
+   "seen_km2": 1301.4693,
+   "mean_agl": 1023.4234234234234,
+   "share_per_level": {
+    "150": 0.0,
+    "300": 0.0,
+    "600": 0.11411411411411411,
+    "1000": 0.8168168168168168,
+    "2000": 0.06906906906906907
+   },
+   "climb_m": 10523.062597734695
+  }
+ },
+ "fleet": {
+  "agl": 300.0,
+  "aircraft": [
+   {
+    "offset_km": 0.0,
+    "own_km2": 1600.0245,
+    "added_km2": 1600.0245,
+    "overlap_with_earlier_frac": 0.0,
+    "union_km2": 1600.0245,
+    "compute_s": 1.3591191390005406
+   },
+   {
+    "offset_km": -8.0,
+    "own_km2": 3104.7219,
+    "added_km2": 1898.8209,
+    "overlap_with_earlier_frac": 0.38840870095321584,
+    "union_km2": 3498.8453999999997,
+    "compute_s": 1.3915048969975032
+   },
+   {
+    "offset_km": 8.0,
+    "own_km2": 2973.0024,
+    "added_km2": 1202.9472,
+    "overlap_with_earlier_frac": 0.5953763104933921,
+    "union_km2": 4701.7926,
+    "compute_s": 1.4108099789991684
+   },
+   {
+    "offset_km": -16.0,
+    "own_km2": 2510.7237,
+    "added_km2": 942.3351,
+    "overlap_with_earlier_frac": 0.6246759051981705,
+    "union_km2": 5644.1277,
+    "compute_s": 1.382416706001095
+   }
+  ]
+ },
+ "lookahead": {
+  "valley": {
+   "seconds": 0.07947737100039376,
+   "positions": 1659,
+   "warn_frac": 0.03375527426160337,
+   "median_tti_s": 48.0,
+   "never_frac": 0.0216998191681736
+  },
+  "cruise": {
+   "seconds": 0.07704450200253632,
+   "positions": 1659,
+   "warn_frac": 0.0,
+   "median_tti_s": 200.0,
+   "never_frac": 1.0
+  }
+ }
+}

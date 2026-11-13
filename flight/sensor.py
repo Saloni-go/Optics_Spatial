@@ -46,6 +46,7 @@ SENSORS = {
     "omni_gsd3": Sensor("omni_gsd3", ifov=CAM_IFOV, gsd_max=3.0),
     "forward": Sensor("forward", sectors=((0.0, 90.0),), min_dep=5.0, max_dep=60.0, ifov=CAM_IFOV, gsd_max=3.0),
     "side": Sensor("side", sectors=((90.0, 60.0), (-90.0, 60.0)), min_dep=10.0, max_dep=70.0, ifov=CAM_IFOV, gsd_max=3.0),
+    "person": Sensor("person", ifov=CAM_IFOV, gsd_max=0.5),        # resolution needed to spot a person
     "nadir": Sensor("nadir", min_dep=45.0, max_dep=90.0, ifov=CAM_IFOV, gsd_max=3.0),
 }
 
