@@ -1,0 +1,16 @@
+[
+ {
+  "experiment": "C1_size",
+  "algorithm": "dijkstra_csgraph",
+  "size": 8000,
+  "cells": 64000000,
+  "reason": "explicit graph: ~0.37 GB per M cells measured (6.0 GB at 16 M) -> ~24 GB at 64 M"
+ },
+ {
+  "experiment": "C7_compiled",
+  "algorithm": "astar_alt",
+  "size": 8000,
+  "cells": 64000000,
+  "reason": "explicit graph: ~0.37 GB per M cells measured (6.0 GB at 16 M) -> ~24 GB at 64 M"
+ }
+]

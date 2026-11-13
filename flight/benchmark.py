@@ -17,7 +17,7 @@ import argparse
 import json
 
 from common.bench import run_series, machine_info
-from common.config import RESULTS, CELL
+from common.config import RESULTS, CELL, BENCH_SIZES
 
 OUT = RESULTS / "flight"
 CSV = OUT / "benchmark_raw.csv"
@@ -32,13 +32,13 @@ def base(size, **kw):
 
 def f1(r):
     return [base(s, experiment="F1_size", param_name="cells", param_value=s * s, radius_m=0, spacing_m=1000,
-                 route_frac=0.8, _repeats=3 if s == 4000 else r) for s in (500, 1000, 2000, 4000)]
+                 route_frac=0.8, _repeats=r if s < 4000 else (3 if s == 4000 else 2)) for s in BENCH_SIZES]
 
 
 def f1b(r):
     # a 12 km route = 0.8 of the 500-cell DEM (15 km); same physical route for all sizes
     return [base(s, experiment="F1b_size_fixed_route", param_name="cells", param_value=s * s, radius_m=20000,
-                 spacing_m=1000, route_frac=0.8 * 500 / s) for s in (500, 1000, 2000, 4000)]
+                 spacing_m=1000, route_frac=0.8 * 500 / s) for s in BENCH_SIZES]
 
 
 def f2(r):

@@ -89,7 +89,11 @@ def run_series(module, jobs, csv_path, repeats=5, row_base=None, verbose=True):
             reps = job.pop("_repeats", repeats)
             rows = []
             for r in range(reps):
-                res = run_job(module, dict(job))
+                try:
+                    res = run_job(module, dict(job))
+                except (RuntimeError, subprocess.TimeoutExpired) as e:   # e.g. killed for memory: log, keep going
+                    _log_failure(csv_path, job, e)
+                    break
                 row = dict(row_base or {})
                 row.update({k: v for k, v in job.items() if k in FIELDS})
                 row.update({k: v for k, v in res.items() if k in FIELDS})
@@ -100,6 +104,8 @@ def run_series(module, jobs, csv_path, repeats=5, row_base=None, verbose=True):
                     row["notes"] = json.dumps(extra)
                 w.writerow(row); fh.flush()
                 rows.append(row)
+            if not rows:
+                continue
             med = dict(rows[0])
             for k in ("runtime_s", "compute_s", "peak_rss_kb", "base_rss_kb"):
                 vals = [float(x[k]) for x in rows if x.get(k) not in (None, "")]
@@ -111,6 +117,15 @@ def run_series(module, jobs, csv_path, repeats=5, row_base=None, verbose=True):
                       f" dem={job.get('dem_id')}: median {med['runtime_s']:.3f}s, peak {med['peak_rss_kb'] / 1024:.0f} MB"
                       f" (n={reps})", flush=True)
     return medians
+
+
+def _log_failure(csv_path, job, err):
+    f = Path(csv_path).with_name("failures.json")
+    rows = json.load(open(f)) if f.exists() else []
+    rows.append({k: v for k, v in job.items() if k in ("experiment", "algorithm", "dem_id", "param_value")} |
+                {"error": str(err)[-600:], "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+    json.dump(rows, open(f, "w"), indent=1)
+    print(f"  FAILED {job.get('experiment')}/{job.get('algorithm')} dem={job.get('dem_id')}: {str(err)[:200]}", flush=True)
 
 
 def machine_info():
